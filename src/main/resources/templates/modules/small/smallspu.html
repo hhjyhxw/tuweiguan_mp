@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>商品spu</title>
+		<#include "/header.html">
+        <link rel="stylesheet" href="${request.contextPath}/statics/css/bootstrap-table.min.css">
+        <link rel="stylesheet" href="${request.contextPath}/statics/plugins/treegrid/jquery.treegrid.css">
+        <script src="${request.contextPath}/statics/libs/bootstrap-table.min.js"></script>
+        <script src="${request.contextPath}/statics/plugins/treegrid/jquery.treegrid.min.js"></script>
+        <script src="${request.contextPath}/statics/plugins/treegrid/jquery.treegrid.bootstrap3.js"></script>
+        <script src="${request.contextPath}/statics/plugins/treegrid/jquery.treegrid.extension.js"></script>
+        <script src="${request.contextPath}/statics/plugins/treegrid/tree.table.js"></script>
+        <!-- 配置文件 -->
+        <script type="text/javascript" src="${request.contextPath}/statics/ueditor/ueditor.config.js"></script>
+        <!-- 编辑器源码文件 -->
+        <script type="text/javascript" src="${request.contextPath}/statics/ueditor/ueditor.all.js"></script>
+<!--        <script type="text/javascript" charset="utf-8" src="${request.contextPath}/statics/ueditor/ueditor.all.min.js"></script>-->
+        <script type="text/javascript" charset="utf-8" src="${request.contextPath}/statics/ueditor/lang/zh-cn/zh-cn.js"></script>
+
+    <script src="${request.contextPath}/statics/libs/ajaxupload.js"></script>
+</head>
+<body>
+<div id="icloudapp" v-cloak>
+    <div v-show="showList">
+        <div class="grid-btn">
+			<#if shiro.hasPermission("small:smallspu:save")>
+            <a class="btn btn-primary" @click="add"><i class="fa fa-plus"></i>&nbsp;新增</a>
+			</#if>
+			<#if shiro.hasPermission("small:smallspu:update")>
+            <a class="btn btn-primary" @click="update"><i class="fa fa-pencil-square-o"></i>&nbsp;修改</a>
+			</#if>
+			<#if shiro.hasPermission("small:smallspu:delete")>
+            <a class="btn btn-primary" @click="del"><i class="fa fa-trash-o"></i>&nbsp;删除</a>
+			</#if>
+        </div>
+        <table id="jqGrid"></table>
+        <div id="jqGridPager"></div>
+    </div>
+
+    <div v-show="!showList" class="panel panel-default">
+        <div class="panel-heading">{{title}}</div>
+        <form class="form-horizontal" style="width:100%;width: 70%; margin-right: auto;">
+                <div class="form-group">
+                    <div class="col-sm-2 control-label">所属商户</div>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" v-model="smallSpu.smallRetail.supplierName" @click="retailTree" readonly="readonly" placeholder="所属商户"/>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-sm-2 control-label">商品名称</div>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" v-model="smallSpu.title" placeholder="商品名称"/>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-sm-2 control-label">商品图片</div>
+                    <img   :src="smallSpu.img" style="width:300px;height:150px;" v-model="smallSpu.img" placeholder="商品图片"/>
+                    <div class="col-sm-10">
+                        <a class="btn btn-primary" id="upload" style="margin-left:23.2rem;"><i class="fa fa-plus"></i>&nbsp;上传文件</a>
+                    </div>
+                </div>
+				<div class="form-group">
+                        <div class="col-sm-2 control-label">原价(元)</div>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" v-model="smallSpu.price" placeholder="原价(按分存)"/>
+                        </div>
+                    </div>
+					<div class="form-group">
+                        <div class="col-sm-2 control-label">现价(元)</div>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" v-model="smallSpu.originalPrice" placeholder="现价"/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-2 control-label">剩余库存</div>
+                        <div class="col-sm-10">
+                            <input type="number" class="form-control" v-model="smallSpu.remainStock" readonly placeholder="剩余库存"/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-2 control-label">添加库存</div>
+                        <div class="col-sm-10">
+                            <input type="number" class="form-control" v-model="addStock" placeholder="添加库存"/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-2 control-label">所属分类</div>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" v-model="smallSpu.smallCategory.title" @click="categroyTree" readonly="readonly"   placeholder="分类id"/>
+                        </div>
+                    </div>
+
+					<!--						                    <div class="form-group">
+                        <div class="col-sm-2 control-label">vip价</div>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" v-model="smallSpu.vipPrice" placeholder="vip价"/>
+                        </div>
+                    </div>-->
+
+				<!--	<div class="form-group">
+                        <div class="col-sm-2 control-label">销量</div>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" v-model="smallSpu.sales" placeholder="销量"/>
+                        </div>
+                    </div>-->
+
+					<div class="form-group">
+                        <div class="col-sm-2 control-label">商品详情</div>
+                        <div class="col-sm-10">
+                            <!--<input type="text" class="form-control" v-model="smallSpu.detail" placeholder="商品详情"/>-->
+                            <!--<div id="detail" class="fonts" v-html="smallSpu.detail">{{smallSpu.detail}}</div>-->
+                            <script id="detail" type="text/plain" name="detail" v-html="smallSpu.detail" style="width:100%;height:350px;">{{smallSpu.detail}}</script>
+                        </div>
+                    </div>
+					<div class="form-group">
+                        <div class="col-sm-2 control-label">商品描述</div>
+                        <div class="col-sm-10">
+                            <script id="description" type="text/plain" name="detail" v-html="smallSpu.description" style="width:100%;height:350px;">{{smallSpu.description}}</script>
+                           <!-- <input type="text" class="form-control" v-model="smallSpu.description" placeholder="商品描述"/>-->
+                        </div>
+                    </div>
+
+					<!--<div class="form-group">
+                        <div class="col-sm-2 control-label">运费模板id</div>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" v-model="smallSpu.freightTemplateId" placeholder="运费模板id"/>
+                        </div>
+                    </div>-->
+				<!--	<div class="form-group">
+                        <div class="col-sm-2 control-label">计量单位</div>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" v-model="smallSpu.unit" placeholder="计量单位"/>
+                        </div>
+                    </div>-->
+                    <div class="form-group">
+                        <div class="col-sm-2 control-label">店铺个性化分类</div>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" v-model="smallSpu.smallSellCategory.title" @click="sellcategroyTree" readonly="readonly"   placeholder="分类id"/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-2 control-label">状态</div>
+                        <label class="radio-inline">
+                            <input type="radio" name="status" value="1" v-model="smallSpu.status"/> 上架
+                        </label>
+                        <label class="radio-inline">
+                            <input type="radio" name="status" value="0" v-model="smallSpu.status"/> 下架
+                        </label>
+                    </div>
+
+				<!--	<div class="form-group">
+                        <div class="col-sm-2 control-label">热门</div>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" v-model="smallSpu.ihot" placeholder="热门"/>
+                        </div>
+                    </div>
+											                    <div class="form-group">
+                        <div class="col-sm-2 control-label">新品</div>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" v-model="smallSpu.inew" placeholder="新品"/>
+                        </div>
+                    </div>
+											                    <div class="form-group">
+                        <div class="col-sm-2 control-label">折扣</div>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" v-model="smallSpu.idiscount" placeholder="折扣"/>
+                        </div>
+                    </div>
+											                    <div class="form-group">
+                        <div class="col-sm-2 control-label">优选</div>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" v-model="smallSpu.iselect" placeholder="优选"/>
+                        </div>
+                    </div>
+											                    <div class="form-group">
+                        <div class="col-sm-2 control-label">创建时间</div>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" v-model="smallSpu.createTime" placeholder="创建时间"/>
+                        </div>
+                    </div>
+											                    <div class="form-group">
+                        <div class="col-sm-2 control-label">修改时间</div>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" v-model="smallSpu.modifyTime" placeholder="修改时间"/>
+                        </div>
+                    </div>-->
+			<div class="form-group">
+                <div class="col-sm-2 control-label"></div>
+                <input type="button" class="btn btn-primary" id="btnSaveOrUpdate" data-loading-text="保存中..." @click="saveOrUpdate" value="确定"/>
+                &nbsp;&nbsp;<input type="button" class="btn btn-warning" @click="reload" value="返回"/>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+<!-- 分类树 -->
+<div id="categroyLayer" style="display: none;padding:10px;">
+    <ul id="categroyTree" class="ztree"></ul>
+</div>
+<!-- 零售户树 -->
+<div id="retailLayer" style="display: none;padding:10px;">
+    <ul id="retailTree" class="ztree"></ul>
+</div>
+
+<!-- 店铺个性化分类树 -->
+<div id="sellCategoryLayer" style="display: none;padding:10px;">
+    <ul id="sellCategoryTree" class="ztree"></ul>
+</div>
+
+<script src="${request.contextPath}/statics/js/modules/small/smallspu.js?_${.now?long}"></script>
+</body>
+</html>
