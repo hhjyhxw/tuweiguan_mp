@@ -84,7 +84,7 @@ public class SmallSpuController {
             smallSpu.setFreezeStock(0);
         }
         smallSpuService.save(smallSpu);
-        return R.ok();
+        return R.ok().put("smallSpu",smallSpu);
     }
 
     /**
@@ -109,8 +109,7 @@ public class SmallSpuController {
             }
         }
         smallSpuService.updateById(smallSpu);
-        
-        return R.ok();
+        return R.ok().put("smallSpu",smallSpu);
     }
 
     /**
@@ -119,9 +118,9 @@ public class SmallSpuController {
     @RequestMapping("/delete")
     @RequiresPermissions("small:smallspu:delete")
     public R delete(@RequestBody Long[] ids){
-        smallSpuService.removeByIds(Arrays.asList(ids));
-
-        return R.ok();
+//        smallSpuService.removeByIds(Arrays.asList(ids));
+        return  smallSpuService.removeBatchByIds(Arrays.asList(ids));
+//        return R.ok();
     }
 
 }

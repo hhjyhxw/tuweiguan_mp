@@ -93,7 +93,8 @@ public class SmallSkuController {
             smallSku.setFreezeStock(0);
         }
         smallSkuService.save(smallSku);
-        return R.ok();
+        smallSku.setRemainStock(smallSku.getStock()>0?smallSku.getStock():0);
+        return R.ok().put("smallSku", smallSku);
     }
 
     /**
@@ -118,8 +119,9 @@ public class SmallSkuController {
             }
         }
         smallSkuService.updateById(smallSku);
-
-        return R.ok();
+        Integer remainStock = (smallSku.getStock()!=null?smallSku.getStock().intValue():0) - (smallSku.getFreezeStock()!=null?smallSku.getFreezeStock().intValue():0);
+        smallSku.setRemainStock(remainStock>0?remainStock:0);
+        return R.ok().put("smallSku", smallSku);
     }
 
     /**

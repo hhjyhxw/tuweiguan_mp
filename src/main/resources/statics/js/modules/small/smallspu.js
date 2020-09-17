@@ -539,7 +539,10 @@ var vm = new Vue({
             })
         },
         //打开添加sku弹窗
-        addSku: function (title) {
+        addSku: function (title,id) {
+		    if(id==''){
+                id = null;
+            }
             this.skuWin = layer.open({
                 title: title!=null?title:'添加商品sku',
                 type: 2,
@@ -548,13 +551,16 @@ var vm = new Vue({
                 shadeClose: true,
                 area: ['60%', '60%'],
                 btn: ['<i class="fa fa-check"></i> 确定', '<i class="fa fa-close"></i> 关闭'],
-                content: baseURL + "modules/small/smallskuWin.html?spuId="+vm.smallSpu.id,
+                content: baseURL + "modules/small/smallskuWin.html?spuId="+vm.smallSpu.id+"&id="+id,
                 yes: function (index, layero) {
                     var iframeWin = window[layero.find('iframe')[0]['name']];
+                    //加载sku列表
+                    vm.getSkuList(vm.smallSpu.id);
                    /* var tArea = iframeWin.vm.tArea;
                     if($.trim(tArea.id) == '') {
                         layer.msg("请选择",{icon: 0,time: 1000});return;
                     }
+
                     console.log(tArea);
                     vm.tChargerStand.tArea.name = tArea.name;
                     vm.tChargerStand.areaId = tArea.id;*/
@@ -566,6 +572,37 @@ var vm = new Vue({
                 }
             });
         },
+        //删除sku
+        delSku:function (id) {
+                if(id == null){
+                    return ;
+                }
+                var ids = new Array();
+                ids.push(id);
+                var lock = false;
+                layer.confirm('确定要删除选中的记录？', {
+                    btn: ['确定','取消'] //按钮
+                }, function(){
+                    if(!lock) {
+                        lock = true;
+                        $.ajax({
+                            type: "POST",
+                            url: baseURL + "small/smallsku/delete",
+                            contentType: "application/json",
+                            data: JSON.stringify(ids),
+                            success: function(r){
+                                if(r.code == 0){
+                                    layer.msg("操作成功", {icon: 1});
+                                    vm.getSkuList(vm.smallSpu.id);
+                                }else{
+                                    layer.alert(r.msg);
+                                }
+                            }
+                        });
+                    }
+                }, function(){
 
+                });
+        }
 	}
 });

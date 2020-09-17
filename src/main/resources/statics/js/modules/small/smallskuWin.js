@@ -34,10 +34,12 @@ var vm = new Vue({
 		showList: false,
 		title: null,
 		smallSku: {
-			spuId:T.p('spuId') ? T.p('spuId') : null
+			id:T.p('id') ? T.p('id') : null,
+			spuId:T.p('spuId') ? T.p('spuId') : null,
+			addStock:0,
 		},
-		addStock:null,
-		caculatRemainStock:null,
+		addStock:0,
+		caculatRemainStock:0,
 	},
 	watch: {
 		addStock(newV,oldV) {
@@ -50,7 +52,7 @@ var vm = new Vue({
 			}else{
 				vm.smallSku.remainStock =  remainStock+pnewV;
 			}
-			vm.smallSpu.addStock = pnewV;
+			vm.smallSku.addStock = pnewV;
 		}
 	},
 	methods: {
@@ -60,7 +62,10 @@ var vm = new Vue({
 		add: function(){
 			vm.showList = false;
 			vm.title = "新增";
-			vm.smallSku = {};
+			vm.smallSku = {
+
+			};
+			vm.smallSku.addStock = null;
 		},
 		update: function (event) {
 			var id = getSelectedRow();
@@ -101,7 +106,14 @@ var vm = new Vue({
                     success: function(r){
                         if(r.code === 0){
                              layer.msg("操作成功", {icon: 1});
-                             vm.reload();
+							vm.smallSku = r.smallSku;
+							vm.caculatRemainStock = vm.smallSku.remainStock;//设置剩余库存:只用于临时计算
+							// window.parent.location.reload();
+							// var index = parent.layer.getFrameIndex(window.name);
+							// console.log("window.name====="+window.name);
+							// console.log("index====="+index)
+							// parent.layer.close(index);
+							parent.vm.getSkuList(vm.smallSku.spuId);
                              $('#btnSaveOrUpdate').button('reset');
                              $('#btnSaveOrUpdate').dequeue();
                         }else{
@@ -143,10 +155,12 @@ var vm = new Vue({
              });
 		},
 		getInfo: function(id){
-			$.get(baseURL + "small/smallsku/info/"+id, function(r){
-                vm.smallSku = r.smallSku;
-				vm.caculatRemainStock = vm.smallSku.remainStock;//设置剩余库存:只用于临时计算
-            });
+			if(id!=null){
+				$.get(baseURL + "small/smallsku/info/"+id, function(r){
+					vm.smallSku = r.smallSku;
+					vm.caculatRemainStock = vm.smallSku.remainStock;//设置剩余库存:只用于临时计算
+				});
+			}
 		},
 		reload: function (event) {
 			vm.showList = true;
@@ -157,3 +171,5 @@ var vm = new Vue({
 		}
 	}
 });
+
+vm.getInfo(vm.smallSku.id);
