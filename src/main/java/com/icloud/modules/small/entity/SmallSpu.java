@@ -6,6 +6,8 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
@@ -25,22 +27,27 @@ public class SmallSpu implements Serializable {
    	   /*  */
        @TableId(value="id", type= IdType.AUTO)
        private Long id;
-   	   	   /* 原价(按分存) */
+   	   	   /*  现价*/
+       @NotNull
        @TableField("price")
        private BigDecimal price;
-   	   	   /* 现价 */
-       @TableField("original_price")
+   	   	   /*  原价 */
+        @NotNull
+        @TableField("original_price")
        private BigDecimal originalPrice;
-   	   	   /* vip价 */
+   	   	   /* vip价 (团购价)*/
+
        @TableField("vip_price")
        private BigDecimal vipPrice;
    	   	   /* 商品名称 */
+       @NotBlank
        @TableField("title")
        private String title;
    	   	   /* 销量 */
        @TableField("sales")
        private Integer sales;
    	   	   /* 商品图片 */
+       @NotBlank
        @TableField("img")
        private String img;
    	   	   /* 商品详情 */
@@ -50,18 +57,22 @@ public class SmallSpu implements Serializable {
        @TableField("description")
        private String description;
    	   	   /* 分类id */
+       @NotNull
        @TableField("category_id")
        private Long categoryId;
    	   	   /* 运费模板id */
        @TableField("freight_template_id")
        private Long freightTemplateId;
-   	   	   /* 计量单位 */
-       @TableField("unit")
+
+   	    /* 计量单位 */
+        @NotBlank
+        @TableField("unit")
        private String unit;
    	   	   /* 0下架 1上架 */
        @TableField("status")
        private Integer status;
    	   	   /* 商户id */
+       @NotNull
        @TableField("supplier_id")
        private Long supplierId;
    	   	   /* 热门 */

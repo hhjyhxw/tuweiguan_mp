@@ -240,7 +240,9 @@ var vm = new Vue({
             smallSellCategory:{
                 title:null
             }
-        }
+        },
+        skuList:[],
+        attibutList:[]
 	},
 
     watch: {
@@ -295,6 +297,27 @@ var vm = new Vue({
 
 		},
 		saveOrUpdate: function (event) {
+            console.log("smallSpu======"+JSON.stringify(vm.smallSpu))
+            //参数校验，
+            if(vm.smallSpu.title==null || vm.smallSpu.title==''){
+                layer.msg("商品名称不能为空", {icon: 2});
+                return;
+            }
+            if(!priceCheck(vm.smallSpu.originalPrice)){
+                layer.msg("商品原价不能为空,且为数字,最多保留两位小数", {icon: 2});
+            }
+            if(!priceCheck(vm.smallSpu.originalPrice)){
+                layer.msg("商品现价不能为空,且为数字,最多保留两位小数", {icon: 2});
+                return;
+            }
+            if(vm.smallSpu.categoryId==null || vm.smallSpu.categoryId==''){
+                layer.msg("请选择分类", {icon: 2});
+                return;
+            }
+            if(vm.smallSpu.supplierId==null || vm.smallSpu.supplierId==''){
+                layer.msg("请选择店铺", {icon: 2});
+                return;
+            }
 		    $('#btnSaveOrUpdate').button('loading').delay(1000).queue(function() {
                 var url = vm.smallSpu.id == null ? "small/smallspu/save" : "small/smallspu/update";
                 // vm.smallSpu.detail = UE.getEditor('detail').getAllHtml();
@@ -379,6 +402,8 @@ var vm = new Vue({
                 vm.getRetailList();
                 //加载商户自定义分类
                 vm.getSellCategory(vm.smallSpu.supplierId)//加载对应店铺的个性分类
+                //加载sku列表
+                vm.getSkuList(vm.smallSpu.id);
             });
 		},
 		reload: function (event) {
@@ -505,8 +530,42 @@ var vm = new Vue({
                 }
             });
         },
-
-
+        getSkuList:function(spuId){
+            //加载分类树
+            $.get(baseURL + "small/smallsku/skulist?spuId="+spuId, function(r){
+                if(r.code==0){
+                    vm.skuList = r.list;
+                }
+            })
+        },
+        //打开添加sku弹窗
+        addSku: function (title) {
+            this.skuWin = layer.open({
+                title: title!=null?title:'添加商品sku',
+                type: 2,
+                maxmin: true,
+                move:true,
+                shadeClose: true,
+                area: ['60%', '60%'],
+                btn: ['<i class="fa fa-check"></i> 确定', '<i class="fa fa-close"></i> 关闭'],
+                content: baseURL + "modules/small/smallskuWin.html?spuId="+vm.smallSpu.id,
+                yes: function (index, layero) {
+                    var iframeWin = window[layero.find('iframe')[0]['name']];
+                   /* var tArea = iframeWin.vm.tArea;
+                    if($.trim(tArea.id) == '') {
+                        layer.msg("请选择",{icon: 0,time: 1000});return;
+                    }
+                    console.log(tArea);
+                    vm.tChargerStand.tArea.name = tArea.name;
+                    vm.tChargerStand.areaId = tArea.id;*/
+                    layer.close(index);
+                },
+                success: function (layero, index) {
+                    /*var info = '<font color="red" class="pull-left mt10">提示：双击可快速选择。</font>';
+                    layero.find('.layui-layer-btn').append(info);*/
+                }
+            });
+        },
 
 	}
 });

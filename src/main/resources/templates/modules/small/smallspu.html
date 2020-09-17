@@ -62,13 +62,13 @@
 				<div class="form-group">
                         <div class="col-sm-2 control-label">原价(元)</div>
                         <div class="col-sm-10">
-                            <input type="text" class="form-control" v-model="smallSpu.price" placeholder="原价(按分存)"/>
+                            <input type="text" class="form-control" v-model="smallSpu.originalPrice" placeholder="原价"/>
                         </div>
                     </div>
 					<div class="form-group">
                         <div class="col-sm-2 control-label">现价(元)</div>
                         <div class="col-sm-10">
-                            <input type="text" class="form-control" v-model="smallSpu.originalPrice" placeholder="现价"/>
+                            <input type="text" class="form-control" v-model="smallSpu.price" placeholder="现价"/>
                         </div>
                     </div>
                     <div class="form-group">
@@ -83,6 +83,7 @@
                             <input type="number" class="form-control" v-model="addStock" placeholder="添加库存"/>
                         </div>
                     </div>
+
                     <div class="form-group">
                         <div class="col-sm-2 control-label">所属分类</div>
                         <div class="col-sm-10">
@@ -126,12 +127,12 @@
                             <input type="text" class="form-control" v-model="smallSpu.freightTemplateId" placeholder="运费模板id"/>
                         </div>
                     </div>-->
-				<!--	<div class="form-group">
+					<div class="form-group">
                         <div class="col-sm-2 control-label">计量单位</div>
                         <div class="col-sm-10">
                             <input type="text" class="form-control" v-model="smallSpu.unit" placeholder="计量单位"/>
                         </div>
-                    </div>-->
+                    </div>
                     <div class="form-group">
                         <div class="col-sm-2 control-label">店铺个性化分类</div>
                         <div class="col-sm-10">
@@ -148,42 +149,39 @@
                         </label>
                     </div>
 
-				<!--	<div class="form-group">
-                        <div class="col-sm-2 control-label">热门</div>
-                        <div class="col-sm-10">
-                            <input type="text" class="form-control" v-model="smallSpu.ihot" placeholder="热门"/>
-                        </div>
-                    </div>
-											                    <div class="form-group">
-                        <div class="col-sm-2 control-label">新品</div>
-                        <div class="col-sm-10">
-                            <input type="text" class="form-control" v-model="smallSpu.inew" placeholder="新品"/>
-                        </div>
-                    </div>
-											                    <div class="form-group">
-                        <div class="col-sm-2 control-label">折扣</div>
-                        <div class="col-sm-10">
-                            <input type="text" class="form-control" v-model="smallSpu.idiscount" placeholder="折扣"/>
-                        </div>
-                    </div>
-											                    <div class="form-group">
-                        <div class="col-sm-2 control-label">优选</div>
-                        <div class="col-sm-10">
-                            <input type="text" class="form-control" v-model="smallSpu.iselect" placeholder="优选"/>
-                        </div>
-                    </div>
-											                    <div class="form-group">
-                        <div class="col-sm-2 control-label">创建时间</div>
-                        <div class="col-sm-10">
-                            <input type="text" class="form-control" v-model="smallSpu.createTime" placeholder="创建时间"/>
-                        </div>
-                    </div>
-											                    <div class="form-group">
-                        <div class="col-sm-2 control-label">修改时间</div>
-                        <div class="col-sm-10">
-                            <input type="text" class="form-control" v-model="smallSpu.modifyTime" placeholder="修改时间"/>
-                        </div>
-                    </div>-->
+                <div class="form-group" v-show="!showList && smallSpu.id!=null">
+                    <table class="table table-bordered" style="    margin-left: 20.2rem;
+    margin-top: 2rem;">
+                        <caption>
+                            商品sku列
+                        </caption>
+                            <button id="fat-btn" class="btn btn-primary" style="margin-left: 23.2rem;"
+                                    type="button" @click="addSku('添加sku')"> 新增商品sku
+                            </button>
+                        <thead>
+                        <tr>
+                            <th>名称</th>
+                            <th>图片</th>
+                            <th>原价</th>
+                            <th>现价</th>
+                            <th>剩余库存</th>
+                           <!-- <th>vip价（团购价）</th>-->
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr v-for="(item,index) in skuList" :key="index">
+                            <td>{{item.title}}</td>
+                            <td style="width: 3rem;height: 3rem;">
+                                <img :src="item.img"/>
+                            </td>
+                            <td>{{item.originalPrice}}</td>
+                            <td>{{item.price}}</td>
+                            <td>{{item.remainStock}}</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+
 			<div class="form-group">
                 <div class="col-sm-2 control-label"></div>
                 <input type="button" class="btn btn-primary" id="btnSaveOrUpdate" data-loading-text="保存中..." @click="saveOrUpdate" value="确定"/>
@@ -207,7 +205,7 @@
 <div id="sellCategoryLayer" style="display: none;padding:10px;">
     <ul id="sellCategoryTree" class="ztree"></ul>
 </div>
-
+<script src="${request.contextPath}/statics/js/common/money.js?_${.now?long}"></script>
 <script src="${request.contextPath}/statics/js/modules/small/smallspu.js?_${.now?long}"></script>
 </body>
 </html>

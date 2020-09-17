@@ -6,6 +6,8 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import lombok.Data;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
@@ -26,24 +28,30 @@ public class SmallSku implements Serializable {
        @TableId(value="id", type= IdType.AUTO)
        private Long id;
    	   	   /* 商品spuid */
+       @NotNull
        @TableField("spu_id")
        private Long spuId;
    	   	   /* sku条码 */
        @TableField("bar_code")
        private String barCode;
    	   	   /* sku名称 */
+       @NotBlank
        @TableField("title")
        private String title;
    	   	   /* 图片 */
+       @NotBlank
        @TableField("img")
        private String img;
    	   	   /* 原始价 */
+       @NotNull
        @TableField("original_price")
        private BigDecimal originalPrice;
    	   	   /* 现价 */
+       @NotNull
        @TableField("price")
        private BigDecimal price;
    	   	   /* vip价 */
+
        @TableField("vip_price")
        private BigDecimal vipPrice;
    	   	   /* 库存 */
@@ -58,5 +66,13 @@ public class SmallSku implements Serializable {
    	   	   /* 修改时间 */
        @TableField("modify_time")
        private Date modifyTime;
+
+
+        /*增加的库存*/
+        @TableField(exist = false)
+        private Integer addStock;
+        /*剩余库存*/
+        @TableField(exist = false)
+        private Integer remainStock;
    	
 }

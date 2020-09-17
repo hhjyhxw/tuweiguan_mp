@@ -1,8 +1,14 @@
 package com.icloud.modules.small.controller;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
+
+import com.alibaba.fastjson.JSON;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.icloud.basecommon.model.Query;
+import com.icloud.modules.small.entity.SmallSpu;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -26,6 +32,7 @@ import com.icloud.common.validator.ValidatorUtils;
  * @date 2020-08-13 14:34:02
  * 菜单主连接： modules/small/smallsku.html
  */
+@Slf4j
 @RestController
 @RequestMapping("small/smallsku")
 public class SmallSkuController {
@@ -36,12 +43,25 @@ public class SmallSkuController {
      * 列表
      */
     @RequestMapping("/list")
-    @RequiresPermissions("small:smallsku:list")
+    @RequiresPermissions("small:smallspu:list")
     public R list(@RequestParam Map<String, Object> params){
         Query query = new Query(params);
         PageUtils page = smallSkuService.findByPage(query.getPageNum(),query.getPageSize(), query);
 
         return R.ok().put("page", page);
+    }
+    /**
+     * 列表
+     */
+    @RequestMapping("/skulist")
+    @RequiresPermissions("small:smallspu:list")
+    public R skulist(@RequestParam Long spuId){
+        List<SmallSku> list = smallSkuService.list(new QueryWrapper<SmallSku>().eq("spu_id",spuId));
+        list.forEach(p->{
+            Integer remainStock = (p.getStock()!=null?p.getStock().intValue():0) - (p.getFreezeStock()!=null?p.getFreezeStock().intValue():0);
+            p.setRemainStock(remainStock>0?remainStock:0);
+        });
+        return R.ok().put("list", list);
     }
 
 
@@ -49,10 +69,11 @@ public class SmallSkuController {
      * 信息
      */
     @RequestMapping("/info/{id}")
-    @RequiresPermissions("small:smallsku:info")
+    @RequiresPermissions("small:smallspu:info")
     public R info(@PathVariable("id") Long id){
         SmallSku smallSku = (SmallSku)smallSkuService.getById(id);
-
+        Integer remainStock = (smallSku.getStock()!=null?smallSku.getStock().intValue():0) - (smallSku.getFreezeStock()!=null?smallSku.getFreezeStock().intValue():0);
+        smallSku.setRemainStock(remainStock>0?remainStock:0);
         return R.ok().put("smallSku", smallSku);
     }
 
@@ -60,10 +81,18 @@ public class SmallSkuController {
      * 保存
      */
     @RequestMapping("/save")
-    @RequiresPermissions("small:smallsku:save")
+    @RequiresPermissions("small:smallspu:save")
     public R save(@RequestBody SmallSku smallSku){
+//        ValidatorUtils.validateEntity(smallSku);
+        log.info("smallSpu==="+ JSON.toJSONString(smallSku));
+        if(smallSku.getAddStock()!=null && smallSku.getAddStock()>0){
+            smallSku.setFreezeStock(0);
+            smallSku.setStock(smallSku.getAddStock());
+        }else{
+            smallSku.setStock(0);
+            smallSku.setFreezeStock(0);
+        }
         smallSkuService.save(smallSku);
-
         return R.ok();
     }
 
@@ -71,11 +100,25 @@ public class SmallSkuController {
      * 修改
      */
     @RequestMapping("/update")
-    @RequiresPermissions("small:smallsku:update")
+    @RequiresPermissions("small:smallspu:update")
     public R update(@RequestBody SmallSku smallSku){
-        ValidatorUtils.validateEntity(smallSku);
+        log.info("smallSpu==="+ JSON.toJSONString(smallSku));
+
+        //增加总库存
+        if(smallSku.getAddStock()!=null && smallSku.getAddStock()>0){
+            smallSku.setStock(smallSku.getStock()!=null?smallSku.getStock().intValue()+smallSku.getAddStock().intValue():smallSku.getAddStock());
+            //减少总库存
+        }else if(smallSku.getAddStock()!=null && smallSku.getAddStock()<=0){
+            Integer stock = smallSku.getStock()!=null?smallSku.getStock().intValue()+smallSku.getAddStock().intValue():smallSku.getAddStock();
+            //总库存 不能小于已 冻结库存
+            if(stock<=0){
+                smallSku.setStock(smallSku.getFreezeStock()!=null?smallSku.getFreezeStock():0);
+            }else{
+                smallSku.setStock(stock-(smallSku.getFreezeStock()!=null?smallSku.getFreezeStock():0)>0?stock:smallSku.getFreezeStock());
+            }
+        }
         smallSkuService.updateById(smallSku);
-        
+
         return R.ok();
     }
 
@@ -83,7 +126,7 @@ public class SmallSkuController {
      * 删除
      */
     @RequestMapping("/delete")
-    @RequiresPermissions("small:smallsku:delete")
+    @RequiresPermissions("small:smallspu:delete")
     public R delete(@RequestBody Long[] ids){
         smallSkuService.removeByIds(Arrays.asList(ids));
 

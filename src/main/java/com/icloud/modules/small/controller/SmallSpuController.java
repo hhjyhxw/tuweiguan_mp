@@ -74,6 +74,7 @@ public class SmallSpuController {
     @RequestMapping("/save")
     @RequiresPermissions("small:smallspu:save")
     public R save(@RequestBody SmallSpu smallSpu){
+        ValidatorUtils.validateEntity(smallSpu);
         log.info("smallSpu==="+ JSON.toJSONString(smallSpu));
         if(smallSpu.getAddStock()!=null && smallSpu.getAddStock()>0){
             smallSpu.setFreezeStock(0);
@@ -93,7 +94,7 @@ public class SmallSpuController {
     @RequiresPermissions("small:smallspu:update")
     public R update(@RequestBody SmallSpu smallSpu){
         log.info("smallSpu==="+ JSON.toJSONString(smallSpu));
-        ValidatorUtils.validateEntity(smallSpu);
+//        ValidatorUtils.validateEntity(smallSpu);
          //增加总库存
         if(smallSpu.getAddStock()!=null && smallSpu.getAddStock()>0){
             smallSpu.setStock(smallSpu.getStock()!=null?smallSpu.getStock().intValue()+smallSpu.getAddStock().intValue():smallSpu.getAddStock());
