@@ -457,7 +457,7 @@ var vm = new Vue({
         //加载零售户
         getRetailList: function(){
             //加载
-            $.get(baseURL + "small/smallretail/select", function(r){
+            $.get(baseURL + "shop/shop/select", function(r){
                 // console.log("r====="+JSON.stringify(r))
                 retialztree = $.fn.zTree.init($("#retailTree"), settingretail, r.retailList);
                 var node = retialztree.getNodeByParam("id", vm.smallSpu.supplierId);
