@@ -6,6 +6,8 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import lombok.Data;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.Date;
 
@@ -25,12 +27,15 @@ public class SmallSpuAttribute implements Serializable {
        @TableId(value="id", type= IdType.AUTO)
        private Long id;
    	   	   /* spuid */
+       @NotNull(message = "spu_id不能为空")
        @TableField("spu_id")
        private Long spuId;
    	   	   /* 属性名 */
+       @NotBlank(message = "属性名不能为空")
        @TableField("name")
        private String name;
    	   	   /* 属性值 */
+       @NotBlank(message = "属性值不能为空")
        @TableField("value")
        private String value;
    	   	   /* 创建时间 */

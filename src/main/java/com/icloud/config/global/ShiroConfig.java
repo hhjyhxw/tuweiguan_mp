@@ -59,6 +59,7 @@ public class ShiroConfig {
     @Bean("securityManager")
     public SecurityManager securityManager(UserRealm userRealm, SessionManager sessionManager) {
         DefaultWebSecurityManager securityManager = new DefaultWebSecurityManager();
+        userRealm.setAuthorizationCachingEnabled(false);//关闭授权缓存
         securityManager.setRealm(userRealm);
         securityManager.setSessionManager(sessionManager);
         securityManager.setRememberMeManager(null);

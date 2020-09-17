@@ -28,26 +28,25 @@ public class SmallSku implements Serializable {
        @TableId(value="id", type= IdType.AUTO)
        private Long id;
    	   	   /* 商品spuid */
-       @NotNull
+       @NotNull(message = "spuId不能为空")
        @TableField("spu_id")
        private Long spuId;
    	   	   /* sku条码 */
        @TableField("bar_code")
        private String barCode;
    	   	   /* sku名称 */
-       @NotBlank
+       @NotBlank(message = "规格名称不能为空")
        @TableField("title")
        private String title;
    	   	   /* 图片 */
-       @NotBlank
        @TableField("img")
        private String img;
    	   	   /* 原始价 */
-       @NotNull
+       @NotNull(message = "原价不能为空")
        @TableField("original_price")
        private BigDecimal originalPrice;
    	   	   /* 现价 */
-       @NotNull
+       @NotNull(message = "现价不能为空")
        @TableField("price")
        private BigDecimal price;
    	   	   /* vip价 */

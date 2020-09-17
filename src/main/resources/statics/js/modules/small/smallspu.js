@@ -404,6 +404,8 @@ var vm = new Vue({
                 vm.getSellCategory(vm.smallSpu.supplierId)//加载对应店铺的个性分类
                 //加载sku列表
                 vm.getSkuList(vm.smallSpu.id);
+                //加载attribute列表
+                vm.getAttibutList(vm.smallSpu.id);
             });
 		},
 		reload: function (event) {
@@ -530,8 +532,8 @@ var vm = new Vue({
                 }
             });
         },
+        //加载skulist
         getSkuList:function(spuId){
-            //加载分类树
             $.get(baseURL + "small/smallsku/skulist?spuId="+spuId, function(r){
                 if(r.code==0){
                     vm.skuList = r.list;
@@ -603,6 +605,73 @@ var vm = new Vue({
                 }, function(){
 
                 });
+        },
+
+        //加载AttibutList
+        getAttibutList:function(spuId){
+            $.get(baseURL + "small/smallspuattribute/attibutList?spuId="+spuId, function(r){
+                vm.attibutList = r.list;
+            });
+        },
+        //添加编辑商品
+        addAttribute:function (title,id) {
+            if(id==''){
+                id = null;
+            }
+            this.attributeWin = layer.open({
+                title: title!=null?title:'添加商品属性',
+                type: 2,
+                maxmin: true,
+                move:true,
+                shadeClose: true,
+                area: ['60%', '60%'],
+                btn: ['<i class="fa fa-check"></i> 确定', '<i class="fa fa-close"></i> 关闭'],
+                content: baseURL + "modules/small/smallspuattributeWin.html?spuId="+vm.smallSpu.id+"&id="+id,
+                yes: function (index, layero) {
+                    var iframeWin = window[layero.find('iframe')[0]['name']];
+                    //加载
+                    vm.getAttibutList(vm.smallSpu.id);
+                    layer.close(index);
+                },
+                success: function (layero, index) {
+                    /*var info = '<font color="red" class="pull-left mt10">提示：双击可快速选择。</font>';
+                    layero.find('.layui-layer-btn').append(info);*/
+                }
+            });
+        },
+        //删除商品属性
+        delAttribute:function (id) {
+            if(id == null){
+                return ;
+            }
+            var ids = new Array();
+            ids.push(id);
+            var lock = false;
+            layer.confirm('确定要删除选中的记录？', {
+                btn: ['确定','取消'] //按钮
+            }, function(){
+                if(!lock) {
+                    lock = true;
+                    $.ajax({
+                        type: "POST",
+                        url: baseURL + "small/smallspuattribute/delete",
+                        contentType: "application/json",
+                        data: JSON.stringify(ids),
+                        success: function(r){
+                            if(r.code == 0){
+                                layer.msg("操作成功", {icon: 1});
+                                vm.getAttibutList(vm.smallSpu.id);
+                            }else{
+                                layer.alert(r.msg);
+                            }
+                        }
+                    });
+                }
+            }, function(){
+
+            });
         }
+
+
 	}
 });

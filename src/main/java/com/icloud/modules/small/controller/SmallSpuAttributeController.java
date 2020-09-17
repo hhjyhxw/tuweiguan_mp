@@ -1,8 +1,14 @@
 package com.icloud.modules.small.controller;
 
 import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
 import java.util.Map;
+
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.icloud.basecommon.model.Query;
+import com.icloud.modules.small.entity.SmallSku;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -26,6 +32,7 @@ import com.icloud.common.validator.ValidatorUtils;
  * @date 2020-08-13 14:34:02
  * 菜单主连接： modules/small/smallspuattribute.html
  */
+@Slf4j
 @RestController
 @RequestMapping("small/smallspuattribute")
 public class SmallSpuAttributeController {
@@ -36,7 +43,7 @@ public class SmallSpuAttributeController {
      * 列表
      */
     @RequestMapping("/list")
-    @RequiresPermissions("small:smallspuattribute:list")
+    @RequiresPermissions("small:smallspu:list")
     public R list(@RequestParam Map<String, Object> params){
         Query query = new Query(params);
         PageUtils page = smallSpuAttributeService.findByPage(query.getPageNum(),query.getPageSize(), query);
@@ -44,15 +51,24 @@ public class SmallSpuAttributeController {
         return R.ok().put("page", page);
     }
 
+    /**
+     * 列表
+     */
+    @RequestMapping("/attibutList")
+    @RequiresPermissions("small:smallspu:list")
+    public R attibutList(@RequestParam Long spuId){
+        List<SmallSpuAttribute> list = smallSpuAttributeService.list(new QueryWrapper<SmallSpuAttribute>().eq("spu_id",spuId));
+        return R.ok().put("list", list);
+    }
+
 
     /**
      * 信息
      */
     @RequestMapping("/info/{id}")
-    @RequiresPermissions("small:smallspuattribute:info")
+    @RequiresPermissions("small:smallspu:info")
     public R info(@PathVariable("id") Long id){
         SmallSpuAttribute smallSpuAttribute = (SmallSpuAttribute)smallSpuAttributeService.getById(id);
-
         return R.ok().put("smallSpuAttribute", smallSpuAttribute);
     }
 
@@ -60,30 +76,31 @@ public class SmallSpuAttributeController {
      * 保存
      */
     @RequestMapping("/save")
-    @RequiresPermissions("small:smallspuattribute:save")
+    @RequiresPermissions("small:smallspu:save")
     public R save(@RequestBody SmallSpuAttribute smallSpuAttribute){
-        smallSpuAttributeService.save(smallSpuAttribute);
-
-        return R.ok();
+        smallSpuAttribute.setCreateTime(new Date());
+        boolean result = smallSpuAttributeService.save(smallSpuAttribute);
+        log.info("save_reslut======="+result);
+        return R.ok().put("smallSpuAttribute", smallSpuAttribute);
     }
 
     /**
      * 修改
      */
     @RequestMapping("/update")
-    @RequiresPermissions("small:smallspuattribute:update")
+    @RequiresPermissions("small:smallspu:update")
     public R update(@RequestBody SmallSpuAttribute smallSpuAttribute){
         ValidatorUtils.validateEntity(smallSpuAttribute);
+        smallSpuAttribute.setModifyTime(new Date());
         smallSpuAttributeService.updateById(smallSpuAttribute);
-        
-        return R.ok();
+        return R.ok().put("smallSpuAttribute", smallSpuAttribute);
     }
 
     /**
      * 删除
      */
     @RequestMapping("/delete")
-    @RequiresPermissions("small:smallspuattribute:delete")
+    @RequiresPermissions("small:smallspu:delete")
     public R delete(@RequestBody Long[] ids){
         smallSpuAttributeService.removeByIds(Arrays.asList(ids));
 

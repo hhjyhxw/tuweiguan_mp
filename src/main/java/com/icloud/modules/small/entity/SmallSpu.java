@@ -28,11 +28,11 @@ public class SmallSpu implements Serializable {
        @TableId(value="id", type= IdType.AUTO)
        private Long id;
    	   	   /*  现价*/
-       @NotNull
+       @NotNull(message = "现价不能为空")
        @TableField("price")
        private BigDecimal price;
    	   	   /*  原价 */
-        @NotNull
+        @NotNull(message = "原价不能为空")
         @TableField("original_price")
        private BigDecimal originalPrice;
    	   	   /* vip价 (团购价)*/
@@ -40,14 +40,14 @@ public class SmallSpu implements Serializable {
        @TableField("vip_price")
        private BigDecimal vipPrice;
    	   	   /* 商品名称 */
-       @NotBlank
+       @NotBlank(message = "商品名称")
        @TableField("title")
        private String title;
    	   	   /* 销量 */
        @TableField("sales")
        private Integer sales;
    	   	   /* 商品图片 */
-       @NotBlank
+       @NotBlank(message = "商品头图不能为空")
        @TableField("img")
        private String img;
    	   	   /* 商品详情 */
@@ -57,7 +57,7 @@ public class SmallSpu implements Serializable {
        @TableField("description")
        private String description;
    	   	   /* 分类id */
-       @NotNull
+       @NotNull(message = "分类不能为空")
        @TableField("category_id")
        private Long categoryId;
    	   	   /* 运费模板id */
@@ -65,14 +65,13 @@ public class SmallSpu implements Serializable {
        private Long freightTemplateId;
 
    	    /* 计量单位 */
-        @NotBlank
         @TableField("unit")
        private String unit;
    	   	   /* 0下架 1上架 */
        @TableField("status")
        private Integer status;
    	   	   /* 商户id */
-       @NotNull
+       @NotNull(message = "关联商户不能为空")
        @TableField("supplier_id")
        private Long supplierId;
    	   	   /* 热门 */

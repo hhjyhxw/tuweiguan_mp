@@ -95,7 +95,9 @@ var vm = new Vue({
 				layer.msg("商品现价不能为空,且为数字,最多保留两位小数", {icon: 2});
 				return;
 			}
-
+			if(vm.smallSku.id=='null'){
+				vm.smallSku.id = null;
+			}
 		    $('#btnSaveOrUpdate').button('loading').delay(1000).queue(function() {
                 var url = vm.smallSku.id == null ? "small/smallsku/save" : "small/smallsku/update";
                 $.ajax({
@@ -155,7 +157,7 @@ var vm = new Vue({
              });
 		},
 		getInfo: function(id){
-			if(id!=null){
+			if(id!=null && id!='null') {
 				$.get(baseURL + "small/smallsku/info/"+id, function(r){
 					vm.smallSku = r.smallSku;
 					vm.caculatRemainStock = vm.smallSku.remainStock;//设置剩余库存:只用于临时计算
