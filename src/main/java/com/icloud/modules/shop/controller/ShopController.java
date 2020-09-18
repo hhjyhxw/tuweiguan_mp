@@ -64,7 +64,7 @@ public class ShopController extends AbstractController {
     @RequestMapping("/select")
     @RequiresPermissions("small:smallcategory:update")
     public R select(){
-        List<Shop> list = shopService.list(new QueryWrapper<Shop>().eq("review","1"));
+        List<Shop> list = shopService.list(new QueryWrapper<Shop>());
         List<ShopTreeVo> shopTreeVolist = new ArrayList<ShopTreeVo>();
         if(list!=null && list.size()>0){
             ShopTreeVo shopvo = null;
@@ -84,6 +84,7 @@ public class ShopController extends AbstractController {
         }
         if(getUserId() == Constant.SUPER_ADMIN) {
             ShopTreeVo root = new ShopTreeVo();
+            root.setOpen(true);
             root.setId(0L);
             root.setName("一级店铺");
             root.setParentId(-1L);

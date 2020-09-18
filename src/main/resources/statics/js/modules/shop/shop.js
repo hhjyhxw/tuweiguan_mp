@@ -1,3 +1,18 @@
+var setting = {
+    data: {
+        simpleData: {
+            enable: true,
+            idKey: "id",
+            pIdKey: "parentId",
+            rootPId: -1
+        },
+        key: {
+            url:"nourl"
+        }
+    }
+};
+var ztree;
+
 $(function () {
     $("#jqGrid").jqGrid({
         url: baseURL + 'shop/shop/list',
@@ -94,6 +109,7 @@ var vm = new Vue({
 			vm.showList = false;
 			vm.title = "新增";
 			vm.shop = {};
+            vm.getShopTree();
 		},
 		update: function (event) {
 			var id = getSelectedRow();
@@ -103,7 +119,8 @@ var vm = new Vue({
 			vm.showList = false;
             vm.title = "修改";
             
-            vm.getInfo(id)
+            vm.getInfo(id);
+
 		},
 		saveOrUpdate: function (event) {
 		    $('#btnSaveOrUpdate').button('loading').delay(1000).queue(function() {
@@ -160,6 +177,7 @@ var vm = new Vue({
 		getInfo: function(id){
 			$.get(baseURL + "shop/shop/info/"+id, function(r){
                 vm.shop = r.shop;
+                vm.getShopTree();
             });
 		},
 		reload: function (event) {
@@ -178,8 +196,10 @@ var vm = new Vue({
                 // console.log("ztree====="+JSON.stringify(ztree))
                 var node = ztree.getNodeByParam("id", vm.shop.parentId);
                 console.log("加载node====="+JSON.stringify(node))
-                ztree.selectNode(node);
-                vm.shop.parentName = node.name;
+                if(node!=null){
+                    ztree.selectNode(node);
+                    vm.shop.parentName = node.name;
+                }
             })
         },
         deptTree: function(){
@@ -206,4 +226,3 @@ var vm = new Vue({
         },
 	}
 });
-vm.getShopTree();
