@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.icloud.modules.small.dao.SmallGroupShopMapper">
+
+
+    <!-- 基础map -->
+    <resultMap type="com.icloud.modules.small.entity.SmallGroupShop" id="BaseResultMap">
+     <id property="id" column="id"/>
+     <result property="spuId" column="spu_id"/>
+     <result property="minPrice" column="min_price"/>
+     <result property="maxPrice" column="max_price"/>
+     <result property="gmtStart" column="gmt_start"/>
+     <result property="gmtEnd" column="gmt_end"/>
+     <result property="minimumNumber" column="minimum_number"/>
+     <result property="alreadyBuyNumber" column="already_buy_number"/>
+     <result property="automaticRefund" column="automatic_refund"/>
+     <result property="status" column="status"/>
+     <result property="createTime" column="create_time"/>
+     <result property="modifyTime" column="modify_time"/>
+     <result property="supplierId" column="supplier_id"/>
+    </resultMap>
+
+   <!-- 基础字段列 -->
+   <sql id="Base_Column_List" >
+id,spu_id,min_price,max_price,gmt_start,gmt_end,minimum_number,already_buy_number,automatic_refund,status,create_time,modify_time,supplier_id
+    </sql>
+
+
+<select id="queryMixList" resultMap="BaseResultMap">
+select * from t_small_group_shop t
+<where>
+<if test="id != null">
+    and t.id = #{id}
+</if>
+<if test="spu_id != null">
+    and t.spu_id = #{spu_id}
+</if>
+<if test="min_price != null">
+    and t.min_price = #{min_price}
+</if>
+<if test="max_price != null">
+    and t.max_price = #{max_price}
+</if>
+<if test="gmt_start != null">
+    and t.gmt_start = #{gmt_start}
+</if>
+<if test="gmt_end != null">
+    and t.gmt_end = #{gmt_end}
+</if>
+<if test="minimum_number != null">
+    and t.minimum_number = #{minimum_number}
+</if>
+<if test="already_buy_number != null">
+    and t.already_buy_number = #{already_buy_number}
+</if>
+<if test="automatic_refund != null">
+    and t.automatic_refund = #{automatic_refund}
+</if>
+<if test="status != null">
+    and t.status = #{status}
+</if>
+<if test="create_time != null">
+    and t.create_time = #{create_time}
+</if>
+<if test="modify_time != null">
+    and t.modify_time = #{modify_time}
+</if>
+</where>
+</select>
+</mapper>

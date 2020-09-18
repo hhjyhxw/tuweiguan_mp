@@ -3,6 +3,7 @@
 <head>
     <title>店铺 </title>
 		<#include "/header.html">
+    <script src="${request.contextPath}/statics/libs/ajaxupload.js"></script>
 </head>
 <body>
 <div id="icloudapp" v-cloak>
@@ -25,67 +26,56 @@
     <div v-show="!showList" class="panel panel-default">
         <div class="panel-heading">{{title}}</div>
         <form class="form-horizontal">
-														                    <div class="form-group">
-                        <div class="col-sm-2 control-label">上级店铺ID</div>
+
+                    <div class="form-group">
+                        <div class="col-sm-2 control-label">上级店铺</div>
                         <div class="col-sm-10">
-                            <input type="text" class="form-control" v-model="shop.parentId" placeholder="上级店铺ID"/>
+                            <input type="text" class="form-control" v-model="shop.parentName"  @click="deptTree" readonly="readonly" placeholder="一级"/>
                         </div>
                     </div>
-											                    <div class="form-group">
-                        <div class="col-sm-2 control-label">编码</div>
-                        <div class="col-sm-10">
-                            <input type="text" class="form-control" v-model="shop.shopCode" placeholder="编码"/>
-                        </div>
-                    </div>
-											                    <div class="form-group">
+					<div class="form-group">
                         <div class="col-sm-2 control-label">名称</div>
                         <div class="col-sm-10">
                             <input type="text" class="form-control" v-model="shop.shopName" placeholder="名称"/>
                         </div>
                     </div>
-											                    <div class="form-group">
+                    <div class="form-group">
                         <div class="col-sm-2 control-label">系统店铺标志</div>
-                        <div class="col-sm-10">
-                            <input type="text" class="form-control" v-model="shop.sysFlag" placeholder="系统店铺标志"/>
-                        </div>
+                        <label class="radio-inline">
+                            <input type="radio" name="status" value="1" v-model="shop.sysFlag"/> 是
+                        </label>
+                        <label class="radio-inline">
+                            <input type="radio" name="status" value="0" v-model="shop.sysFlag"/> 否
+                        </label>
                     </div>
-											                    <div class="form-group">
+					 <div class="form-group">
                         <div class="col-sm-2 control-label">级别</div>
                         <div class="col-sm-10">
-                            <input type="text" class="form-control" v-model="shop.shopLevel" placeholder="级别"/>
+                            <input type="text" class="form-control" v-model="shop.shopLevel" placeholder="级别" readonly/>
                         </div>
                     </div>
-											                    <div class="form-group">
+					<div class="form-group">
                         <div class="col-sm-2 control-label">电话</div>
                         <div class="col-sm-10">
                             <input type="text" class="form-control" v-model="shop.shopTel" placeholder="电话"/>
                         </div>
                     </div>
-											                    <div class="form-group">
-                        <div class="col-sm-2 control-label">图片</div>
+                    <div class="form-group">
+                        <div class="col-sm-2 control-label">店铺图标</div>
+                        <img   :src="shop.shopImg" style="width:300px;height:150px;" v-model="shop.shopImg" placeholder="店铺图标"/>
                         <div class="col-sm-10">
-                            <input type="text" class="form-control" v-model="shop.shopImg" placeholder="图片"/>
+                            <a class="btn btn-primary" id="upload" style="margin-left:11rem;"><i class="fa fa-plus"></i>&nbsp;图片url</a>
                         </div>
                     </div>
-											                    <div class="form-group">
+					<div class="form-group">
                         <div class="col-sm-2 control-label">简介</div>
                         <div class="col-sm-10">
                             <input type="text" class="form-control" v-model="shop.description" placeholder="简介"/>
                         </div>
                     </div>
-											                    <div class="form-group">
-                        <div class="col-sm-2 control-label">余额</div>
-                        <div class="col-sm-10">
-                            <input type="text" class="form-control" v-model="shop.balance" placeholder="余额"/>
-                        </div>
-                    </div>
-											                    <div class="form-group">
-                        <div class="col-sm-2 control-label">店铺地址</div>
-                        <div class="col-sm-10">
-                            <input type="text" class="form-control" v-model="shop.untitled4" placeholder="店铺地址"/>
-                        </div>
-                    </div>
-											                    <div class="form-group">
+
+
+					<div class="form-group">
                         <div class="col-sm-2 control-label">省</div>
                         <div class="col-sm-10">
                             <input type="text" class="form-control" v-model="shop.province" placeholder="省"/>
@@ -121,49 +111,37 @@
                             <input type="text" class="form-control" v-model="shop.lat" placeholder="纬度"/>
                         </div>
                     </div>
-											                    <div class="form-group">
+					<div class="form-group">
                         <div class="col-sm-2 control-label">覆盖范围(米)</div>
                         <div class="col-sm-10">
                             <input type="text" class="form-control" v-model="shop.coverScope" placeholder="覆盖范围(米)"/>
                         </div>
                     </div>
-											                    <div class="form-group">
-                        <div class="col-sm-2 control-label">状态 0：关闭，1：开启</div>
-                        <div class="col-sm-10">
-                            <input type="text" class="form-control" v-model="shop.status" placeholder="状态 0：关闭，1：开启"/>
-                        </div>
+
+                    <div class="form-group">
+                        <div class="col-sm-2 control-label">开启状态</div>
+                        <label class="radio-inline">
+                            <input type="radio" name="status" value="1" v-model="shop.status"/> 开启
+                        </label>
+                        <label class="radio-inline">
+                            <input type="radio" name="status" value="0" v-model="shop.status"/> 关闭
+                        </label>
                     </div>
-											                    <div class="form-group">
-                        <div class="col-sm-2 control-label">审核 0：未审核，1：审核通过，2：审核失败</div>
-                        <div class="col-sm-10">
-                            <input type="text" class="form-control" v-model="shop.review" placeholder="审核 0：未审核，1：审核通过，2：审核失败"/>
-                        </div>
+
+                    <div class="form-group">
+                        <div class="col-sm-2 control-label">审核状态</div>
+                        <label class="radio-inline">
+                            <input type="radio" name="review" value="0" v-model="shop.review"/> 未审核
+                        </label>
+                        <label class="radio-inline">
+                            <input type="radio" name="review" value="1" v-model="shop.review"/> 审核通过
+                        </label>
+                        <label class="radio-inline">
+                            <input type="radio" name="review" value="2" v-model="shop.review"/> 审核失败
+                        </label>
                     </div>
-											                    <div class="form-group">
-                        <div class="col-sm-2 control-label">创建人</div>
-                        <div class="col-sm-10">
-                            <input type="text" class="form-control" v-model="shop.createdBy" placeholder="创建人"/>
-                        </div>
-                    </div>
-											                    <div class="form-group">
-                        <div class="col-sm-2 control-label">创建时间</div>
-                        <div class="col-sm-10">
-                            <input type="text" class="form-control" v-model="shop.createdTime" placeholder="创建时间"/>
-                        </div>
-                    </div>
-											                    <div class="form-group">
-                        <div class="col-sm-2 control-label">更新人</div>
-                        <div class="col-sm-10">
-                            <input type="text" class="form-control" v-model="shop.updatedBy" placeholder="更新人"/>
-                        </div>
-                    </div>
-											                    <div class="form-group">
-                        <div class="col-sm-2 control-label">更新时间</div>
-                        <div class="col-sm-10">
-                            <input type="text" class="form-control" v-model="shop.updatedTime" placeholder="更新时间"/>
-                        </div>
-                    </div>
-							            <div class="form-group">
+
+			<div class="form-group">
                 <div class="col-sm-2 control-label"></div>
                 <input type="button" class="btn btn-primary" id="btnSaveOrUpdate" data-loading-text="保存中..." @click="saveOrUpdate" value="确定"/>
                 &nbsp;&nbsp;<input type="button" class="btn btn-warning" @click="reload" value="返回"/>
@@ -172,6 +150,11 @@
     </div>
 </div>
 
+
+<!-- 选择上级树 -->
+<div id="deptLayer" style="display: none;padding:10px;">
+    <ul id="deptTree" class="ztree"></ul>
+</div>
 <script src="${request.contextPath}/statics/js/modules/shop/shop.js?_${.now?long}"></script>
 </body>
 </html>

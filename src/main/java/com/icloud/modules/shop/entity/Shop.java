@@ -94,5 +94,11 @@ public class Shop implements Serializable {
    	   	   /* 更新时间 */
        @TableField("updated_time")
        private Date updatedTime;
+
+        /**
+         * 上级名称
+         */
+        @TableField(exist=false)
+        private String parentName;
    	
 }

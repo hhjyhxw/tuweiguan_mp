@@ -7,6 +7,8 @@ import com.icloud.common.R;
 import com.icloud.common.validator.ValidatorUtils;
 import com.icloud.modules.bsactivity.entity.BsactivityAd;
 import com.icloud.modules.bsactivity.service.BsactivityAdService;
+import com.icloud.modules.shop.entity.Shop;
+import com.icloud.modules.shop.service.ShopService;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -28,7 +30,8 @@ import java.util.Map;
 public class BsactivityAdController {
     @Autowired
     private BsactivityAdService bsactivityAdService;
-
+    @Autowired
+    private ShopService shopService;
     /**
      * 列表
      */
@@ -49,6 +52,11 @@ public class BsactivityAdController {
     @RequiresPermissions("bsactivity:bsactivityad:info")
     public R info(@PathVariable("id") Long id){
         BsactivityAd bsactivityAd = (BsactivityAd)bsactivityAdService.getById(id);
+        Shop shop = new Shop();
+        if(bsactivityAd.getSupplierId()!=null){
+            shop = (Shop) shopService.getById(bsactivityAd.getSupplierId());
+        }
+        bsactivityAd.setShop(shop);
 
         return R.ok().put("bsactivityAd", bsactivityAd);
     }

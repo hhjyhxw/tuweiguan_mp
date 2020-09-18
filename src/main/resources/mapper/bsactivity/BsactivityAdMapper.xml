@@ -17,11 +17,13 @@
      <result property="modifyOperator" column="modify_operator"/>
      <result property="posittionId" column="posittion_id"/>
      <result property="sortNum" column="sort_num"/>
+     <result property="supplierId" column="supplier_id"/>
+     <result property="sysFlag" column="sys_flag"/>
     </resultMap>
 
    <!-- 基础字段列 -->
    <sql id="Base_Column_List" >
-id,ad_name,ad_imgurl,add_jumpurl,status,create_time,create_operator,modify_time,modify_operator,posittion_id,sort_num
+id,ad_name,ad_imgurl,add_jumpurl,status,create_time,create_operator,modify_time,modify_operator,posittion_id,sort_num,supplier_id,sys_flag
     </sql>
 
 

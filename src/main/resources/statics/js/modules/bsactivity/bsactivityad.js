@@ -90,8 +90,12 @@ var vm = new Vue({
 	data:{
 		showList: true,
 		title: null,
-		bsactivityAd: {},
-		goodsimgshow:''
+		bsactivityAd: {
+		    supplierId:null
+        },
+        shopName:'',
+		goodsimgshow:'',
+        shopList:[],//店铺列表
 	},
 	methods: {
 		query: function () {
@@ -170,6 +174,7 @@ var vm = new Vue({
                 vm.bsactivityAd = r.bsactivityAd;
                // vm.goodsimgshow = imgURL + r.bsactivityAd.adImgurl;
                 vm.goodsimgshow =  r.bsactivityAd.adImgurl;
+                vm.shopName = r.bsactivityAd.shop.shopName;
             });
 		},
 		reload: function (event) {
@@ -178,6 +183,18 @@ var vm = new Vue({
 			$("#jqGrid").jqGrid('setGridParam',{ 
                 page:page
             }).trigger("reloadGrid");
-		}
+		},
+        //加载AttibutList
+        getShopList:function(){
+            $.get(baseURL + "shop/shop/selectlist", function(r){
+                vm.shopList = r.list;
+            });
+        },
+        //选择卡店铺
+        selectShop: function (index) {
+            vm.bsactivityAd.supplierId = vm.shopList[index].id;
+            vm.shopName = vm.shopList[index].shopName;
+        },
 	}
 });
+vm.getShopList();

@@ -3,7 +3,7 @@ package com.icloud.modules.small.vo;
 import lombok.Data;
 
 @Data
-public class RetailVo {
+public class ShopTreeVo {
     private Long id;
     private Long parentId;
     private String name;

@@ -6,7 +6,7 @@ import com.icloud.common.R;
 import com.icloud.common.validator.ValidatorUtils;
 import com.icloud.modules.small.entity.SmallRetail;
 import com.icloud.modules.small.service.SmallRetailService;
-import com.icloud.modules.small.vo.RetailVo;
+import com.icloud.modules.small.vo.ShopTreeVo;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -51,11 +51,11 @@ public class SmallRetailController {
     @RequiresPermissions("small:smallcategory:update")
     public R select(){
         List<SmallRetail> retailList = smallRetailService.list();
-        List<RetailVo> list =  new ArrayList<RetailVo>();
-        RetailVo vo = null;
+        List<ShopTreeVo> list =  new ArrayList<ShopTreeVo>();
+        ShopTreeVo vo = null;
         if(list!=null){
             for (SmallRetail smallRetail : retailList) {
-                vo =  new RetailVo();
+                vo =  new ShopTreeVo();
                 vo.setId(smallRetail.getId());
                 vo.setName(smallRetail.getSupplierName());
                 vo.setParentId(null);

@@ -4,25 +4,21 @@ $(function () {
         datatype: "json",
         colModel: [			
 			{ label: 'id', name: 'id', index: 'id', width: 50, key: true },
-			{ label: '上级店铺ID', name: 'parentId', index: 'parent_id', width: 80 }, 			
-			{ label: '编码', name: 'shopCode', index: 'shop_code', width: 80 }, 			
-			{ label: '名称', name: 'shopName', index: 'shop_name', width: 80 }, 			
+			{ label: '上级店铺名称', name: 'parentName', index: 'parentName', width: 80 },
+			{ label: '名称', name: 'shopName', index: 'shop_name', width: 80 },
 			{ label: '系统店铺标志', name: 'sysFlag', index: 'sys_flag', width: 80 }, 			
 			{ label: '级别', name: 'shopLevel', index: 'shop_level', width: 80 }, 			
-			{ label: '电话', name: 'shopTel', index: 'shop_tel', width: 80 }, 			
-			{ label: '图片', name: 'shopImg', index: 'shop_img', width: 80 }, 			
-			{ label: '简介', name: 'description', index: 'description', width: 80 }, 			
-			{ label: '余额', name: 'balance', index: 'balance', width: 80 }, 			
-			{ label: '店铺地址', name: 'untitled4', index: 'untitled4', width: 80 }, 			
-			{ label: '省', name: 'province', index: 'province', width: 80 }, 			
-			{ label: '市', name: 'city', index: 'city', width: 80 }, 			
-			{ label: '县', name: 'county', index: 'county', width: 80 }, 			
-			{ label: '详细地址', name: 'address', index: 'address', width: 80 }, 			
-			{ label: '经度', name: 'lnt', index: 'lnt', width: 80 }, 			
-			{ label: '纬度', name: 'lat', index: 'lat', width: 80 }, 			
-			{ label: '覆盖范围(米)', name: 'coverScope', index: 'cover_scope', width: 80 }, 			
-			{ label: '状态 0：关闭，1：开启', name: 'status', index: 'status', width: 80 }, 			
-			{ label: '审核 0：未审核，1：审核通过，2：审核失败', name: 'review', index: 'review', width: 80 }, 			
+			{ label: '覆盖范围(米)', name: 'coverScope', index: 'cover_scope', width: 80 },
+			{ label: '状态', name: 'status', width: 60, formatter: function(value, options, row){
+					return value === 0 ?
+						'<span class="label label-danger">关闭</span>' :
+						'<span class="label label-success">开启</span>';
+				}},
+			{ label: '审核', name: 'review', width: 60, formatter: function(value, options, row){
+					return value === 0 ?
+						'<span class="label label-danger">未审核</span>' :
+						(value===1?'<span class="label label-success">审核通过</span>':'审核失败');
+				}},
 			{ label: '创建人', name: 'createdBy', index: 'created_by', width: 80 }, 			
 			{ label: '创建时间', name: 'createdTime', index: 'created_time', width: 80 }, 			
 			{ label: '更新人', name: 'updatedBy', index: 'updated_by', width: 80 }, 			
@@ -53,6 +49,34 @@ $(function () {
         	$("#jqGrid").closest(".ui-jqgrid-bdiv").css({ "overflow-x" : "hidden" }); 
         }
     });
+
+
+    new AjaxUpload('#upload', {
+        action: baseURL + "sys/oss/uploadFront",
+        name: 'file',
+        autoSubmit:true,
+        responseType:"json",
+        onSubmit:function(file, extension){
+            if (!(extension && /^(jpg|jpeg|png|gif)$/.test(extension.toLowerCase()))){
+                alert('只支持jpg、png、gif格式的图片！');
+                return false;
+            }
+        },
+        onComplete : function(file, r){
+            console.log("r=="+JSON.stringify(r));
+            console.log("file=="+file);
+            if(r.code == 0){
+                alert("上传成功!");
+                vm.shop.shopImg = r.url;
+                console.log("vm.shop.shopImg=="+vm.shop.shopImg);
+                //vm.reload();
+            }else{
+                alert(r.msg);
+            }
+        }
+    });
+
+
 });
 
 var vm = new Vue({
@@ -144,6 +168,42 @@ var vm = new Vue({
 			$("#jqGrid").jqGrid('setGridParam',{ 
                 page:page
             }).trigger("reloadGrid");
-		}
+		},
+        //加载店铺树
+        getShopTree: function(){
+            //加载分类树
+            $.get(baseURL + "shop/shop/select", function(r){
+                // console.info("r==="+JSON.stringify(r))
+                ztree = $.fn.zTree.init($("#deptTree"), setting, r.retailList);
+                // console.log("ztree====="+JSON.stringify(ztree))
+                var node = ztree.getNodeByParam("id", vm.shop.parentId);
+                console.log("加载node====="+JSON.stringify(node))
+                ztree.selectNode(node);
+                vm.shop.parentName = node.name;
+            })
+        },
+        deptTree: function(){
+            layer.open({
+                type: 1,
+                offset: '50px',
+                skin: 'layui-layer-molv',
+                title: "选择父类",
+                area: ['300px', '450px'],
+                shade: 0,
+                shadeClose: false,
+                content: jQuery("#deptLayer"),
+                btn: ['确定', '取消'],
+                btn1: function (index) {
+                    var node = ztree.getSelectedNodes();
+                    //选择上级部门
+                    console.log("node====="+JSON.stringify(node))
+                    vm.shop.parentId = node[0].id;
+                    vm.shop.parentName = node[0].name;
+
+                    layer.close(index);
+                }
+            });
+        },
 	}
 });
+vm.getShopTree();

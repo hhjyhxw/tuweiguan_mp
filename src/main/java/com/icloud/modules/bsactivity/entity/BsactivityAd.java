@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
+import com.icloud.modules.shop.entity.Shop;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -54,5 +55,15 @@ public class BsactivityAd implements Serializable {
    	   	   /* 排序 */
        @TableField("sort_num")
        private Integer sortNum;
+        /* 店铺id */
+        @TableField("supplier_id")
+        private Long supplierId;
+        /* 所在广告位 */
+        @TableField("sys_flag")
+        private String sysFlag;
+
+        /* 所属商户 */
+        @TableField(exist = false)
+        private Shop shop;
    	
 }
