@@ -53,7 +53,7 @@ var vm = new Vue({
         goodName:'',
         shopName:'',
         shopList:[],//店铺列表
-        goodsList:[],//对应店铺商品
+        skuList :[],//对应店铺商品
 	},
 	methods: {
 		query: function () {
@@ -62,7 +62,12 @@ var vm = new Vue({
 		add: function(){
 			vm.showList = false;
 			vm.title = "新增";
-			vm.smallGroupShop = {};
+			vm.smallGroupShop = {
+                gmtStart:null,
+                gmtEnd:null
+            };
+            vm.goodName='',
+            vm.shopName='',
             vm.getShopList();
 		},
 		update: function (event) {
@@ -151,17 +156,21 @@ var vm = new Vue({
         selectShop: function (index) {
             vm.smallGroupShop.supplierId = vm.shopList[index].id;
             vm.shopName = vm.shopList[index].shopName;
-            vm.getGoodsList();//加载店铺sku列表
+            vm.getGoodsList(vm.shopList[index].id);//加载店铺sku列表
+            vm.goodName = '';
+            vm.smallGroupShop.spuId = null;
+            vm.smallGroupShop.skuId = null;
+
         },
         //加载商品列表
-        getGoodsList:function(){
-            $.get(baseURL + "small/smallsku/skulistForGroup", function(r){
-                vm.goodsList = r.list;
+        getGoodsList:function(supplierId){
+            $.get(baseURL + "small/smallsku/skulistForGroup?supplierId="+supplierId, function(r){
+                vm.skuList = r.list;
             });
         },
         //选择sku
-        selectShop: function (index) {
-		    var goods = vm.goodsList[index];
+        selectSku: function (index) {
+		    var goods = vm.skuList[index];
             vm.goodName = goods.title;
             vm.smallGroupShop.spuId = goods.spuId;
             vm.smallGroupShop.skuId = goods.id;

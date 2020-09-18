@@ -7,7 +7,9 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.icloud.modules.shop.entity.Shop;
 import lombok.Data;
 
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.Date;
 
 /**
@@ -26,24 +28,31 @@ public class SmallGroupShop implements Serializable {
        @TableId(value="id", type= IdType.AUTO)
        private Long id;
      /* 关联商品sku_id */
+      @NotNull(message = "请选择商品")
       @TableField("sku_id")
       private Long skuId;
    	   	   /* 关联商品spu_id */
+       @NotNull(message = "请选择商品")
        @TableField("spu_id")
        private Long spuId;
    	   	   /* 团购价 */
+       @NotNull(message = "团购价不能为空")
        @TableField("min_price")
-       private Integer minPrice;
+       private BigDecimal minPrice;
    	   	   /* 单买价 */
+       @NotNull(message = "单买价不能为空")
        @TableField("max_price")
-       private Integer maxPrice;
+       private BigDecimal maxPrice;
    	   	   /* 团购开始时间 */
+       @NotNull(message = "团购开始时间不能为空")
        @TableField("gmt_start")
        private Date gmtStart;
    	   	   /* 团购结束时间 */
+       @NotNull(message = "团购结束时间不能为空")
        @TableField("gmt_end")
        private Date gmtEnd;
    	   	   /* 团购基础人数 */
+       @NotNull(message = "团购基础人数不能为空")
        @TableField("minimum_number")
        private Integer minimumNumber;
    	   	   /* 团购已经购买人数 */
@@ -62,6 +71,7 @@ public class SmallGroupShop implements Serializable {
        @TableField("modify_time")
        private Date modifyTime;
    	   	   /* 商户id */
+       @NotNull(message = "店铺不能为空")
        @TableField("supplier_id")
        private Long supplierId;
 

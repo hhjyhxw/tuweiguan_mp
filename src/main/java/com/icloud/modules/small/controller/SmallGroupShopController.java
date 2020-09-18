@@ -1,6 +1,7 @@
 package com.icloud.modules.small.controller;
 
 import java.util.Arrays;
+import java.util.Date;
 import java.util.Map;
 import com.icloud.basecommon.model.Query;
 import com.icloud.modules.shop.entity.Shop;
@@ -78,6 +79,8 @@ public class SmallGroupShopController {
     @RequestMapping("/save")
     @RequiresPermissions("small:smallgroupshop:save")
     public R save(@RequestBody SmallGroupShop smallGroupShop){
+        ValidatorUtils.validateEntity(smallGroupShop);
+        smallGroupShop.setCreateTime(new Date());
         smallGroupShopService.save(smallGroupShop);
 
         return R.ok();
@@ -90,6 +93,7 @@ public class SmallGroupShopController {
     @RequiresPermissions("small:smallgroupshop:update")
     public R update(@RequestBody SmallGroupShop smallGroupShop){
         ValidatorUtils.validateEntity(smallGroupShop);
+        smallGroupShop.setModifyTime(new Date());
         smallGroupShopService.updateById(smallGroupShop);
         
         return R.ok();
