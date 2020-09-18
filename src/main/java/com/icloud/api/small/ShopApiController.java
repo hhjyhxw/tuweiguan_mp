@@ -9,14 +9,8 @@ import com.icloud.modules.bsactivity.entity.BsactivityAd;
 import com.icloud.modules.bsactivity.service.BsactivityAdService;
 import com.icloud.modules.shop.entity.Shop;
 import com.icloud.modules.shop.service.ShopService;
-import com.icloud.modules.small.entity.SmallCategory;
-import com.icloud.modules.small.entity.SmallRetail;
-import com.icloud.modules.small.entity.SmallSellCategory;
-import com.icloud.modules.small.entity.SmallSpu;
-import com.icloud.modules.small.service.SmallCategoryService;
-import com.icloud.modules.small.service.SmallRetailService;
-import com.icloud.modules.small.service.SmallSellCategoryService;
-import com.icloud.modules.small.service.SmallSpuService;
+import com.icloud.modules.small.entity.*;
+import com.icloud.modules.small.service.*;
 import com.icloud.modules.small.vo.CategoryAndGoodListVo;
 import com.icloud.modules.small.vo.ShopInfo;
 import com.icloud.modules.small.vo.SpuVo;
@@ -41,7 +35,7 @@ public class ShopApiController {
     @Autowired
     private BsactivityAdService bsactivityAdService;
     @Autowired
-    private SmallSellCategoryService smallSellCategoryService;
+    private SmallGroupShopService smallGroupShopService;
     @Autowired
     private SmallSpuService smallSpuService;
     @Autowired
@@ -131,20 +125,20 @@ public class ShopApiController {
     @ResponseBody
     @AuthIgnore
     public R goodsList(String pageNum,String pageSize,@RequestParam Long supplierId,@RequestParam String categoryId) {
-
+        //传入id为空则读取平台商品
+        if(supplierId==null){
+            List<Shop> shoplist = shopService.list(new QueryWrapper<Shop>().eq("sys_flag","1"));
+            if(shoplist!=null && shoplist.size()>0){
+                supplierId = shoplist.get(0).getId();
+            }
+        }
         Query query = new Query(new HashMap<>());
         query.put("status",1);
         query.put("page",pageNum);
         query.put("limit",pageSize);
         query.put("supplierId",supplierId);
-        List<SmallSellCategory> list  = smallSellCategoryService.list(new QueryWrapper<SmallSellCategory>().eq("status",1).eq("supplier_id",supplierId));
-        //有自定义分类。查询自定义分类；没有则查询公共分类
-        if(list!=null && list.size()>0){
-            query.put("sellcategoryId",categoryId);
-        }else{
-            query.put("categoryId",categoryId);
-        }
-        PageUtils<SmallSpu> page = smallSpuService.findByPage(query.getPageNum(),query.getPageSize(), query);
+        query.put("",supplierId);
+        PageUtils<SmallGroupShop> page = smallGroupShopService.findByPage(query.getPageNum(),query.getPageSize(), query);
         return R.ok().put("page", page);
     }
 

@@ -1,11 +1,22 @@
 package com.icloud.modules.small.service;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
+import com.icloud.common.DateUtil;
+import com.icloud.common.MapEntryUtils;
+import com.icloud.common.PageUtils;
 import com.icloud.modules.small.entity.SmallGroupShop;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.icloud.basecommon.service.BaseServiceImpl;
 import com.icloud.modules.small.dao.SmallGroupShopMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+
 /**
  * 
  * @author zdh
@@ -18,5 +29,18 @@ public class SmallGroupShopService extends BaseServiceImpl<SmallGroupShopMapper,
 
     @Autowired
     private SmallGroupShopMapper smallGroupShopMapper;
+
+    @Override
+    public PageUtils<SmallGroupShop> findByPage(int pageNo, int pageSize, Map<String, Object> query) {
+        PageHelper.startPage(pageNo, pageSize);
+        List<SmallGroupShop> list = smallGroupShopMapper.selectList(new QueryWrapper<SmallGroupShop>()
+                .eq("status",1)
+                .eq("supplier_id",query.get("supplierId")));
+//                .ge("gmt_start", new Date())
+//                .le("gmt_end",new Date()));
+        PageInfo<SmallGroupShop> pageInfo = new PageInfo<SmallGroupShop>(list);
+        PageUtils<SmallGroupShop> page = new PageUtils<SmallGroupShop>(list,(int)pageInfo.getTotal(),pageSize,pageNo);
+        return page;
+    }
 }
 
