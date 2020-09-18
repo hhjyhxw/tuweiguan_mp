@@ -49,7 +49,11 @@ var vm = new Vue({
 	data:{
 		showList: true,
 		title: null,
-		smallGroupShop: {}
+		smallGroupShop: {},
+        goodName:'',
+        shopName:'',
+        shopList:[],//店铺列表
+        goodsList:[],//对应店铺商品
 	},
 	methods: {
 		query: function () {
@@ -59,6 +63,7 @@ var vm = new Vue({
 			vm.showList = false;
 			vm.title = "新增";
 			vm.smallGroupShop = {};
+            vm.getShopList();
 		},
 		update: function (event) {
 			var id = getSelectedRow();
@@ -125,6 +130,8 @@ var vm = new Vue({
 		getInfo: function(id){
 			$.get(baseURL + "small/smallgroupshop/info/"+id, function(r){
                 vm.smallGroupShop = r.smallGroupShop;
+                vm.shopName = r.smallGroupShop.shop.shopName;
+                vm.goodName = r.smallGroupShop.sku.title;
             });
 		},
 		reload: function (event) {
@@ -133,6 +140,35 @@ var vm = new Vue({
 			$("#jqGrid").jqGrid('setGridParam',{ 
                 page:page
             }).trigger("reloadGrid");
-		}
+		},
+        //加载AttibutList
+        getShopList:function(){
+            $.get(baseURL + "shop/shop/selectlist", function(r){
+                vm.shopList = r.list;
+            });
+        },
+        //选择店铺
+        selectShop: function (index) {
+            vm.smallGroupShop.supplierId = vm.shopList[index].id;
+            vm.shopName = vm.shopList[index].shopName;
+            vm.getGoodsList();//加载店铺sku列表
+        },
+        //加载商品列表
+        getGoodsList:function(){
+            $.get(baseURL + "small/smallsku/skulistForGroup", function(r){
+                vm.goodsList = r.list;
+            });
+        },
+        //选择sku
+        selectShop: function (index) {
+		    var goods = vm.goodsList[index];
+            vm.goodName = goods.title;
+            vm.smallGroupShop.spuId = goods.spuId;
+            vm.smallGroupShop.skuId = goods.id;
+            vm.smallGroupShop.minPrice = goods.price;//团购价
+            vm.smallGroupShop.maxPrice = goods.originalPrice;//原价
+        },
+
 	}
 });
+vm.getShopList();

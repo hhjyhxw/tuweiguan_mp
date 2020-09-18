@@ -3,6 +3,10 @@ package com.icloud.modules.small.controller;
 import java.util.Arrays;
 import java.util.Map;
 import com.icloud.basecommon.model.Query;
+import com.icloud.modules.shop.entity.Shop;
+import com.icloud.modules.shop.service.ShopService;
+import com.icloud.modules.small.entity.SmallSku;
+import com.icloud.modules.small.service.SmallSkuService;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -31,7 +35,10 @@ import com.icloud.common.validator.ValidatorUtils;
 public class SmallGroupShopController {
     @Autowired
     private SmallGroupShopService smallGroupShopService;
-
+    @Autowired
+    private ShopService shopService;
+    @Autowired
+    private SmallSkuService smallSkuService;
     /**
      * 列表
      */
@@ -52,7 +59,16 @@ public class SmallGroupShopController {
     @RequiresPermissions("small:smallgroupshop:info")
     public R info(@PathVariable("id") Long id){
         SmallGroupShop smallGroupShop = (SmallGroupShop)smallGroupShopService.getById(id);
-
+        Shop shop = new Shop();
+        if(smallGroupShop.getSupplierId()!=null){
+            shop = (Shop) shopService.getById(smallGroupShop.getSupplierId());
+        }
+        smallGroupShop.setShop(shop);
+        SmallSku sku = new SmallSku();
+        if(smallGroupShop.getSkuId()!=null){
+            sku = (SmallSku) smallSkuService.getById(smallGroupShop.getSkuId());
+        }
+        smallGroupShop.setSku(sku);
         return R.ok().put("smallGroupShop", smallGroupShop);
     }
 

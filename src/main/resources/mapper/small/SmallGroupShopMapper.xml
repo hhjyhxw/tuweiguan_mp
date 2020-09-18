@@ -8,6 +8,7 @@
     <resultMap type="com.icloud.modules.small.entity.SmallGroupShop" id="BaseResultMap">
      <id property="id" column="id"/>
      <result property="spuId" column="spu_id"/>
+     <result property="skuId" column="sku_id"/>
      <result property="minPrice" column="min_price"/>
      <result property="maxPrice" column="max_price"/>
      <result property="gmtStart" column="gmt_start"/>
@@ -23,7 +24,7 @@
 
    <!-- 基础字段列 -->
    <sql id="Base_Column_List" >
-id,spu_id,min_price,max_price,gmt_start,gmt_end,minimum_number,already_buy_number,automatic_refund,status,create_time,modify_time,supplier_id
+id,spu_id,min_price,max_price,gmt_start,gmt_end,minimum_number,already_buy_number,automatic_refund,status,create_time,modify_time,supplier_id,sku_id
     </sql>
 
 

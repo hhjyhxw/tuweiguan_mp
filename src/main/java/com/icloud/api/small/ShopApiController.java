@@ -7,6 +7,8 @@ import com.icloud.common.PageUtils;
 import com.icloud.common.R;
 import com.icloud.modules.bsactivity.entity.BsactivityAd;
 import com.icloud.modules.bsactivity.service.BsactivityAdService;
+import com.icloud.modules.shop.entity.Shop;
+import com.icloud.modules.shop.service.ShopService;
 import com.icloud.modules.small.entity.SmallCategory;
 import com.icloud.modules.small.entity.SmallRetail;
 import com.icloud.modules.small.entity.SmallSellCategory;
@@ -39,55 +41,79 @@ public class ShopApiController {
     @Autowired
     private BsactivityAdService bsactivityAdService;
     @Autowired
-    private SmallCategoryService smallCategoryService;
-    @Autowired
     private SmallSellCategoryService smallSellCategoryService;
     @Autowired
     private SmallSpuService smallSpuService;
     @Autowired
-    private SmallRetailService smallRetailService;
+    private ShopService shopService;
 
     /**
-     * 平台、店铺、分类列表
+     * 平台、店铺
      * @return
      */
-    @ApiOperation(value="平台、店铺、分类列表", notes="")
+    @ApiOperation(value="平台、店铺广告", notes="")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "id", value = "商家id", required = true, paramType = "query", dataType = "Long"),
+            @ApiImplicitParam(name = "supplierId", value = "商家id", required = true, paramType = "query", dataType = "Long"),
     })
-    @RequestMapping(value = "/shopInfo",method = {RequestMethod.GET})
-    @ResponseBody
-    @AuthIgnore
-    public R shopInfo(@RequestParam Long id)  {
-        if(id==null){
-            return R.error("商家id不能为空");
-        }
-        Object shop = smallRetailService.getById(id);
-        ShopInfo shopInfo = new ShopInfo();
-        if(shop!=null){
-            BeanUtils.copyProperties((SmallRetail)shop,shopInfo);
-        }
-        return R.ok().put("shopInfo",shopInfo);
-    }
-
-
-    /**
-     * 获取滚动广告列表
-     * @return
-     */
-    @ApiOperation(value="获取广告列表", notes="")
     @RequestMapping(value = "/adlist",method = {RequestMethod.GET})
     @ResponseBody
     @AuthIgnore
-    public R adlist() {
-       List<BsactivityAd> list  = bsactivityAdService.list(new QueryWrapper<BsactivityAd>().eq("status",1));
-       return R.ok().put("list",list);
+    public R shopInfo(@RequestParam Long supplierId)  {
+        if(supplierId==null){
+              List<Shop> shoplist = shopService.list(new QueryWrapper<Shop>().eq("sys_flag","1"));
+              if(shoplist!=null && shoplist.size()>0){
+                  supplierId = shoplist.get(0).getId();
+              }
+        }
+        if(supplierId==null){
+            return R.error("暂时没有广告");
+        }
+        List<BsactivityAd> list  = bsactivityAdService.list(new QueryWrapper<BsactivityAd>()
+                .eq("status",1)
+                .eq("supplier_id",supplierId));
+        return R.ok().put("list",list);
+    }
+
+
+    /**
+     * 获取平台 和当前店铺和分店列表
+     * @return
+     */
+    @ApiOperation(value="取平台 和当前店铺和分店列表", notes="")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "supplierId", value = "商家id", required = true, paramType = "query", dataType = "Long"),
+    })
+    @RequestMapping(value = "/shoplist",method = {RequestMethod.GET})
+    @ResponseBody
+    @AuthIgnore
+    public R shoplist(@RequestParam Long supplierId) {
+        //1、默认读取平台店铺
+        List<Shop> shoplist = new ArrayList<Shop>();
+        List<Shop> sysshoplist = shopService.list(new QueryWrapper<Shop>().eq("sys_flag","1"));
+        if(sysshoplist!=null && sysshoplist.size()>0){
+            shoplist = sysshoplist;
+        }
+
+       if(supplierId!=null){
+            //查询分享店铺和分店
+            Object shopobj = shopService.getById(supplierId);
+            Shop shop = null;
+            if(shopobj!=null){
+                shop = (Shop)shopobj;
+                shoplist.add(shop);
+                List<Shop> sonlist = shopService.list(new QueryWrapper<Shop>().eq("parent_id",supplierId));
+                if(sonlist!=null && sonlist.size()>0){
+                    shoplist.addAll(sonlist);
+                }
+            }
+        }
+       return R.ok().put("list",shoplist);
     }
 
 
 
     /**
-     * 获取商品列表
+     * 获取店铺商品列表（）
      * 目前需要参数：
      *   pageNum //第几页
      *   pageSize  //每页条数
@@ -100,23 +126,14 @@ public class ShopApiController {
             @ApiImplicitParam(name = "pageNum", value = "页码", required = false, paramType = "query", dataType = "String"),
             @ApiImplicitParam(name = "pageSize", value = "每页多少记录", required = false, paramType = "query", dataType = "String"),
             @ApiImplicitParam(name = "supplierId", value = "商户id", required = true, paramType = "query", dataType = "Long"),
-            @ApiImplicitParam(name = "categoryId", value = "分类id", required = false, paramType = "query", dataType = "Long"),
-
     })
     @RequestMapping(value = "/goodsList",method = {RequestMethod.GET})
     @ResponseBody
     @AuthIgnore
     public R goodsList(String pageNum,String pageSize,@RequestParam Long supplierId,@RequestParam String categoryId) {
-//    public R goodsList(@RequestBody Map<String,Object> params) {
-//        if(!params.containsKey("supplierId")){
-//            return R.error("商户id为空");
-//        }
+
         Query query = new Query(new HashMap<>());
         query.put("status",1);
-//        query.put("page",params.get("pageNum"));
-//        query.put("limit",params.get("pageSize"));
-//        query.put("supplierId",params.get("supplierId"));
-//        query.put("categoryId",params.get("categoryId"));
         query.put("page",pageNum);
         query.put("limit",pageSize);
         query.put("supplierId",supplierId);

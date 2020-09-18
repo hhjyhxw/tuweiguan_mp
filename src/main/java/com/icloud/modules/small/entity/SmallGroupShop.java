@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
+import com.icloud.modules.shop.entity.Shop;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -24,7 +25,10 @@ public class SmallGroupShop implements Serializable {
    	   /*  */
        @TableId(value="id", type= IdType.AUTO)
        private Long id;
-   	   	   /* 关联商品id */
+     /* 关联商品sku_id */
+      @TableField("sku_id")
+      private Long skuId;
+   	   	   /* 关联商品spu_id */
        @TableField("spu_id")
        private Long spuId;
    	   	   /* 团购价 */
@@ -60,5 +64,14 @@ public class SmallGroupShop implements Serializable {
    	   	   /* 商户id */
        @TableField("supplier_id")
        private Long supplierId;
+
+        /* 所属商户 */
+        @TableField(exist = false)
+        private Shop shop;
+
+        @TableField(exist = false)
+        private SmallSpu spu;
+        @TableField(exist = false)
+        private SmallSku sku;
    	
 }

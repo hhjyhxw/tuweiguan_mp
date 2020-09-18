@@ -64,6 +64,19 @@ public class SmallSkuController {
         return R.ok().put("list", list);
     }
 
+    /**
+     * 添加团购商品使用列表
+     */
+    @RequestMapping("/skulistForGroup")
+    @RequiresPermissions("small:smallspu:list")
+    public R skulistForGroup(@RequestParam Long supplierId){
+        List<SmallSku> list = smallSkuService.list(new QueryWrapper<SmallSku>().eq("spu_id",supplierId));
+        list.forEach(p->{
+            Integer remainStock = (p.getStock()!=null?p.getStock().intValue():0) - (p.getFreezeStock()!=null?p.getFreezeStock().intValue():0);
+            p.setRemainStock(remainStock>0?remainStock:0);
+        });
+        return R.ok().put("list", list);
+    }
 
     /**
      * 信息
