@@ -1,5 +1,6 @@
 package com.icloud.modules.small.controller;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -8,6 +9,7 @@ import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.icloud.basecommon.model.Query;
 import com.icloud.modules.small.entity.SmallSpu;
+import com.icloud.modules.small.service.SmallSpuService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,7 +40,8 @@ import com.icloud.common.validator.ValidatorUtils;
 public class SmallSkuController {
     @Autowired
     private SmallSkuService smallSkuService;
-
+    @Autowired
+    private SmallSpuService smallSpuService;
     /**
      * 列表
      */
@@ -70,7 +73,15 @@ public class SmallSkuController {
     @RequestMapping("/skulistForGroup")
     @RequiresPermissions("small:smallspu:list")
     public R skulistForGroup(@RequestParam Long supplierId){
-        List<SmallSku> list = smallSkuService.list(new QueryWrapper<SmallSku>().eq("supplier_id",supplierId));
+        //查询到list集合
+        List<SmallSpu> spuList = smallSpuService.list(new QueryWrapper<SmallSpu>().eq("supplier_id",supplierId));
+        //结果集
+        List<Long> spuIds = new ArrayList<>();
+        //遍历集合取值
+        spuList .forEach(item->{
+            spuIds.add(item.getId());
+        });
+        List<SmallSku> list = smallSkuService.list(new QueryWrapper<SmallSku>().in("spu_id",spuIds));
         list.forEach(p->{
             Integer remainStock = (p.getStock()!=null?p.getStock().intValue():0) - (p.getFreezeStock()!=null?p.getFreezeStock().intValue():0);
             p.setRemainStock(remainStock>0?remainStock:0);
