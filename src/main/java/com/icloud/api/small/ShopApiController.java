@@ -51,28 +51,28 @@ public class ShopApiController {
      * 平台、店铺
      * @return
      */
-    @ApiOperation(value="平台、店铺广告", notes="")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "supplierId", value = "商家id", required = false, paramType = "query", dataType = "Long"),
-    })
-    @RequestMapping(value = "/adlist",method = {RequestMethod.GET})
-    @ResponseBody
-    @AuthIgnore
-    public R shopInfo(@RequestParam Long supplierId)  {
-        if(supplierId==null){
-              List<Shop> shoplist = shopService.list(new QueryWrapper<Shop>().eq("sys_flag","1"));
-              if(shoplist!=null && shoplist.size()>0){
-                  supplierId = shoplist.get(0).getId();
-              }
-        }
-        if(supplierId==null){
-            return R.error("暂时没有广告");
-        }
-        List<BsactivityAd> list  = bsactivityAdService.list(new QueryWrapper<BsactivityAd>()
-                .eq("status",1)
-                .eq("supplier_id",supplierId));
-        return R.ok().put("list",list);
-    }
+//    @ApiOperation(value="平台、店铺广告", notes="")
+//    @ApiImplicitParams({
+//            @ApiImplicitParam(name = "supplierId", value = "商家id", required = false, paramType = "query", dataType = "Long"),
+//    })
+//    @RequestMapping(value = "/adlist",method = {RequestMethod.GET})
+//    @ResponseBody
+//    @AuthIgnore
+//    public R shopInfo(@RequestParam Long supplierId)  {
+//        if(supplierId==null){
+//              List<Shop> shoplist = shopService.list(new QueryWrapper<Shop>().eq("sys_flag","1"));
+//              if(shoplist!=null && shoplist.size()>0){
+//                  supplierId = shoplist.get(0).getId();
+//              }
+//        }
+//        if(supplierId==null){
+//            return R.error("暂时没有广告");
+//        }
+//        List<BsactivityAd> list  = bsactivityAdService.list(new QueryWrapper<BsactivityAd>()
+//                .eq("status",1)
+//                .eq("supplier_id",supplierId));
+//        return R.ok().put("list",list);
+//    }
 
 
     /**
@@ -92,6 +92,9 @@ public class ShopApiController {
         List<Shop> sysshoplist = shopService.list(new QueryWrapper<Shop>().eq("sys_flag","1"));
         if(sysshoplist!=null && sysshoplist.size()>0){
             shoplist = sysshoplist;
+            if(supplierId==null){
+                supplierId = sysshoplist.get(0).getId();
+            }
         }
         //判断是否登录，登录后判断是否是店主
         if(httpServletRequest.getHeader("accessToken")!=null){
@@ -104,6 +107,7 @@ public class ShopApiController {
                 }
             }
         }
+        List<BsactivityAd> adlist = null;
         //查询店主店铺与分店
        if(supplierId!=null){
             //查询分享店铺和分店
@@ -117,8 +121,17 @@ public class ShopApiController {
                     shoplist.addAll(sonlist);
                 }
             }
+
+           //店铺广告
+           adlist  = bsactivityAdService.list(new QueryWrapper<BsactivityAd>()
+                   .eq("status",1)
+                   .eq("supplier_id",supplierId));
         }
-       return R.ok().put("list",shoplist);
+
+       return R.ok()
+               .put("shoplist",shoplist)
+               .put("adlist",adlist)
+               .put("supplierId",supplierId);
     }
 
 
