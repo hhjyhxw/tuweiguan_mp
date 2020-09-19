@@ -3,6 +3,7 @@ package com.icloud.basecommon.service;
 
 import com.alibaba.fastjson.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
@@ -17,8 +18,10 @@ import java.util.concurrent.TimeUnit;
 @Component
 public class CacheComponent {
 
+//    @Autowired
+//    private StringRedisTemplate stringRedisTemplate;
     @Autowired
-    private StringRedisTemplate stringRedisTemplate;
+    private RedisTemplate<String,String> stringRedisTemplate;
 
     public void putObj(String key, Object obj, Integer expireSec) {
         if (expireSec != null) {
