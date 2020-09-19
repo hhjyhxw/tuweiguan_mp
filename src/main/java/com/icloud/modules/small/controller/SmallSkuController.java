@@ -70,7 +70,7 @@ public class SmallSkuController {
     @RequestMapping("/skulistForGroup")
     @RequiresPermissions("small:smallspu:list")
     public R skulistForGroup(@RequestParam Long supplierId){
-        List<SmallSku> list = smallSkuService.list(new QueryWrapper<SmallSku>().eq("spu_id",supplierId));
+        List<SmallSku> list = smallSkuService.list(new QueryWrapper<SmallSku>().eq("supplier_id",supplierId));
         list.forEach(p->{
             Integer remainStock = (p.getStock()!=null?p.getStock().intValue():0) - (p.getFreezeStock()!=null?p.getFreezeStock().intValue():0);
             p.setRemainStock(remainStock>0?remainStock:0);
