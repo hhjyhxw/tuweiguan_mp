@@ -35,7 +35,7 @@ import java.util.Map;
 
 @Api("订单相关接口")
 @RestController
-@RequestMapping("/api/order")
+    @RequestMapping("/api/order")
 public class OrderApiController {
 
     @Autowired

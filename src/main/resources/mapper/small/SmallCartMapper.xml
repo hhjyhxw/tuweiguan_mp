@@ -59,7 +59,7 @@ select * from t_small_cart t
         <result property="modifyTime" column="modify_time"/>
     </resultMap>
     <select id="getCartVoList" resultMap="CartVoResultMap">
-        select t.id,t.sku_id,t.user_id,t.num,t.num*gp.min_price as totalAmout,gp.min_price,gp.max_price,s.title,IFNULL(s.img,p.img) img,s.title  from t_small_cart t,t_small_spu p,t_small_sku s,t_small_group_shop gp
+        select t.id,t.sku_id,t.user_id,t.num,t.num*gp.min_price as totalAmout,gp.min_price,gp.max_price,s.title,IFNULL(s.img,p.img) img,s.title,gp.id group_id  from t_small_cart t,t_small_spu p,t_small_sku s,t_small_group_shop gp
         <where>
             t.sku_id = s.id and s.spu_id=p.id and t.group_id=gp.id
             <if test="sku_id != null">
