@@ -86,7 +86,7 @@ public class ShopApiController {
     @RequestMapping(value = "/shoplist",method = {RequestMethod.GET})
     @ResponseBody
     @AuthIgnore
-    public R shoplist(@RequestParam Long supplierId) {
+    public R shoplist(Long supplierId) {
         //1、默认读取平台店铺
         List<Shop> shoplist = new ArrayList<Shop>();
         List<Shop> sysshoplist = shopService.list(new QueryWrapper<Shop>().eq("sys_flag","1"));
@@ -154,7 +154,7 @@ public class ShopApiController {
     @RequestMapping(value = "/goodsList",method = {RequestMethod.GET})
     @ResponseBody
     @AuthIgnore
-    public R goodsList(String pageNum,String pageSize,@RequestParam Long supplierId,@RequestParam String categoryId) {
+    public R goodsList(String pageNum,String pageSize,Long supplierId) {
         //传入id为空则读取平台商品
         if(supplierId==null){
             List<Shop> shoplist = shopService.list(new QueryWrapper<Shop>().eq("sys_flag","1"));
