@@ -55,5 +55,9 @@ public class SmallSpuService extends BaseServiceImpl<SmallSpuMapper,SmallSpu> {
         }
         return R.ok();
     }
+
+    public Integer incSales(Long spuId,Integer delta){
+        return smallSpuMapper.incSales(spuId,delta);
+    }
 }
 

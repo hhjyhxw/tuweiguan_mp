@@ -75,7 +75,7 @@ public class SmallOrder implements Serializable {
        private BigDecimal payPrice;
    	   	   /* 支付流水id(本地支付流水) */
        @TableField("pay_id")
-       private Long payId;
+       private String payId;
    	   	   /* 支付渠道名称 */
        @TableField("pay_channel")
        private String payChannel;

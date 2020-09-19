@@ -2,9 +2,11 @@ package com.icloud.modules.small.service;
 
 import cn.hutool.core.lang.Snowflake;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.icloud.basecommon.service.BaseServiceImpl;
+import com.icloud.basecommon.service.LockComponent;
 import com.icloud.basecommon.service.redislock.DistributedLock;
 import com.icloud.basecommon.service.redislock.DistributedLockUtil;
 import com.icloud.common.*;
@@ -38,6 +40,11 @@ import java.util.Map;
 @Transactional
 public class SmallOrderService extends BaseServiceImpl<SmallOrderMapper,SmallOrder> {
 
+    private static final String ORDER_STATUS_LOCK = "ORDER_STATUS_LOCK_";
+
+    //订单退款乐观锁
+    public static final String ORDER_REFUND_LOCK = "ORDER_REFUND_LOCK_";
+
     @Autowired
     private SmallOrderMapper smallOrderMapper;
     @Autowired
@@ -57,7 +64,8 @@ public class SmallOrderService extends BaseServiceImpl<SmallOrderMapper,SmallOrd
 
     @Autowired
     private ServerConfig serverConfig;
-
+    @Autowired
+    private LockComponent lockComponent;
 
     @Override
     public PageUtils<SmallOrder> findByPage(int pageNo, int pageSize, Map<String, Object> query) {
@@ -181,6 +189,35 @@ public class SmallOrderService extends BaseServiceImpl<SmallOrderMapper,SmallOrd
        // ThreadPoodExecuteService.getTaskExecutor().execute(smallPlaceOrderNotifyService);
 
         return R.ok().put("orderNo",order.getOrderNo());
+    }
+
+
+    public boolean changeOrderStatus(String orderNo, Integer nowOrderStatus,Integer nowPayStatus, SmallOrder orderDO) throws ApiException {
+        try {
+            // 防止传入值为空,导致其余订单被改变
+            if(orderNo == null || orderDO == null){
+                throw new ApiException("修改订单状态:订单编号"+orderNo+",查询不到订单");
+            }
+            if (lockComponent.tryLock(ORDER_STATUS_LOCK + orderNo, 30)) {
+                if (smallOrderMapper.update(orderDO,
+                        new UpdateWrapper<SmallOrder>()
+                                .eq("order_no", orderNo)
+                                .eq("order_status", nowOrderStatus)
+                                .eq("pay_status", nowPayStatus) ) > 0) {
+                    return true;
+                }
+                throw new ApiException("修改订单状态失败");
+            } else {
+                throw new ApiException("获取订单锁失败");
+            }
+        } catch (ApiException e) {
+            throw e;
+        } catch (Exception e) {
+            log.error("[订单状态扭转] 异常", e);
+            throw new ApiException("[订单状态扭转] 异常");
+        } finally {
+            lockComponent.release(ORDER_STATUS_LOCK + orderNo);
+        }
     }
 }
 

@@ -98,4 +98,8 @@ select t.*,(t.stock-t.freeze_stock) as remainStock from t_small_spu t
 </if>
 </where>
 </select>
+    <!--增加销量-->
+    <update id="incSales">
+        UPDATE t_small_spu SET sales = sales + #{delta} WHERE id = #{spuId}
+    </update>
 </mapper>

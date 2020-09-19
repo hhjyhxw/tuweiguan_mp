@@ -1,11 +1,15 @@
 package com.icloud.api.small;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.github.binarywang.wxpay.bean.notify.WxPayNotifyResponse;
+import com.github.binarywang.wxpay.bean.notify.WxPayOrderNotifyResult;
 import com.github.binarywang.wxpay.bean.request.WxPayUnifiedOrderRequest;
 import com.github.binarywang.wxpay.constant.WxPayConstants;
 import com.github.binarywang.wxpay.exception.WxPayException;
 import com.github.binarywang.wxpay.service.WxPayService;
+import com.icloud.annotation.AuthIgnore;
 import com.icloud.annotation.LoginUser;
 import com.icloud.basecommon.model.Query;
 import com.icloud.common.IpUtil;
@@ -20,10 +24,7 @@ import com.icloud.modules.small.entity.SmallAddress;
 import com.icloud.modules.small.entity.SmallOrder;
 import com.icloud.modules.small.entity.SmallOrderDetail;
 import com.icloud.modules.small.entity.SmallSpu;
-import com.icloud.modules.small.service.SmallAddressService;
-import com.icloud.modules.small.service.SmallOrderDetailService;
-import com.icloud.modules.small.service.SmallOrderService;
-import com.icloud.modules.small.service.SmallSpuService;
+import com.icloud.modules.small.service.*;
 import com.icloud.modules.small.util.CartOrderUtil;
 import com.icloud.modules.small.vo.*;
 import com.icloud.modules.wx.entity.WxUser;
@@ -56,6 +57,8 @@ public class PayApiController {
     private WxPayService wxPayService;
     @Autowired
     private WxMpProperties wxMpProperties;
+    @Autowired
+    private WxNotifyService wxNotifyService;
 
     /**
      * 小程序预支付
@@ -108,4 +111,20 @@ public class PayApiController {
     }
 
 
+
+
+    @AuthIgnore
+    @RequestMapping("/notify")
+    public Object wxpay(@RequestBody String body) throws Exception {
+        WxPayOrderNotifyResult result = null;
+        try {
+            result = wxPayService.parseOrderNotifyResult(body);
+        } catch (WxPayException e) {
+            log.error("[微信解析回调请求] 异常", e);
+            return WxPayNotifyResponse.fail(e.getMessage());
+        }
+        log.info("处理微信支付平台的订单支付");
+        log.info(JSONObject.toJSONString(result));
+        return wxNotifyService.wxpaynotify(result);
+    }
 }

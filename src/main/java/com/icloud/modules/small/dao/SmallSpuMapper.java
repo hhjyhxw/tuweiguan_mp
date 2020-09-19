@@ -2,6 +2,8 @@ package com.icloud.modules.small.dao;
 
 import com.icloud.modules.small.entity.SmallSpu;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import org.apache.ibatis.annotations.Param;
+
 import java.util.List;
 import java.util.Map;
 
@@ -14,4 +16,6 @@ import java.util.Map;
 public interface SmallSpuMapper extends BaseMapper<SmallSpu> {
 
 	List<SmallSpu> queryMixList(Map<String,Object> map);
+
+	public Integer incSales(@Param("spuId") Long spuId, @Param("delta") Integer delta);
 }
