@@ -48,16 +48,18 @@ select * from t_small_cart t
         <result property="groupId" column="group_id"/>
         <result property="supplierId" column="supplier_id"/>
         <result property="num" column="num"/>
+        <result property="title" column="title"/>
         <result property="price" column="min_price"/><!--团购价-->
         <result property="originalPrice" column="max_price"/><!--原价-->
         <result property="title" column="title"/>
-        <result property="spuimg" column="spuimg"/>
-        <result property="skuimg" column="skuimg"/>
+        <result property="img" column="img"/>
+        <result property="totalAmout" column="totalAmout"/>
+
         <result property="createTime" column="create_time"/>
         <result property="modifyTime" column="modify_time"/>
     </resultMap>
     <select id="getCartVoList" resultMap="CartVoResultMap">
-        select t.id,t.sku_id,t.user_id,t.num,gp.min_price,gp.max_price,s.title,p.img as spuimg s.img as skuimg  from t_small_cart t,t_small_spu p,t_small_sku s,t_small_group_shop gp
+        select t.id,t.sku_id,t.user_id,t.num,t.num*gp.min_price as totalAmout  gp.min_price,gp.max_price,s.title,IFNULL(s.img,p.img) img,s.title  from t_small_cart t,t_small_spu p,t_small_sku s,t_small_group_shop gp
         <where>
             t.sku_id = s.id and s.spu_id=p.id and t.group_id=gp.id
             <if test="sku_id != null">

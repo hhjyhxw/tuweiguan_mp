@@ -20,12 +20,12 @@ public class CartVo {
     private BigDecimal price;
     /*  原价*/
     private BigDecimal originalPrice;
+    /* 总价 */
+    private BigDecimal totalAmout;
     /* 商品名称 */
     private String title;
     /* 商品图片 */
-    private String spuimg;
-    /* 商品图片 */
-    private String skuimg;
+    private String img;
 
     private Long supplierId;
 
