@@ -129,15 +129,15 @@ public class SmallOrderService extends BaseServiceImpl<SmallOrderMapper,SmallOrd
         }
         //生成订单
         SmallOrder order = new SmallOrder();
-        order.setChannel("店铺二维码扫码支付");
+//        order.setChannel("店铺二维码扫码支付");
         order.setActualPrice(totalAmout);
         order.setSkuTotalPrice(totalAmout);
-        order.setAddress(address.getAddress());
-        order.setCounty(address.getCounty());
-        order.setCity(address.getCity());
-        order.setPhone(address.getPhone());
-        order.setProvince(address.getProvince());
-        order.setConsignee(address.getName());
+//        order.setAddress(address.getAddress());
+//        order.setCounty(address.getCounty());
+//        order.setCity(address.getCity());
+//        order.setPhone(address.getPhone());
+//        order.setProvince(address.getProvince());
+//        order.setConsignee(address.getName());
         order.setUserId(user.getId().longValue());
         order.setOrderStatus(0);
         order.setCreateTime(new Date());
