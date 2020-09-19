@@ -2,6 +2,8 @@ package com.icloud.modules.small.dao;
 
 import com.icloud.modules.small.entity.SmallGroupShop;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.icloud.modules.small.vo.GroupSkuVo;
+
 import java.util.List;
 import java.util.Map;
 
@@ -14,4 +16,6 @@ import java.util.Map;
 public interface SmallGroupShopMapper extends BaseMapper<SmallGroupShop> {
 
 	List<SmallGroupShop> queryMixList(Map<String,Object> map);
+
+	List<GroupSkuVo> queryGroupAndSku(Map<String,Object> map);
 }

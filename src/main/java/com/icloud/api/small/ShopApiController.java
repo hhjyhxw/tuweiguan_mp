@@ -13,6 +13,7 @@ import com.icloud.modules.shop.service.ShopService;
 import com.icloud.modules.small.entity.*;
 import com.icloud.modules.small.service.*;
 import com.icloud.modules.small.vo.CategoryAndGoodListVo;
+import com.icloud.modules.small.vo.GroupSkuVo;
 import com.icloud.modules.small.vo.ShopInfo;
 import com.icloud.modules.small.vo.SpuVo;
 import com.icloud.modules.wx.entity.WxUser;
@@ -168,7 +169,7 @@ public class ShopApiController {
         query.put("limit",pageSize);
         query.put("supplierId",supplierId);
         query.put("",supplierId);
-        PageUtils<SmallGroupShop> page = smallGroupShopService.findByFrontPage(query.getPageNum(),query.getPageSize(), query);
+        PageUtils<GroupSkuVo> page = smallGroupShopService.findByFrontPage(query.getPageNum(),query.getPageSize(), query);
         return R.ok().put("page", page);
     }
 
