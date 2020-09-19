@@ -41,6 +41,7 @@ public class CartApiController {
      * 单个店铺商品购物车
      * @return
      */
+    @CrossOrigin
     @ApiOperation(value="获取用户店铺购车信息", notes="")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "supplierId", value = "商户id", required = true, paramType = "query", dataType = "Long")
@@ -61,7 +62,7 @@ public class CartApiController {
     }
 
 
-
+    @CrossOrigin
     @ApiOperation(value="购物车加一", notes="")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "supplierId", value = "商户id", required = true, paramType = "query", dataType = "Long"),
@@ -101,7 +102,7 @@ public class CartApiController {
         }
     }
 
-
+    @CrossOrigin
     @ApiOperation(value="购物车减一", notes="")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "supplierId", value = "商户id", required = true, paramType = "query", dataType = "Long"),
@@ -137,7 +138,7 @@ public class CartApiController {
     }
 
 
-
+    @CrossOrigin
     @ApiOperation(value="删除一项购物项", notes="")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "id", value = "购物车id", required = true, paramType = "query", dataType = "Long")
@@ -155,7 +156,7 @@ public class CartApiController {
         return result?R.ok():R.error();
     }
 
-
+    @CrossOrigin
     @ApiOperation(value="删除多项购物项", notes="")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "ids", value = "购物车ids", required = true, paramType = "query", dataType = "body")
@@ -173,7 +174,7 @@ public class CartApiController {
         return result?R.ok():R.error();
     }
 
-
+    @CrossOrigin
     @ApiOperation(value="清空购物项", notes="")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "supplierId", value = "商户id", required = true, paramType = "query", dataType = "Long"),
@@ -193,7 +194,7 @@ public class CartApiController {
 
 
 
-
+    @CrossOrigin
     @ApiOperation(value="更新购物车", notes="")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "id", value = "购车和id", required = true, paramType = "query", dataType = "Long"),
@@ -221,7 +222,7 @@ public class CartApiController {
         return result?R.ok():R.error();
     }
 
-
+    @CrossOrigin
     @ApiOperation(value="查询购车数量", notes="")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "supplierId", value = "商户id", required = true, paramType = "query", dataType = "Long")

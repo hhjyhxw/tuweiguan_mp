@@ -92,7 +92,7 @@ public class OrderApiController {
         }
     }
 
-
+    @CrossOrigin
     @ApiOperation(value="生成订单", notes="")
     @RequestMapping(value = "/createOrder",method = {RequestMethod.POST})
     @ResponseBody
@@ -123,6 +123,7 @@ public class OrderApiController {
      * 最近订单
      * @return
      */
+    @CrossOrigin
     @ApiOperation(value="最近订单", notes="")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "supplierId", value = "店铺id", required = false, paramType = "query", dataType = "long")
@@ -150,6 +151,7 @@ public class OrderApiController {
      * 用户历史订单订单列表
      * @return
      */
+    @CrossOrigin
     @ApiOperation(value="用户订单列表", notes="")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "pageNum", value = "页码", required = false, paramType = "query", dataType = "String"),
@@ -175,6 +177,7 @@ public class OrderApiController {
      * 订单详情
      * @return
      */
+    @CrossOrigin
     @ApiOperation(value="订单详情", notes="")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "id", value = "订单id", required = true, paramType = "query", dataType = "Long")
