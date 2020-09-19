@@ -83,6 +83,7 @@ public class SmallOrderService extends BaseServiceImpl<SmallOrderMapper,SmallOrd
 
     public R createOrder(CreateOrder preOrder, WxUser user, SmallAddress address) {
         BigDecimal totalAmout = new BigDecimal(0);//订单总金额
+        BigDecimal origintotalAmout = new BigDecimal(0);//原价总额
         int totalNum = 0;//总数量
         //1、库存校验
         for(int i=0;i<preOrder.getSkuId().length;i++){
@@ -98,7 +99,9 @@ public class SmallOrderService extends BaseServiceImpl<SmallOrderMapper,SmallOrd
                 return R.error(spu.getTitle()+" 库存不足");
             }
 //            totalAmout+=spu.getPrice()*preOrder.getNum()[i];
-            totalAmout = totalAmout.add(spu.getPrice().multiply(new BigDecimal(preOrder.getNum()[i])).setScale(2,BigDecimal.ROUND_HALF_UP));
+//            totalAmout = totalAmout.add(spu.getPrice().multiply(new BigDecimal(preOrder.getNum()[i])).setScale(2,BigDecimal.ROUND_HALF_UP));
+            totalAmout = totalAmout.add(group.getMinPrice().multiply(new BigDecimal(preOrder.getNum()[i])).setScale(2,BigDecimal.ROUND_HALF_UP));
+            origintotalAmout = origintotalAmout.add(group.getMaxPrice().multiply(new BigDecimal(preOrder.getNum()[i])).setScale(2,BigDecimal.ROUND_HALF_UP));
             totalNum+=preOrder.getNum()[i];
         }
         //2、冻结库存
@@ -129,9 +132,10 @@ public class SmallOrderService extends BaseServiceImpl<SmallOrderMapper,SmallOrd
         }
         //生成订单
         SmallOrder order = new SmallOrder();
-//        order.setChannel("店铺二维码扫码支付");
+        order.setChannel("小程序商品购买");
         order.setActualPrice(totalAmout);
         order.setSkuTotalPrice(totalAmout);
+        order.setSkuOriginalTotalPrice(origintotalAmout);
 //        order.setAddress(address.getAddress());
 //        order.setCounty(address.getCounty());
 //        order.setCity(address.getCity());
@@ -146,8 +150,11 @@ public class SmallOrderService extends BaseServiceImpl<SmallOrderMapper,SmallOrd
         order.setOrderType("0");
         order.setOrderNo(SnowflakeUtils.getOrderNoByWordId(serverConfig.getServerPort()%31L));
         order.setOrderStatus(0);//
+        order.setPayStatus(0);
         order.setPayChannel("微信支付");
         order.setRefundStatus(0);
+        order.setFreightPrice(new BigDecimal(0));
+        order.setCouponPrice(new BigDecimal(0));
         order.setShipStatus(0);
         smallOrderMapper.insert(order);
 
