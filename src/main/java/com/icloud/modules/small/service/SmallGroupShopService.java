@@ -30,8 +30,7 @@ public class SmallGroupShopService extends BaseServiceImpl<SmallGroupShopMapper,
     @Autowired
     private SmallGroupShopMapper smallGroupShopMapper;
 
-    @Override
-    public PageUtils<SmallGroupShop> findByPage(int pageNo, int pageSize, Map<String, Object> query) {
+    public PageUtils<SmallGroupShop> findByFrontPage(int pageNo, int pageSize, Map<String, Object> query) {
         PageHelper.startPage(pageNo, pageSize);
         List<SmallGroupShop> list = smallGroupShopMapper.selectList(new QueryWrapper<SmallGroupShop>()
                 .eq("status",1)
@@ -42,5 +41,6 @@ public class SmallGroupShopService extends BaseServiceImpl<SmallGroupShopMapper,
         PageUtils<SmallGroupShop> page = new PageUtils<SmallGroupShop>(list,(int)pageInfo.getTotal(),pageSize,pageNo);
         return page;
     }
+
 }
 

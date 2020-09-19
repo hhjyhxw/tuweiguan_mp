@@ -155,7 +155,7 @@ public class ShopApiController {
         query.put("limit",pageSize);
         query.put("supplierId",supplierId);
         query.put("",supplierId);
-        PageUtils<SmallGroupShop> page = smallGroupShopService.findByPage(query.getPageNum(),query.getPageSize(), query);
+        PageUtils<SmallGroupShop> page = smallGroupShopService.findByFrontPage(query.getPageNum(),query.getPageSize(), query);
         return R.ok().put("page", page);
     }
 
