@@ -22,5 +22,10 @@ public class WxUserService extends BaseServiceImpl<WxUserMapper, WxUser> {
         queryWrapper.eq("openid",openId);
         return (WxUser) getOne(queryWrapper);
     }
+    public WxUser findByXcxopenid(String xcxopenid) {
+        QueryWrapper<WxUser> queryWrapper = new QueryWrapper<WxUser>();
+        queryWrapper.eq("xcxopenid",xcxopenid);
+        return (WxUser) getOne(queryWrapper);
+    }
 
 }

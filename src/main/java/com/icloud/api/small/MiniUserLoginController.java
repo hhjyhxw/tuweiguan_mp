@@ -83,7 +83,7 @@ public class MiniUserLoginController {
                 logger.info("decryData:" + decryData);
                 //解密后的用户数据
                 JSONObject decryDataJson = JSONObject.parseObject(decryData);
-                WxUser user = wxUserService.findByOpenId(session.getOpenid());
+                WxUser user = wxUserService.findByXcxopenid(session.getOpenid());
                 if(user!=null){
                     user.setNickname(decryDataJson.containsKey("nickName")? EmojiUtil.toAlias(decryDataJson.getString("nickName")):user.getNickname());
                     user.setHeadimgurl(decryDataJson.containsKey("avatarUrl")?decryDataJson.getString("avatarUrl"):user.getHeadimgurl());
