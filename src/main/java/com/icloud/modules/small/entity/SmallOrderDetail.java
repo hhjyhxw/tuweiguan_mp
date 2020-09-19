@@ -31,6 +31,9 @@ public class SmallOrderDetail implements Serializable {
    	   	   /* 商品（spuid） */
        @TableField("spu_id")
        private Long spuId;
+       /* 团购id */
+       @TableField("group_id")
+       private Long groupId;
    	   	   /* 订单id */
        @TableField("order_id")
        private Long orderId;

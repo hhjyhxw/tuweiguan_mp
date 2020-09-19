@@ -7,15 +7,15 @@ import com.github.pagehelper.PageInfo;
 import com.icloud.basecommon.service.BaseServiceImpl;
 import com.icloud.basecommon.service.redislock.DistributedLock;
 import com.icloud.basecommon.service.redislock.DistributedLockUtil;
-import com.icloud.common.JvmUtils;
-import com.icloud.common.MapEntryUtils;
-import com.icloud.common.PageUtils;
-import com.icloud.common.R;
+import com.icloud.common.*;
+import com.icloud.config.ServerConfig;
 import com.icloud.config.threadpool.ThreadPoodExecuteService;
 import com.icloud.exceptions.ApiException;
+import com.icloud.modules.shop.entity.Shop;
+import com.icloud.modules.shop.service.ShopService;
 import com.icloud.modules.small.dao.SmallOrderMapper;
 import com.icloud.modules.small.entity.*;
-import com.icloud.modules.small.vo.PreOrder;
+import com.icloud.modules.small.vo.CreateOrder;
 import com.icloud.modules.wx.entity.WxUser;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,16 +41,22 @@ public class SmallOrderService extends BaseServiceImpl<SmallOrderMapper,SmallOrd
     @Autowired
     private SmallOrderMapper smallOrderMapper;
     @Autowired
+    private SmallSkuService smallSkuService;
+    @Autowired
     private SmallSpuService smallSpuService;
     @Autowired
     private SmallOrderDetailService smallOrderDetailService;
     @Autowired
     private SmallCartService smallCartService;
     @Autowired
-    private SmallRetailService smallRetailService;
+    private ShopService shopService;
+    @Autowired
+    private SmallGroupShopService smallGroupShopService;
     @Autowired
     private DistributedLockUtil distributedLockUtil;
-    public static int  dataCenterId = JvmUtils.jvmPid()+JvmUtils.getSysinfo();
+
+    @Autowired
+    private ServerConfig serverConfig;
 
 
     @Override
@@ -67,15 +73,17 @@ public class SmallOrderService extends BaseServiceImpl<SmallOrderMapper,SmallOrd
         return page;
     }
 
-    public R createOrder(PreOrder preOrder, WxUser user,SmallAddress address) {
+    public R createOrder(CreateOrder preOrder, WxUser user, SmallAddress address) {
         BigDecimal totalAmout = new BigDecimal(0);//订单总金额
         int totalNum = 0;//总数量
         //1、库存校验
         for(int i=0;i<preOrder.getSkuId().length;i++){
-            SmallSpu spu = (SmallSpu) smallSpuService.getById(preOrder.getSkuId()[i]);
-            if(spu.getSupplierId().longValue()!=preOrder.getSupplierId().longValue()){
-                return R.error(spu.getTitle()+" 与商户对应不上");
+            SmallGroupShop group = (SmallGroupShop) smallGroupShopService.getById(preOrder.getGroupId()[i]);
+            SmallSku spu = (SmallSku) smallSkuService.getById(preOrder.getSkuId()[i]);
+            if(group.getSupplierId().longValue()!=preOrder.getSupplierId().longValue()){
+                return R.error("团购商品与商户对应不上");
             }
+
             //剩余库存
             int remainStock = spu.getStock()-(spu.getFreezeStock()!=null?spu.getFreezeStock():0);
             if(remainStock<=0 || remainStock<preOrder.getNum()[i]){
@@ -93,9 +101,10 @@ public class SmallOrderService extends BaseServiceImpl<SmallOrderMapper,SmallOrd
             try {
                 if (lock.acquire()) {
                     //获取锁成功业务代码
-                    SmallSpu spu = (SmallSpu) smallSpuService.getById(skuId);
+                    SmallSku spu = (SmallSku) smallSkuService.getById(skuId);
+//                    SmallSpu spu = (SmallSpu) smallSpuService.getById(skuId);
                     spu.setFreezeStock(spu.getFreezeStock()!=null?spu.getFreezeStock()+num:num);
-                    boolean result = smallSpuService.updateById(spu);
+                    boolean result = smallSkuService.updateById(spu);
                     if(!result){
                         log.error("兑换时,更新商品库存失败");
                         throw new ApiException("更新商品库存失败");
@@ -126,30 +135,31 @@ public class SmallOrderService extends BaseServiceImpl<SmallOrderMapper,SmallOrd
         order.setCreateTime(new Date());
         order.setMemo(preOrder.getMemo());
         order.setSupplierId(preOrder.getSupplierId());
-//        log.info("dataCenterId==="+dataCenterId);
-//        log.info("jvmPid==="+JvmUtils.jvmPid());
-//        log.info("getSysinfo==="+JvmUtils.getSysinfo());
-        Snowflake snowFlake = new Snowflake(1,dataCenterId%31);
-        order.setOrderNo(String.valueOf(snowFlake.nextId()));
-        order.setOrderStatus(0);
-        order.setPayChannel("线下支付");
+        order.setOrderType("0");
+        order.setOrderNo(SnowflakeUtils.getOrderNoByWordId(serverConfig.getServerPort()%31L));
+        order.setOrderStatus(0);//
+        order.setPayChannel("微信支付");
         order.setRefundStatus(0);
         order.setShipStatus(0);
         smallOrderMapper.insert(order);
 
         String productInfo = "";
         for(int i=0;i<preOrder.getSkuId().length;i++){
-            SmallSpu spu = (SmallSpu) smallSpuService.getById(preOrder.getSkuId()[i]);
+//            SmallSpu spu = (SmallSpu) smallSpuService.getById(preOrder.getSkuId()[i]);
+            SmallSku sku = (SmallSku) smallSkuService.getById(preOrder.getSkuId()[i]);
+            SmallGroupShop group = (SmallGroupShop) smallGroupShopService.getById(preOrder.getGroupId()[i]);
+            SmallSpu spus = (SmallSpu) smallSpuService.getById(sku.getSpuId());
             SmallOrderDetail detail = new SmallOrderDetail();
             detail.setCreateTime(new Date());
             detail.setNum(preOrder.getNum()[i].intValue());
             detail.setOrderNo(order.getOrderNo());
             detail.setOrderId(order.getId());
+            detail.setGroupId(preOrder.getGroupId()[i]);
             detail.setSkuId(preOrder.getSkuId()[i]);
-            detail.setSkuTitle(spu.getTitle());
-            detail.setSpuImg(spu.getImg());
-            detail.setPrice(spu.getPrice());
-            productInfo+=spu.getTitle()+"x"+detail.getNum()+";";
+            detail.setSkuTitle(sku.getTitle());
+            detail.setSpuImg(sku.getImg()!=null?sku.getImg(): spus.getImg());
+            detail.setPrice(group.getMinPrice());
+            productInfo+=sku.getTitle()+"x"+detail.getNum()+";";
 //            detail
             smallOrderDetailService.save(detail);
         }
@@ -157,19 +167,20 @@ public class SmallOrderService extends BaseServiceImpl<SmallOrderMapper,SmallOrd
         for(int i=0;i<preOrder.getSkuId().length;i++){
             smallCartService.remove(new QueryWrapper<SmallCart>()
                     .eq("user_id",user.getId())
+                    .eq("group_id",preOrder.getGroupId()[i])
                     .eq("sku_id",preOrder.getNum()[i])
                     .eq("supplier_id",preOrder.getSupplierId()));
 
         }
-        SmallRetail retail = (SmallRetail) smallRetailService.getById(preOrder.getSupplierId());
+        Shop shop = (Shop) shopService.getById(preOrder.getSupplierId());
 
         //生成发送通知消息任务，设置需要发送的消息
-        SmallPlaceOrderNotifyService smallPlaceOrderNotifyService = new SmallPlaceOrderNotifyService();
-        smallPlaceOrderNotifyService.setNotifyInof(order,user,retail,productInfo);
+        //SmallPlaceOrderNotifyService smallPlaceOrderNotifyService = new SmallPlaceOrderNotifyService();
+        //smallPlaceOrderNotifyService.setNotifyInof(order,user,shop,productInfo);
         //异步执行发送任务
-        ThreadPoodExecuteService.getTaskExecutor().execute(smallPlaceOrderNotifyService);
+       // ThreadPoodExecuteService.getTaskExecutor().execute(smallPlaceOrderNotifyService);
 
-        return R.ok().put("orderNo",order.getOrderNo()).put("url",retail.getPayImg());
+        return R.ok().put("orderNo",order.getOrderNo());
     }
 }
 

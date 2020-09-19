@@ -31,6 +31,9 @@ public class SmallOrder implements Serializable {
    	   	   /* 订单号 */
        @TableField("order_no")
        private String orderNo;
+        /* 订单类型 订单类型（0团购订单、1普通订单）*/
+        @TableField("order_type")
+        private String orderType;
    	   	   /* 用户id */
        @TableField("user_id")
        private Long userId;

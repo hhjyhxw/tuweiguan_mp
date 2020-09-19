@@ -3,7 +3,7 @@ package com.icloud.thirdinterfaces.apiservice;
 import com.dtflys.forest.annotation.DataObject;
 import com.dtflys.forest.annotation.DataVariable;
 import com.dtflys.forest.annotation.Request;
-import com.icloud.modules.small.vo.PreOrder;
+import com.icloud.modules.small.vo.CreateOrder;
 import org.apache.ibatis.annotations.Param;
 
 public interface SmallCreateOrderApiService {
@@ -15,7 +15,7 @@ public interface SmallCreateOrderApiService {
             },
             type="POST"
     )
-    String createOrder(@DataVariable("url") String url, @DataObject PreOrder preOrder);
+    String createOrder(@DataVariable("url") String url, @DataObject CreateOrder preOrder);
 
 
     @Request(

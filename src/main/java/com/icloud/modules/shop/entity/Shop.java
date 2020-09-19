@@ -94,6 +94,9 @@ public class Shop implements Serializable {
    	   	   /* 更新时间 */
        @TableField("updated_time")
        private Date updatedTime;
+        /* 绑定用户id */
+        @TableField("user_id")
+        private Long userId;
 
         /**
          * 上级名称

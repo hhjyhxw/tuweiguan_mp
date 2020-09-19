@@ -2,7 +2,10 @@ package com.icloud.modules.small.controller;
 
 import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
+
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.icloud.basecommon.model.Query;
 import com.icloud.modules.shop.entity.Shop;
 import com.icloud.modules.shop.service.ShopService;
@@ -80,6 +83,14 @@ public class SmallGroupShopController {
     @RequiresPermissions("small:smallgroupshop:save")
     public R save(@RequestBody SmallGroupShop smallGroupShop){
         ValidatorUtils.validateEntity(smallGroupShop);
+        //判断spuId \ skuId\ splierId 是否已存在
+        List<SmallGroupShop> list = smallGroupShopService.list(new QueryWrapper<SmallGroupShop>()
+                .eq("sku_id",smallGroupShop.getSkuId())
+                .eq("spu_id",smallGroupShop.getSpuId())
+                .eq("supplier_id",smallGroupShop.getSupplierId()));
+        if(list!=null && list.size()>0){
+            return R.error("该商品已加入团购列表");
+        }
         smallGroupShop.setCreateTime(new Date());
         smallGroupShopService.save(smallGroupShop);
 
@@ -94,6 +105,14 @@ public class SmallGroupShopController {
     public R update(@RequestBody SmallGroupShop smallGroupShop){
         ValidatorUtils.validateEntity(smallGroupShop);
         smallGroupShop.setModifyTime(new Date());
+        //判断spuId \ skuId\ splierId 是否已存在
+        List<SmallGroupShop> list = smallGroupShopService.list(new QueryWrapper<SmallGroupShop>()
+                .eq("sku_id",smallGroupShop.getSkuId())
+                .eq("spu_id",smallGroupShop.getSpuId())
+                .eq("supplier_id",smallGroupShop.getSupplierId()));
+        if(list!=null && list.size()>0 && list.get(0).getId().longValue()!=smallGroupShop.getId().longValue()){
+            return R.error("该商品已加入团购列表");
+        }
         smallGroupShopService.updateById(smallGroupShop);
         
         return R.ok();

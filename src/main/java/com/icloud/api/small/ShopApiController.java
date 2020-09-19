@@ -3,6 +3,7 @@ package com.icloud.api.small;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.icloud.annotation.AuthIgnore;
 import com.icloud.basecommon.model.Query;
+import com.icloud.basecommon.service.redis.RedisService;
 import com.icloud.common.PageUtils;
 import com.icloud.common.R;
 import com.icloud.modules.bsactivity.entity.BsactivityAd;
@@ -14,6 +15,7 @@ import com.icloud.modules.small.service.*;
 import com.icloud.modules.small.vo.CategoryAndGoodListVo;
 import com.icloud.modules.small.vo.ShopInfo;
 import com.icloud.modules.small.vo.SpuVo;
+import com.icloud.modules.wx.entity.WxUser;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -22,6 +24,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -40,7 +43,10 @@ public class ShopApiController {
     private SmallSpuService smallSpuService;
     @Autowired
     private ShopService shopService;
-
+    @Autowired
+    private RedisService redisService;
+    @Autowired
+    private HttpServletRequest httpServletRequest;
     /**
      * 平台、店铺
      * @return
@@ -87,7 +93,18 @@ public class ShopApiController {
         if(sysshoplist!=null && sysshoplist.size()>0){
             shoplist = sysshoplist;
         }
-
+        //判断是否登录，登录后判断是否是店主
+        if(httpServletRequest.getHeader("accessToken")!=null){
+            Object sessuser = redisService.get(httpServletRequest.getHeader("accessToken"));
+            if(sessuser!=null){
+                WxUser user = (WxUser)sessuser;
+                List<Shop> mylist = shopService.list(new QueryWrapper<Shop>().eq("user_id",user.getId()));
+                if(mylist!=null && mylist.size()>0){
+                    supplierId = mylist.get(0).getId();
+                }
+            }
+        }
+        //查询店主店铺与分店
        if(supplierId!=null){
             //查询分享店铺和分店
             Object shopobj = shopService.getById(supplierId);
@@ -140,25 +157,6 @@ public class ShopApiController {
         query.put("",supplierId);
         PageUtils<SmallGroupShop> page = smallGroupShopService.findByPage(query.getPageNum(),query.getPageSize(), query);
         return R.ok().put("page", page);
-    }
-
-    /**
-     * 获取商品分详细
-     * @return
-     */
-    @ApiOperation(value="获取商品详细", notes="")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "id", value = "商品id", required = true, paramType = "query", dataType = "Long"),
-    })
-    @RequestMapping(value = "/goodsDetail",method = {RequestMethod.GET})
-    @ResponseBody
-    @AuthIgnore
-    public R goodsDetail(@RequestParam Long id)  {
-        if(id==null){
-            return R.error("商品id不能为空");
-        }
-        Object smallSpu = smallSpuService.getById(id);
-        return R.ok().put("goods",smallSpu);
     }
 
 }

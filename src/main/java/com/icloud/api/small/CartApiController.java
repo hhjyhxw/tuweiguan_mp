@@ -65,12 +65,13 @@ public class CartApiController {
     @ApiOperation(value="购物车加一", notes="")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "supplierId", value = "商户id", required = true, paramType = "query", dataType = "Long"),
-            @ApiImplicitParam(name = "skuId", value = "商品id", required = true, paramType = "query", dataType = "Long")
+            @ApiImplicitParam(name = "skuId", value = "商品id", required = true, paramType = "query", dataType = "Long"),
+            @ApiImplicitParam(name = "groupId", value = "团购商品id", required = true, paramType = "query", dataType = "Long")
     })
     @RequestMapping(value = "/addCart",method = {RequestMethod.GET})
     @ResponseBody
-    public R addCart(@RequestParam Long supplierId,@RequestParam Long skuId,@LoginUser WxUser user) {
-        if(supplierId==null || skuId==null){
+    public R addCart(@RequestParam Long supplierId,@RequestParam Long skuId,@RequestParam Long groupId,@LoginUser WxUser user) {
+        if(supplierId==null || skuId==null || groupId==null){
             return R.error("缺少参数");
         }
         //库存校验
@@ -81,6 +82,7 @@ public class CartApiController {
         List<SmallCart> list  = smallCartService.list(new QueryWrapper<SmallCart>()
                 .eq("user_id",user.getId())
                 .eq("sku_id",skuId)
+                .eq("group_id",groupId)
                 .eq("supplier_id",supplierId));
         if (!CollectionUtils.isEmpty(list)) {
             //若非空
@@ -93,6 +95,7 @@ public class CartApiController {
             cart.setCreateTime(new Date());
             cart.setUserId((long)user.getId());
             cart.setSupplierId(supplierId);
+            cart.setGroupId(groupId);
             cart.setSkuId(skuId);
             return smallCartService.save(cart)?R.ok():R.error();
         }
@@ -102,18 +105,20 @@ public class CartApiController {
     @ApiOperation(value="购物车减一", notes="")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "supplierId", value = "商户id", required = true, paramType = "query", dataType = "Long"),
-            @ApiImplicitParam(name = "skuId", value = "商品id", required = true, paramType = "query", dataType = "Long")
+            @ApiImplicitParam(name = "skuId", value = "商品id", required = true, paramType = "query", dataType = "Long"),
+            @ApiImplicitParam(name = "groupId", value = "团购商品id", required = true, paramType = "query", dataType = "Long")
     })
     @RequestMapping(value = "/subCart",method = {RequestMethod.GET})
     @ResponseBody
-    public R subCart(@RequestParam Long supplierId,@RequestParam Long skuId,@LoginUser WxUser user) {
-        if(supplierId==null || skuId==null){
+    public R subCart(@RequestParam Long supplierId,@RequestParam Long skuId,@RequestParam Long groupId,@LoginUser WxUser user) {
+        if(supplierId==null || skuId==null || groupId==null){
             return R.error("缺少参数");
         }
         SmallCart cart = new SmallCart();
         List<SmallCart> list  = smallCartService.list(new QueryWrapper<SmallCart>()
                 .eq("user_id",user.getId())
                 .eq("sku_id",skuId)
+                .eq("group_id",groupId)
                 .eq("supplier_id",supplierId));
         if (!CollectionUtils.isEmpty(list)) {
 

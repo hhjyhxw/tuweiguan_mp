@@ -1,6 +1,6 @@
 package com.icloud.common;
 
-import jodd.system.SystemInfo;
+import ch.qos.logback.core.util.SystemInfo;
 import sun.management.VMManagement;
 
 import java.lang.management.ManagementFactory;

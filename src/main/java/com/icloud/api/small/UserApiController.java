@@ -29,7 +29,7 @@ public class UserApiController {
     private WxUserService wxUserService;
 
     /**
-     * 获取滚动广告列表
+     * 用户信息
      * @return
      */
     @ApiOperation(value="用户信息", notes="")
