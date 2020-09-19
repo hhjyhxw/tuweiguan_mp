@@ -93,9 +93,9 @@ public class ShopApiController {
         List<Shop> sysshoplist = shopService.list(new QueryWrapper<Shop>().eq("sys_flag","1"));
         if(sysshoplist!=null && sysshoplist.size()>0){
             shoplist = sysshoplist;
-            if(supplierId==null){
-                supplierId = sysshoplist.get(0).getId();
-            }
+//            if(supplierId==null){
+//                supplierId = sysshoplist.get(0).getId();
+//            }
         }
         //判断是否登录，登录后判断是否是店主
         if(httpServletRequest.getHeader("accessToken")!=null){
@@ -108,7 +108,7 @@ public class ShopApiController {
                 }
             }
         }
-        List<BsactivityAd> adlist = null;
+
         //查询店主店铺与分店
        if(supplierId!=null){
             //查询分享店铺和分店
@@ -122,11 +122,14 @@ public class ShopApiController {
                     shoplist.addAll(sonlist);
                 }
             }
-
-           //店铺广告
-           adlist  = bsactivityAdService.list(new QueryWrapper<BsactivityAd>()
-                   .eq("status",1)
-                   .eq("supplier_id",supplierId));
+        }
+        List<BsactivityAd> adlist = null;
+        if(supplierId==null){
+             supplierId = shoplist.get(0).getId();
+            //店铺广告
+            adlist  = bsactivityAdService.list(new QueryWrapper<BsactivityAd>()
+                    .eq("status",1)
+                    .eq("supplier_id",supplierId));
         }
 
        return R.ok()
