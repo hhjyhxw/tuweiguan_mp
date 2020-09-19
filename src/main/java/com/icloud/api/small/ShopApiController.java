@@ -53,7 +53,7 @@ public class ShopApiController {
      */
     @ApiOperation(value="平台、店铺广告", notes="")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "supplierId", value = "商家id", required = true, paramType = "query", dataType = "Long"),
+            @ApiImplicitParam(name = "supplierId", value = "商家id", required = false, paramType = "query", dataType = "Long"),
     })
     @RequestMapping(value = "/adlist",method = {RequestMethod.GET})
     @ResponseBody
@@ -81,7 +81,7 @@ public class ShopApiController {
      */
     @ApiOperation(value="取平台 和当前店铺和分店列表", notes="")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "supplierId", value = "商家id", required = true, paramType = "query", dataType = "Long"),
+            @ApiImplicitParam(name = "supplierId", value = "商家id", required = false, paramType = "query", dataType = "Long"),
     })
     @RequestMapping(value = "/shoplist",method = {RequestMethod.GET})
     @ResponseBody
@@ -136,7 +136,7 @@ public class ShopApiController {
     @ApiImplicitParams({
             @ApiImplicitParam(name = "pageNum", value = "页码", required = false, paramType = "query", dataType = "String"),
             @ApiImplicitParam(name = "pageSize", value = "每页多少记录", required = false, paramType = "query", dataType = "String"),
-            @ApiImplicitParam(name = "supplierId", value = "商户id", required = true, paramType = "query", dataType = "Long"),
+            @ApiImplicitParam(name = "supplierId", value = "商户id", required = false, paramType = "query", dataType = "Long"),
     })
     @RequestMapping(value = "/goodsList",method = {RequestMethod.GET})
     @ResponseBody
