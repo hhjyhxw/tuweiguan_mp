@@ -89,21 +89,8 @@ select * from t_small_group_shop t
         select t.supplier_id,t.id,t.sku_id,t.spu_id,k.title,IFNULL(k.img,p.img) img,t.min_price as price,t.max_price original_price,k.stock-k.freeze_stock as remainStock from t_small_group_shop t,t_small_sku k,t_small_spu p
         <where>
             t.sku_id = k.id and k.spu_id = p.id
-            <if test="id != null">
-                and t.id = #{id}
-            </if>
-            <if test="spu_id != null">
-                and t.spu_id = #{spu_id}
-            </if>
-
-            <if test="gmt_start != null">
-                and t.gmt_start = #{gmt_start}
-            </if>
-            <if test="gmt_end != null">
-                and t.gmt_end = #{gmt_end}
-            </if>
-            <if test="supplier_id != null">
-                and t.supplier_id = #{supplier_id}
+            <if test="supplierId != null">
+                and t.supplier_id = #{supplierId}
             </if>
         </where>
     </select>
