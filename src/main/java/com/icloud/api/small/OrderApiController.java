@@ -27,6 +27,7 @@ import org.apache.commons.beanutils.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -119,21 +120,50 @@ public class OrderApiController {
 
 
     /**
-     * 用户订单列表
+     * 最近订单
+     * @return
+     */
+    @ApiOperation(value="最近订单", notes="")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "supplierId", value = "店铺id", required = false, paramType = "query", dataType = "long")
+    })
+    @RequestMapping(value = "/latesOrder",method = {RequestMethod.GET})
+    @ResponseBody
+    public R latesOrder(@LoginUser WxUser user,Long supplierId) throws Exception {
+        SmallOrder smallOrder = null;
+        List<SmallOrder> list = smallOrderService.list(new QueryWrapper<SmallOrder>().eq("supplier_id",supplierId).orderByDesc("create_time"));
+        if(list!=null){
+            smallOrder = list.get(0);
+            OrderVo orderVo = new OrderVo();
+            BeanUtils.copyProperties(orderVo,smallOrder);
+            List<SmallOrderDetail> detaillist =  smallOrderDetailService.list(new QueryWrapper<SmallOrderDetail>().eq("order_id",orderVo.getId()));
+            List<OrderDetailVo> detaillistvo = ColaBeanUtils.copyListProperties(detaillist , OrderDetailVo::new, (articleEntity, articleVo) -> {
+                // 回调处理
+            });
+            orderVo.setDetaillist(detaillistvo);
+            return R.ok().put("order",orderVo);
+        }
+        return R.ok().put("order",null);
+    }
+
+    /**
+     * 用户历史订单订单列表
      * @return
      */
     @ApiOperation(value="用户订单列表", notes="")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "pageNum", value = "页码", required = false, paramType = "query", dataType = "String"),
-            @ApiImplicitParam(name = "pageSize", value = "每页多少记录", required = false, paramType = "query", dataType = "String")
+            @ApiImplicitParam(name = "pageSize", value = "每页多少记录", required = false, paramType = "query", dataType = "String"),
+            @ApiImplicitParam(name = "supplierId", value = "店铺id", required = false, paramType = "query", dataType = "long")
     })
     @RequestMapping(value = "/orderlist",method = {RequestMethod.GET})
     @ResponseBody
-    public R orderlist(@LoginUser WxUser user,String pageNum,String pageSize) {
+    public R orderlist(@LoginUser WxUser user,String pageNum,String pageSize,Long supplierId) {
         Map parma = new HashMap();
         parma.put("page",pageNum);
         parma.put("limit",pageSize);
         parma.put("userId",user.getId());
+        parma.put("supplierId",supplierId);
         Query query = new Query(parma);
 
 //        List<SmallOrder> orderlist = smallOrderService.list(new QueryWrapper<SmallOrder>().eq("user_id",user.getId()));

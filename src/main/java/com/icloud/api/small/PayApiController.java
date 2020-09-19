@@ -71,7 +71,7 @@ public class PayApiController {
     @ApiImplicitParams({
             @ApiImplicitParam(name = "orderNo", value = "订单编号", required = true, paramType = "query", dataType = "String")
     })
-    @RequestMapping("/wxPrepay")
+    @RequestMapping(value = "/wxPrepay",method = {RequestMethod.POST})
     @ResponseBody
     public R wxPrepay(@RequestParam String orderNo,@LoginUser WxUser user) throws ApiException {
         Date now = new Date();
