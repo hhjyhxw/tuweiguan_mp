@@ -4,11 +4,13 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
+import com.icloud.modules.small.vo.OrderDetailVo;
 import lombok.Data;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
 
 /**
  * 订单表
@@ -127,5 +129,7 @@ public class SmallOrder implements Serializable {
    	   	   /*  */
        @TableField("modify_time")
        private Date modifyTime;
+       @TableField(exist = false)
+      private List<OrderDetailVo> detaillist;
    	
 }

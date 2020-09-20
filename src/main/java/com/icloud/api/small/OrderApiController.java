@@ -170,6 +170,17 @@ public class OrderApiController {
 
 //        List<SmallOrder> orderlist = smallOrderService.list(new QueryWrapper<SmallOrder>().eq("user_id",user.getId()));
         PageUtils<SmallOrder> page = smallOrderService.findByPage(query.getPageNum(),query.getPageSize(), query);
+        List<SmallOrder> orderlist = (List<SmallOrder>) page.getList();
+        if(orderlist!=null && orderlist.size()>0){
+            orderlist.forEach(p->{
+                List<SmallOrderDetail> detaillist =  smallOrderDetailService.list(new QueryWrapper<SmallOrderDetail>().eq("order_id",orderVo.getId()));
+                List<OrderDetailVo> detaillistvo = ColaBeanUtils.copyListProperties(detaillist , OrderDetailVo::new, (articleEntity, articleVo) -> {
+                    // 回调处理
+                });
+                p.setDetaillist(detaillistvo);
+            });
+        }
+        page.setList(orderlist);
         return R.ok().put("page", page);
     }
 

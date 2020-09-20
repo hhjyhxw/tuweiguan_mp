@@ -1,6 +1,8 @@
 package com.icloud.modules.small.vo;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -41,7 +43,12 @@ public class OrderVo {
     /* 联系电话*/
     private String phone;
     /*下达时间*/
-    private Date createTime;
+    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(
+            pattern = "yyyy-MM-dd HH:mm:ss",
+            timezone = "GMT+8"
+    )
+     private Date createTime;
     /*  */
 
     private List<OrderDetailVo> detaillist;
