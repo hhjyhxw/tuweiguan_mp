@@ -149,7 +149,7 @@ public class ShopApiController {
         }
         if(adlist==null || adlist.size()==0){
             //店铺广告为空查询平台广告
-            adlist  = bsactivityAdService.list(new QueryWrapper<BsactivityAd>().eq("status",1).eq("supplier_id",shopId));
+            adlist  = bsactivityAdService.list(new QueryWrapper<BsactivityAd>().eq("status",1).eq("supplier_id",sysshoplist.get(0).getId()));
         }
         //用于分享
         if(shopMainId==null){
