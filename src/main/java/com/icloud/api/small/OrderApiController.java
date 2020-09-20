@@ -173,7 +173,7 @@ public class OrderApiController {
         List<SmallOrder> orderlist = (List<SmallOrder>) page.getList();
         if(orderlist!=null && orderlist.size()>0){
             orderlist.forEach(p->{
-                List<SmallOrderDetail> detaillist =  smallOrderDetailService.list(new QueryWrapper<SmallOrderDetail>().eq("order_id",orderVo.getId()));
+                List<SmallOrderDetail> detaillist =  smallOrderDetailService.list(new QueryWrapper<SmallOrderDetail>().eq("order_id",p.getId()));
                 List<OrderDetailVo> detaillistvo = ColaBeanUtils.copyListProperties(detaillist , OrderDetailVo::new, (articleEntity, articleVo) -> {
                     // 回调处理
                 });
