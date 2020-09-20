@@ -125,28 +125,28 @@ public class ShopApiController {
        if(shopId!=null && shopId.longValue()!=sysshoplist.get(0).getId().longValue()){
            shopMainId = shopId;
             //查询分享店铺和分店
-            Object shopobj = shopService.getById(supplierId);
+            Object shopobj = shopService.getById(shopId);
             Shop shop = null;
             if(shopobj!=null){
                 shop = (Shop)shopobj;
                 shopMainName = shop.getShopName();
                 shopImg = shop.getShopImg();
                 shoplist.add(shop);
-                List<Shop> sonlist = shopService.list(new QueryWrapper<Shop>().eq("parent_id",supplierId));
+                List<Shop> sonlist = shopService.list(new QueryWrapper<Shop>().eq("parent_id",shopId));
                 if(sonlist!=null && sonlist.size()>0){
                     shoplist.addAll(sonlist);
                 }
             }
         }
         List<BsactivityAd> adlist = null;
-        if(supplierId!=null){
+        if(shopId!=null){
             //查询店铺广告
             adlist  = bsactivityAdService.list(new QueryWrapper<BsactivityAd>()
                     .eq("status",1)
-                    .eq("supplier_id",supplierId));
+                    .eq("supplier_id",shopId));
 
         }
-        if(adlist==null){
+        if(adlist==null || adlist.size()==0){
             //店铺广告为空查询平台广告
             shopId = shoplist.get(0).getId();
             shopMainId = shopId;
@@ -154,7 +154,7 @@ public class ShopApiController {
             shopImg = shoplist.get(0).getShopImg();
             adlist  = bsactivityAdService.list(new QueryWrapper<BsactivityAd>()
                     .eq("status",1)
-                    .eq("supplier_id",supplierId));
+                    .eq("supplier_id",shopId));
         }
 
        return R.ok()
