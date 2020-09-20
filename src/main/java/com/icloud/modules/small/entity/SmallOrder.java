@@ -133,6 +133,7 @@ public class SmallOrder implements Serializable {
        @TableField(exist = false)
       private List<OrderDetailVo> detaillist;
         /* 用于控制明细项是否隐藏或者显示 */
+        @TableField(exist = false)
       private boolean show;
    	
 }
