@@ -95,19 +95,37 @@ public class ShopApiController {
         List<Shop> sysshoplist = shopService.list(new QueryWrapper<Shop>().eq("sys_flag","1"));
         if(sysshoplist!=null && sysshoplist.size()>0){
             shoplist = sysshoplist;
-//            List<Shop> sonlist = shopService.list(new QueryWrapper<Shop>().eq("parent_id",sysshoplist.get(0).getId()));
-//            if(sonlist!=null && sonlist.size()>0){
-//                shoplist.addAll(sonlist);
-//            }
+            List<Shop> sonlist = shopService.list(new QueryWrapper<Shop>().eq("parent_id",sysshoplist.get(0).getId()));
+            if(sonlist!=null && sonlist.size()>0){
+                shoplist.addAll(sonlist);
+            }
         }
-
+        //判断是否登录，登录后判断是否是店主
+        if(httpServletRequest.getHeader("accessToken")!=null){
+            Object sessuser = redisService.get(httpServletRequest.getHeader("accessToken"));
+            if(sessuser!=null){
+                WxUser user = (WxUser)sessuser;
+                List<Shop> mylist = shopService.list(new QueryWrapper<Shop>().eq("user_id",user.getId()));
+                if(mylist!=null && mylist.size()>0){
+                   if(mylist.get(0).getId().longValue()!=sysshoplist.get(0).getId().longValue()){
+                       supplierId = mylist.get(0).getId();
+                   }
+                }
+            }
+        }
+        Long shopMainId = null;//用户自身店铺 或者分享店铺主id
+        String shopMainName = null;//用户自身店铺 或者分享店铺名称
+        String shopImg = null;//
         //查询店主店铺与分店
        if(supplierId!=null && supplierId.longValue()!=sysshoplist.get(0).getId().longValue()){
+           shopMainId = supplierId;
             //查询分享店铺和分店
             Object shopobj = shopService.getById(supplierId);
             Shop shop = null;
             if(shopobj!=null){
                 shop = (Shop)shopobj;
+                shopMainName = shop.getShopName();
+                shopImg = shop.getShopImg();
                 shoplist.add(shop);
                 List<Shop> sonlist = shopService.list(new QueryWrapper<Shop>().eq("parent_id",supplierId));
                 if(sonlist!=null && sonlist.size()>0){
@@ -125,7 +143,10 @@ public class ShopApiController {
         }
         if(adlist==null){
             //店铺广告为空查询平台广告
-            supplierId = sysshoplist.get(0).getId();
+            supplierId = shoplist.get(0).getId();
+            shopMainId = supplierId;
+            shopMainName = shoplist.get(0).getShopName();
+            shopImg = shoplist.get(0).getShopImg();
             adlist  = bsactivityAdService.list(new QueryWrapper<BsactivityAd>()
                     .eq("status",1)
                     .eq("supplier_id",supplierId));
@@ -134,7 +155,9 @@ public class ShopApiController {
        return R.ok()
                .put("shoplist",shoplist)
                .put("adlist",adlist)
-               .put("supplierId",supplierId);
+               .put("shopMainId",shopMainId)
+               .put("shopMainName",shopMainName)
+               .put("shopImg",shopImg);
     }
 
 
