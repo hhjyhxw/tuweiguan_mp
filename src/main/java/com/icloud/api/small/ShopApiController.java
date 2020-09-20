@@ -160,6 +160,7 @@ public class ShopApiController {
        return R.ok()
                .put("shoplist",shoplist)
                .put("adlist",adlist)
+               .put("supplierId",shopMainId)
                .put("shopMainId",shopMainId)
                .put("shopMainName",shopMainName)
                .put("shopImg",shopImg);
