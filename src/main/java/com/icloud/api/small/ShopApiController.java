@@ -137,9 +137,16 @@ public class ShopApiController {
             }
         }
         List<BsactivityAd> adlist = null;
-        if(supplierId==null){
-             supplierId = shoplist.get(0).getId();
-            //店铺广告
+        if(supplierId!=null){
+            //查询店铺广告
+            adlist  = bsactivityAdService.list(new QueryWrapper<BsactivityAd>()
+                    .eq("status",1)
+                    .eq("supplier_id",supplierId));
+
+        }
+        if(adlist==null){
+            //店铺广告为空查询平台广告
+            supplierId = shoplist.get(0).getId();
             adlist  = bsactivityAdService.list(new QueryWrapper<BsactivityAd>()
                     .eq("status",1)
                     .eq("supplier_id",supplierId));
