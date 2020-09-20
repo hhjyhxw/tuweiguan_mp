@@ -77,6 +77,9 @@ public class ShopApiController {
 
 
     /**
+     * 1、平台店铺一定读取
+     * 2、判断传入的店铺Id如果为空或者是系统店铺Id, 如果不是读取该店铺和其分店
+     * 3、判断当前进入用户是否是店主（非系统店主），是店主默认读取该店主的店及分店
      * 获取平台 和当前店铺和分店列表
      * @return
      */
@@ -90,12 +93,20 @@ public class ShopApiController {
     public R shoplist(Long supplierId) {
         //1、默认读取平台店铺
         List<Shop> shoplist = new ArrayList<Shop>();
+        //系统店铺及系统店铺分店一定读取
         List<Shop> sysshoplist = shopService.list(new QueryWrapper<Shop>().eq("sys_flag","1"));
         if(sysshoplist!=null && sysshoplist.size()>0){
             shoplist = sysshoplist;
-//            if(supplierId==null){
-//                supplierId = sysshoplist.get(0).getId();
-//            }
+            List<Shop> sonlist = shopService.list(new QueryWrapper<Shop>().eq("parent_id",sysshoplist.get(0).getId()));
+            if(sonlist!=null && sonlist.size()>0){
+                shoplist.addAll(sonlist);
+            }
+            for(Shop shop:sysshoplist){
+                if(supplierId!=null && supplierId.longValue()==shop.getId().longValue()){
+                    supplierId = null;
+                    break;
+                }
+            }
         }
         //判断是否登录，登录后判断是否是店主
         if(httpServletRequest.getHeader("accessToken")!=null){
@@ -104,7 +115,9 @@ public class ShopApiController {
                 WxUser user = (WxUser)sessuser;
                 List<Shop> mylist = shopService.list(new QueryWrapper<Shop>().eq("user_id",user.getId()));
                 if(mylist!=null && mylist.size()>0){
-                    supplierId = mylist.get(0).getId();
+                   if(mylist.get(0).getId().longValue()!=sysshoplist.get(0).getId().longValue()){
+                       supplierId = mylist.get(0).getId();
+                   }
                 }
             }
         }
