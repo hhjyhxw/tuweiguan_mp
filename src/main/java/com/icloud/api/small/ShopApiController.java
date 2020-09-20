@@ -149,14 +149,18 @@ public class ShopApiController {
         if(adlist==null || adlist.size()==0){
             //店铺广告为空查询平台广告
             shopId = shoplist.get(0).getId();
-            shopMainId = shopId;
-            shopMainName = shoplist.get(0).getShopName();
-            shopImg = shoplist.get(0).getShopImg();
             adlist  = bsactivityAdService.list(new QueryWrapper<BsactivityAd>()
                     .eq("status",1)
                     .eq("supplier_id",shopId));
         }
+        //用于分享
+        if(shopMainId==null){
+            shopId = shoplist.get(0).getId();
+            shopMainId = shopId;
+            shopMainName = shoplist.get(0).getShopName();
+            shopImg = shoplist.get(0).getShopImg();
 
+        }
        return R.ok()
                .put("shoplist",shoplist)
                .put("adlist",adlist)
