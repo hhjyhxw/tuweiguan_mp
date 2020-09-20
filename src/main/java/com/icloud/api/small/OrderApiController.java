@@ -28,6 +28,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.lang.reflect.InvocationTargetException;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -167,6 +168,9 @@ public class OrderApiController {
         parma.put("userId",user.getId());
         parma.put("supplierId",supplierId);
         Query query = new Query(parma);
+        List<SmallOrder> orderlistSum = smallOrderService.list(new QueryWrapper<SmallOrder>().eq("user_id",user.getId())
+                .eq("supplier_id",supplierId));
+        BigDecimal totalAmount = CartOrderUtil.getOrderTotalAmount(orderlistSum);
 
 //        List<SmallOrder> orderlist = smallOrderService.list(new QueryWrapper<SmallOrder>().eq("user_id",user.getId()));
         PageUtils<SmallOrder> page = smallOrderService.findByPage(query.getPageNum(),query.getPageSize(), query);
@@ -182,7 +186,7 @@ public class OrderApiController {
             });
         }
         page.setList(orderlist);
-        return R.ok().put("page", page);
+        return R.ok().put("page", page).put("totalAmount",totalAmount);
     }
 
     /**
@@ -212,6 +216,23 @@ public class OrderApiController {
         return R.ok().put("order",orderVo);
     }
 
+    /**
+     * 总下单金额
+     * @return
+     */
+    @CrossOrigin
+    @ApiOperation(value="总下单金额", notes="")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "supplierId", value = "店铺id", required = false, paramType = "query", dataType = "long")
+    })
+    @RequestMapping(value = "/getTotalOrderAmount",method = {RequestMethod.GET})
+    @ResponseBody
+    public R getTotalOrderAmount(@LoginUser WxUser user,Long supplierId) {
+        List<SmallOrder> orderlistSum = smallOrderService.list(new QueryWrapper<SmallOrder>().eq("user_id",user.getId())
+                .eq("supplier_id",supplierId));
+        BigDecimal totalAmount = CartOrderUtil.getOrderTotalAmount(orderlistSum);
+        return R.ok().put("totalAmount",totalAmount);
+    }
 
 
 }
