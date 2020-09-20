@@ -1,17 +1,6 @@
 package com.icloud.basecommon.util;
 
 
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.net.URLEncoder;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
@@ -19,10 +8,17 @@ import com.icloud.common.ConfigUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+
 public class BaiduMapUtil {
 
     public static final Logger log = LoggerFactory.getLogger(BaiduMapUtil.class);
 
+    private static String AK = "7cFRhQCzRHxmbvt85XjFfIZipbh6cgM9";
     /**
      * 发送http请求
      *
@@ -69,7 +65,8 @@ public class BaiduMapUtil {
     public static JSONObject convertCoord(String lng, String lat) {
         // 百度坐标转换接口
         //String convertUrl = "http://api.map.baidu.com/ag/coord/convert?from=2&to=4&x={x}&y={y}";
-        String convertUrl = "http://api.map.baidu.com/geoconv/v1/?coords={x},{y}&from=3&to=5&ak=A23543b3be51778406429cba6b7d74c4";
+        String convertUrl = "http://api.map.baidu.com/geoconv/v1/?coords={x},{y}&from=3&to=5&ak="+AK;
+
 
         convertUrl = convertUrl.replace("{x}", lng);
         log.info("convertUrl:"+convertUrl);
@@ -92,10 +89,10 @@ public class BaiduMapUtil {
      * @param lat 纬度
      * @return
      */
-    public static  JSONObject gpsConvertCoord(String lng, String lat) {
+    public static JSONObject gpsConvertCoord(String lng, String lat) {
         // 百度坐标转换接口
         //String convertUrl = "http://api.map.baidu.com/ag/coord/convert?from=2&to=4&x={x}&y={y}";
-        String convertUrl = "http://api.map.baidu.com/geoconv/v1/?coords={x},{y}&from=1&to=5&ak=A23543b3be51778406429cba6b7d74c4";
+        String convertUrl = "http://api.map.baidu.com/geoconv/v1/?coords={x},{y}&from=1&to=5&ak="+AK;
 
         convertUrl = convertUrl.replace("{x}", lng);
         log.info("convertUrl:"+convertUrl);
@@ -175,6 +172,7 @@ public class BaiduMapUtil {
 
     }
 
+
     /**
      * 根据经纬度来转换为地址
      *
@@ -182,11 +180,11 @@ public class BaiduMapUtil {
      * @param lat 纬度
      * @return
      */
-    public static  String addressConvertCoord(String lat,String lng) {
+    public static  String addressConvertFromCoord(String lat,String lng) {
         // 百度坐标转换接口
         //String convertUrl = "http://api.map.baidu.com/ag/coord/convert?from=2&to=4&x={x}&y={y}";
         //http://api.map.baidu.com/geocoder/v2/?ak=E4805d16520de693a3fe707cdc962045&callback=renderReverse&location=39.983424,116.322987&output=json&pois=1
-        String addrconvertUrl = "http://api.map.baidu.com/geocoder/v2/?ak=A23543b3be51778406429cba6b7d74c4&location={x},{y}&output=json";
+        String addrconvertUrl = "http://api.map.baidu.com/geocoder/v2/?ak="+AK+"&location={x},{y}&output=json";
 
         addrconvertUrl = addrconvertUrl.replace("{x}", lat);
         log.info("convertUrl:"+addrconvertUrl);
@@ -196,7 +194,7 @@ public class BaiduMapUtil {
             String jsonCoord = httpRequest(addrconvertUrl);
             JSONObject jsonObject = JSON.parseObject(jsonCoord);
             log.info("jsonObject|"+jsonObject);
-            JSONObject  result    =jsonObject.getJSONObject("result");
+            JSONObject result    =jsonObject.getJSONObject("result");
             //得到完整的地址
             String 	formatted_address = result.getString("formatted_address");
             JSONObject location =  	result.getJSONObject("location");
@@ -254,7 +252,8 @@ public class BaiduMapUtil {
             address = java.net.URLEncoder.encode(addr, "UTF-8");
 
             //System.out.println(address);
-            String addrconvertUrl = "http://api.map.baidu.com/geocoder/v2/?output=json&ak=A23543b3be51778406429cba6b7d74c4&address=" + address;
+//            String addrconvertUrl = "http://api.map.baidu.com/geocoder/v2/?output=json&ak=A23543b3be51778406429cba6b7d74c4&address=" + address;
+            String addrconvertUrl = "http://api.map.baidu.com/geocoding/v3/?address="+address+"&output=json&ak="+AK;
             URL myURL = null;
 
             String jsonCoord = httpRequest(addrconvertUrl);
@@ -275,7 +274,8 @@ public class BaiduMapUtil {
      * @return
      */
     public static String[] getAddr(String lng,String lat) {
-        String addrconvertUrl = "http://api.map.baidu.com/geocoder/v2/?output=json&ak=A23543b3be51778406429cba6b7d74c4&location="+lat+","+lng;
+//        String addrconvertUrl = "http://api.map.baidu.com/geocoder/v2/?output=json&ak="+AK+"&location="+lat+","+lng;
+        String addrconvertUrl = "http://api.map.baidu.com/reverse_geocoding/v3/?ak="+AK+"&output=json&coordtype=wgs84ll&location="+lat+","+lng;
         try {
             String jsonCoord = httpRequest(addrconvertUrl);
             JSONObject jsonObject = JSON.parseObject(jsonCoord);
@@ -289,13 +289,12 @@ public class BaiduMapUtil {
     }
 
     public static void main(String[] args) {
-//        String[] o = getCoordinate("深圳市南山区");
+//        String[] o = getCoordinate("广西壮族自治区南宁市西乡塘区衡阳东路51号正东方向40米");
 //        System.out.println(o);
-        String[] o1 = getAddr("114.35047403624727","22.71623346474869");
-        System.out.println(o1[0]);
-        System.out.println(o1[1]);
-
-        System.out.println();
+//        String[] o1 = getAddr("108.323124829","22.840775759");
+//        System.out.println(o1[0]);
+//        System.out.println(o1[1]);
+//        System.out.println(convertCoord("108.323124829","22.840775759").toString());
     }
 }
 

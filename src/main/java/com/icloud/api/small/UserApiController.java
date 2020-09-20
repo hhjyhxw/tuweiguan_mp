@@ -1,6 +1,7 @@
 package com.icloud.api.small;
 
 import com.icloud.annotation.LoginUser;
+import com.icloud.basecommon.util.BaiduMapUtil;
 import com.icloud.common.R;
 import com.icloud.modules.bsactivity.service.BsactivityAdService;
 import com.icloud.modules.small.service.SmallCategoryService;
@@ -11,10 +12,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @Api("用户中心接口")
 @RestController
@@ -41,6 +39,19 @@ public class UserApiController {
         BeanUtils.copyProperties(user,userVo);
        return R.ok().put("user",userVo);
     }
+
+    /**
+     * 用户信息
+     * @return
+     */
+    @ApiOperation(value="获取当前用户地址", notes="")
+    @RequestMapping(value = "/getNowAddress",method = {RequestMethod.GET})
+    @ResponseBody
+    public R getNowAddress(@LoginUser WxUser user, @RequestParam String longitude,String latitude) {
+        String address = BaiduMapUtil.addressConvertFromCoord(latitude,longitude);
+        return R.ok().put("address",address);
+    }
+
 
 
 }
