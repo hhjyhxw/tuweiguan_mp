@@ -227,7 +227,7 @@ public class BaiduMapUtil {
             //拼接地址
             String weixinLbslabel =district+street+street_number;
             //把经度，纬度，地址存到对象中
-
+            return weixinLbslabel;
 
         } catch (Exception e) {
             e.printStackTrace();
