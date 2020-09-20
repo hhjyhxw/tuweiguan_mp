@@ -5,8 +5,10 @@ import com.icloud.annotation.LoginUser;
 import com.icloud.common.R;
 import com.icloud.modules.bsactivity.service.BsactivityAdService;
 import com.icloud.modules.small.entity.SmallCart;
+import com.icloud.modules.small.entity.SmallSku;
 import com.icloud.modules.small.entity.SmallSpu;
 import com.icloud.modules.small.service.SmallCartService;
+import com.icloud.modules.small.service.SmallSkuService;
 import com.icloud.modules.small.service.SmallSpuService;
 import com.icloud.modules.small.util.CartOrderUtil;
 import com.icloud.modules.small.vo.CartTotalVo;
@@ -36,6 +38,8 @@ public class CartApiController {
     private SmallCartService smallCartService;
     @Autowired
     private SmallSpuService smallSpuService;
+    @Autowired
+    private SmallSkuService smallSkuService;
 
     /**
      * 单个店铺商品购物车
@@ -245,8 +249,8 @@ public class CartApiController {
     }
 
     public boolean checkStock(Long id, Long num){
-        SmallSpu smallSpu = (SmallSpu) smallSpuService.getById(id);
-        int kuncun = smallSpu.getStock()-(smallSpu.getFreezeStock()!=null?smallSpu.getFreezeStock():0);
+        SmallSku smallSku = (SmallSku) smallSkuService.getById(id);
+        int kuncun = smallSku.getStock()-(smallSku.getFreezeStock()!=null?smallSku.getFreezeStock():0);
         if(kuncun>=num.intValue()){
             return true;
         }
