@@ -134,7 +134,7 @@ public class CartApiController {
             }
             return result?R.ok():R.error();
         }
-        return R.ok();
+        return R.error();
     }
 
 
@@ -233,10 +233,15 @@ public class CartApiController {
         if(supplierId==null){
             return R.error("supplierId为空");
         }
-        int num = smallCartService.count(new QueryWrapper<SmallCart>()
-                .eq("user_id",user.getId())
-                .eq("supplier_id", supplierId));
-        return R.ok().put("totalNum",num);
+//        int num = smallCartService.count(new QueryWrapper<SmallCart>()
+//                .eq("user_id",user.getId())
+//                .eq("supplier_id", supplierId));
+        Map<String,Object> params = new HashMap<String,Object>();
+        params.put("user_id",user.getId());
+        params.put("supplier_id",supplierId);
+        List<CartVo> list  = smallCartService.getCartVoList(params);
+        CartTotalVo total = CartOrderUtil.getTotal(list);
+        return R.ok().put("totalNum",total.getTotalNum());
     }
 
     public boolean checkStock(Long id, Long num){
