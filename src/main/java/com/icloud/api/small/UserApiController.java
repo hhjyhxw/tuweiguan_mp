@@ -1,5 +1,6 @@
 package com.icloud.api.small;
 
+import com.icloud.annotation.AuthIgnore;
 import com.icloud.annotation.LoginUser;
 import com.icloud.basecommon.util.BaiduMapUtil;
 import com.icloud.common.R;
@@ -47,8 +48,9 @@ public class UserApiController {
     @ApiOperation(value="获取当前用户地址", notes="")
     @RequestMapping(value = "/getNowAddress",method = {RequestMethod.GET})
     @ResponseBody
+    @AuthIgnore
     public R getNowAddress(@LoginUser WxUser user, @RequestParam String longitude,String latitude) {
-        String address = BaiduMapUtil.addressConvertFromCoord(latitude,longitude);
+        String address = BaiduMapUtil.addressConvertCoord(latitude,longitude);
         return R.ok().put("address",address);
     }
 

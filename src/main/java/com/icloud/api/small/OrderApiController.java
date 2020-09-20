@@ -134,7 +134,7 @@ public class OrderApiController {
     public R latesOrder(@LoginUser WxUser user,Long supplierId) throws Exception {
         SmallOrder smallOrder = null;
         List<SmallOrder> list = smallOrderService.list(new QueryWrapper<SmallOrder>().eq("supplier_id",supplierId).orderByDesc("create_time"));
-        if(list!=null){
+        if(list!=null && list.size()>0){
             smallOrder = list.get(0);
             OrderVo orderVo = new OrderVo();
             BeanUtils.copyProperties(orderVo,smallOrder);
