@@ -178,6 +178,7 @@ public class OrderApiController {
                     // 回调处理
                 });
                 p.setDetaillist(detaillistvo);
+                p.setShow(false);
             });
         }
         page.setList(orderlist);
