@@ -6,6 +6,7 @@ import com.icloud.basecommon.model.Query;
 import com.icloud.basecommon.service.redis.RedisService;
 import com.icloud.common.PageUtils;
 import com.icloud.common.R;
+import com.icloud.common.util.StringUtil;
 import com.icloud.modules.bsactivity.entity.BsactivityAd;
 import com.icloud.modules.bsactivity.service.BsactivityAdService;
 import com.icloud.modules.shop.entity.Shop;
@@ -83,12 +84,16 @@ public class ShopApiController {
      */
     @ApiOperation(value="取平台 和当前店铺和分店列表", notes="")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "supplierId", value = "商家id", required = false, paramType = "query", dataType = "Long"),
+            @ApiImplicitParam(name = "supplierId", value = "商家id", required = false, paramType = "query", dataType = "String"),
     })
     @RequestMapping(value = "/shoplist",method = {RequestMethod.GET})
     @ResponseBody
     @AuthIgnore
-    public R shoplist(Long supplierId) {
+    public R shoplist(String supplierId) {
+        Long shopId = null;
+        if(StringUtil.checkStr(supplierId) && !"null".equals(supplierId)){
+            shopId = Long.valueOf(supplierId);
+        }
         //1、默认读取平台店铺
         List<Shop> shoplist = new ArrayList<Shop>();
         //系统店铺及系统店铺分店一定读取
@@ -108,7 +113,7 @@ public class ShopApiController {
                 List<Shop> mylist = shopService.list(new QueryWrapper<Shop>().eq("user_id",user.getId()));
                 if(mylist!=null && mylist.size()>0){
                    if(mylist.get(0).getId().longValue()!=sysshoplist.get(0).getId().longValue()){
-                       supplierId = mylist.get(0).getId();
+                       shopId = mylist.get(0).getId();
                    }
                 }
             }
@@ -117,8 +122,8 @@ public class ShopApiController {
         String shopMainName = null;//用户自身店铺 或者分享店铺名称
         String shopImg = null;//
         //查询店主店铺与分店
-       if(supplierId!=null && supplierId.longValue()!=sysshoplist.get(0).getId().longValue()){
-           shopMainId = supplierId;
+       if(shopId!=null && shopId.longValue()!=sysshoplist.get(0).getId().longValue()){
+           shopMainId = shopId;
             //查询分享店铺和分店
             Object shopobj = shopService.getById(supplierId);
             Shop shop = null;
@@ -143,8 +148,8 @@ public class ShopApiController {
         }
         if(adlist==null){
             //店铺广告为空查询平台广告
-            supplierId = shoplist.get(0).getId();
-            shopMainId = supplierId;
+            shopId = shoplist.get(0).getId();
+            shopMainId = shopId;
             shopMainName = shoplist.get(0).getShopName();
             shopImg = shoplist.get(0).getShopImg();
             adlist  = bsactivityAdService.list(new QueryWrapper<BsactivityAd>()
