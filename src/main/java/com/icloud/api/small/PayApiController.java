@@ -88,6 +88,7 @@ public class PayApiController {
         Object result = null;
         try {
             WxPayUnifiedOrderRequest orderRequest = new WxPayUnifiedOrderRequest();
+            log.info("wxMpProperties.getConfigs().get(0).getAppId()==="+ wxMpProperties.getConfigs().get(0).getAppId());
             orderRequest.setAppid(wxMpProperties.getConfigs().get(0).getAppId());
             orderRequest.setOutTradeNo(orderNo);
             orderRequest.setOpenid(user.getXcxopenid());
