@@ -15,6 +15,7 @@ import com.icloud.basecommon.model.Query;
 import com.icloud.common.*;
 import com.icloud.common.beanutils.ColaBeanUtils;
 import com.icloud.common.validator.ValidatorUtils;
+import com.icloud.config.global.mini.WxMaProperties;
 import com.icloud.config.global.wx.WxMpProperties;
 import com.icloud.exceptions.ApiException;
 import com.icloud.modules.small.entity.SmallAddress;
@@ -53,7 +54,7 @@ public class PayApiController {
     @Autowired
     private WxPayService wxPayService;
     @Autowired
-    private WxMpProperties wxMpProperties;
+    private WxMaProperties wxMaProperties;
     @Autowired
     private WxNotifyService wxNotifyService;
 
@@ -88,8 +89,8 @@ public class PayApiController {
         Object result = null;
         try {
             WxPayUnifiedOrderRequest orderRequest = new WxPayUnifiedOrderRequest();
-            log.info("wxMpProperties.getConfigs().get(0).getAppId()==="+ wxMpProperties.getConfigs().get(0).getAppId());
-            orderRequest.setAppid(wxMpProperties.getConfigs().get(0).getAppId());
+            log.info("wxMaProperties.getConfigs().get(0).getAppId()==="+ wxMaProperties.getConfigs().get(0).getAppid());
+            orderRequest.setAppid(wxMaProperties.getConfigs().get(0).getAppid());
             orderRequest.setOutTradeNo(orderNo);
             orderRequest.setOpenid(user.getXcxopenid());
             orderRequest.setBody("订单：" + orderNo);
