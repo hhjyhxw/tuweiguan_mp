@@ -58,7 +58,7 @@ t.supplier_id = s.id and t.user_id = u.id
     <if test="channel != null">
         and t.channel = #{channel}
     </if>
-    <if test="orderNo != null">
+    <if test="orderNo != null and orderNo!=''">
         and t.order_no = #{orderNo}
     </if>
     <if test="userId != null">
@@ -154,10 +154,10 @@ t.supplier_id = s.id and t.user_id = u.id
 <if test="endTime != null" >
     <![CDATA[ and t.create_time  <=  #{endTime}  ]]>
 </if>
-<if test="nickname != null">
+<if test="nickname != null and nickname!=''">
     and u.nickname like CONCAT('%', '${nickname}', '%')
 </if>
-<if test="shopName != null">
+<if test="shopName != null and shopName!=''">
     and s.shop_name like CONCAT('%', '${shopName}', '%')
 </if>
 </where>
