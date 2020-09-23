@@ -4,7 +4,7 @@ $(function () {
         datatype: "json",
         colModel: [			
 			{ label: 'id', name: 'id', index: 'id', width: 50, key: true },
-			{ label: '所属店铺', name: 'shopId', index: 'shop_id', width: 80 }, 			
+            { label: '所属店铺', name: 'shop.shopName', index: 'shop_id', width: 80 },
 			{ label: '银行名称', name: 'bankName', index: 'bank_name', width: 80 }, 			
 			{ label: '支行名称', name: 'subBranch', index: 'sub_branch', width: 80 }, 			
 			{ label: '银行卡号', name: 'cardNo', index: 'card_no', width: 80 }, 			
@@ -55,6 +55,14 @@ var vm = new Vue({
 		shopBank: {},
         shopList:[],
         shopName:'',
+        q:{
+            bankName:'',
+            shopName:'',
+            subBranch:'',
+            cardNo:'',
+            userName:'',
+            mobile:'',
+        }
 	},
 	methods: {
 		query: function () {
@@ -137,8 +145,9 @@ var vm = new Vue({
 		reload: function (event) {
 			vm.showList = true;
 			var page = $("#jqGrid").jqGrid('getGridParam','page');
-			$("#jqGrid").jqGrid('setGridParam',{ 
-                page:page
+			$("#jqGrid").jqGrid('setGridParam',{
+                postData:vm.q,
+                page: 1
             }).trigger("reloadGrid");
 		},
         //加载getShopList

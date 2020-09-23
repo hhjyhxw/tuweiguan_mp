@@ -1,5 +1,10 @@
 package ${package}.${moduleName}.service;
 
+
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
+import com.icloud.common.MapEntryUtils;
+import com.icloud.common.PageUtils;
 import ${package}.${moduleName}.entity.${className};
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,5 +23,14 @@ public class ${className}Service extends BaseServiceImpl<${className}Mapper,${cl
 
     @Autowired
     private ${className}Mapper ${classname}Mapper;
+
+    @Override
+    public PageUtils<${className}> findByPage(int pageNo, int pageSize, Map<String, Object> query) {
+        PageHelper.startPage(pageNo, pageSize);
+        List<${className}> list = ${classname}Mapper.queryMixList(MapEntryUtils.clearNullValue(query));
+        PageInfo<${className}> pageInfo = new PageInfo<${className}>(list);
+        PageUtils<${className}> page = new PageUtils<${className}>(list,(int)pageInfo.getTotal(),pageSize,pageNo);
+        return page;
+    }
 }
 

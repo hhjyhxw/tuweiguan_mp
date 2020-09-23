@@ -27,40 +27,44 @@ id,shop_id,bank_name,sub_branch,card_no,user_name,mobile,status,created_by,creat
 
 
 <select id="queryMixList" resultMap="BaseResultMap">
-select * from shop_bank t
+select t.*,s.shop_name as "shop.shopName" from shop_bank t,shop s
 <where>
+t.shop_id = s.id
 <if test="id != null">
     and t.id = #{id}
 </if>
-<if test="shop_id != null">
-    and t.shop_id = #{shop_id}
+<if test="shopId != null">
+    and t.shop_id = #{shopId}
 </if>
-<if test="bank_name != null">
-    and t.bank_name = #{bank_name}
+<if test="bankName != null">
+    and t.bank_name like CONCAT('%', '${bankName}', '%')
 </if>
-<if test="sub_branch != null">
-    and t.sub_branch = #{sub_branch}
+<if test="subBranch != null">
+    and t.sub_branch = #{subBranch}
 </if>
-<if test="card_no != null">
-    and t.card_no = #{card_no}
+<if test="cardNo != null">
+    and t.card_no like CONCAT('%', '${cardNo}', '%')
 </if>
-<if test="user_name != null">
-    and t.user_name = #{user_name}
+<if test="userName != null">
+    and t.user_name  like CONCAT('%', '${userName}', '%')
 </if>
 <if test="mobile != null">
-    and t.mobile = #{mobile}
+    and t.mobile like CONCAT('%', '${mobile}', '%')
 </if>
 <if test="status != null">
     and t.status = #{status}
 </if>
-<if test="created_by != null">
-    and t.created_by = #{created_by}
+<if test="createdBy != null">
+    and t.created_by = #{createdBy}
 </if>
-<if test="created_time != null">
-    and t.created_time = #{created_time}
+<if test="createdTime != null">
+    and t.created_time = #{createdTime}
 </if>
-<if test="updated_by != null">
-    and t.updated_by = #{updated_by}
+<if test="updatedBy != null">
+    and t.updated_by = #{updatedBy}
+</if>
+<if test="shopName != null and shopName!=''">
+    and s.shop_name like CONCAT('%', '${shopName}', '%')
 </if>
 </where>
 </select>

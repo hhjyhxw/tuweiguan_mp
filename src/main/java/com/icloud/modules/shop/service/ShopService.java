@@ -18,5 +18,6 @@ public class ShopService extends BaseServiceImpl<ShopMapper,Shop> {
 
     @Autowired
     private ShopMapper shopMapper;
+
 }
 

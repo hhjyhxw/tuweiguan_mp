@@ -4,7 +4,7 @@ $(function () {
         datatype: "json",
         colModel: [			
 			{ label: 'id', name: 'id', index: 'id', width: 50, key: true },
-			{ label: '所属店铺', name: 'shopId', index: 'shop_id', width: 80 }, 			
+            { label: '所属店铺', name: 'shop.shopName', index: 'shop_id', width: 80 },
 			{ label: '交易单号', name: 'tradeNo', index: 'trade_no', width: 80 }, 			
 			{ label: '对应单号', name: 'orderNo', index: 'order_no', width: 80 }, 			
             { label: '交易类型', name: 'inOrOut', width: 60, formatter: function(value, options, row){
@@ -62,7 +62,12 @@ var vm = new Vue({
 	data:{
 		showList: true,
 		title: null,
-		shopTradeDetails: {}
+		shopTradeDetails: {},
+        q:{
+            orderNo:'',
+            shopName:'',
+            bizType:null,
+        }
 	},
 	methods: {
 		query: function () {
@@ -143,8 +148,9 @@ var vm = new Vue({
 		reload: function (event) {
 			vm.showList = true;
 			var page = $("#jqGrid").jqGrid('getGridParam','page');
-			$("#jqGrid").jqGrid('setGridParam',{ 
-                page:page
+			$("#jqGrid").jqGrid('setGridParam',{
+                postData:vm.q,
+                page: 1
             }).trigger("reloadGrid");
 		}
 	}

@@ -63,5 +63,8 @@ public class ShopTradeDetails implements Serializable {
    	   	   /* 更新时间 */
        @TableField("updated_time")
        private Date updatedTime;
+       /* 店铺 */
+       @TableField(exist = false)
+       private Shop shop;
    	
 }

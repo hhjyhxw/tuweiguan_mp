@@ -27,19 +27,20 @@ id,shop_id,name,account_no,mobile,pwd,role,status,created_by,created_time,update
 
 
 <select id="queryMixList" resultMap="BaseResultMap">
-select * from shop_man t
+    select t.*,s.shop_name as "shop.shopName" from shop_man t,shop s
 <where>
+    t.shop_id = s.id
 <if test="id != null">
     and t.id = #{id}
 </if>
-<if test="shop_id != null">
-    and t.shop_id = #{shop_id}
+<if test="shopId != null">
+    and t.shop_id = #{shopId}
 </if>
 <if test="name != null">
     and t.name = #{name}
 </if>
-<if test="account_no != null">
-    and t.account_no = #{account_no}
+<if test="accountNo != null">
+    and t.account_no = #{accountNo}
 </if>
 <if test="mobile != null">
     and t.mobile = #{mobile}
@@ -53,14 +54,17 @@ select * from shop_man t
 <if test="status != null">
     and t.status = #{status}
 </if>
-<if test="created_by != null">
-    and t.created_by = #{created_by}
+<if test="createdBy != null">
+    and t.created_by = #{createdBy}
 </if>
-<if test="created_time != null">
-    and t.created_time = #{created_time}
+<if test="createdTime != null">
+    and t.created_time = #{createdTime}
 </if>
-<if test="updated_by != null">
-    and t.updated_by = #{updated_by}
+<if test="updatedBy != null">
+    and t.updated_by = #{updatedBy}
+</if>
+<if test="shopName != null and shopName!=''">
+    and s.shop_name like CONCAT('%', '${shopName}', '%')
 </if>
 </where>
 </select>

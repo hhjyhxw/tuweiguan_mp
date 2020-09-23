@@ -4,7 +4,7 @@ $(function () {
         datatype: "json",
         colModel: [			
 			{ label: 'id', name: 'id', index: 'id', width: 50, key: true },
-			{ label: '所属店铺', name: 'shopId', index: 'shop_id', width: 80 }, 			
+            { label: '所属店铺', name: 'shop.shopName', index: 'shop_id', width: 80 },
 			{ label: '仓库名称', name: 'titile', index: 'titile', width: 80 }, 			
 			{ label: '省', name: 'province', index: 'province', width: 80 }, 			
 			{ label: '市', name: 'city', index: 'city', width: 80 }, 			
@@ -131,6 +131,10 @@ var vm = new Vue({
 		shopStore: {},
         shopList:[],
         shopName:'',
+        q:{
+            titile:'',
+            shopName:'',
+        }
 	},
 	methods: {
 		query: function () {
@@ -220,8 +224,9 @@ var vm = new Vue({
 		reload: function (event) {
 			vm.showList = true;
 			var page = $("#jqGrid").jqGrid('getGridParam','page');
-			$("#jqGrid").jqGrid('setGridParam',{ 
-                page:page
+			$("#jqGrid").jqGrid('setGridParam',{
+                postData:vm.q,
+                page: 1
             }).trigger("reloadGrid");
 		},
         //加载getShopList
