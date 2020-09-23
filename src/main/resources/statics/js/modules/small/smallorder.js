@@ -6,37 +6,39 @@ $(function () {
 			{ label: 'id', name: 'id', index: 'id', width: 50, key: true },
 			{ label: '下单渠道', name: 'channel', index: 'channel', width: 80 }, 			
 			{ label: '订单号', name: 'orderNo', index: 'order_no', width: 80 }, 			
-			{ label: '用户id', name: 'userId', index: 'user_id', width: 80 }, 			
-			{ label: '店铺id', name: 'supplierId', index: 'supplier_id', width: 80 }, 			
-			{ label: '0生成、处理中、已完成', name: 'orderStatus', index: 'order_status', width: 80 }, 			
-			{ label: '0未支付、1支付中、2已支付', name: 'payStatus', index: 'pay_status', width: 80 }, 			
-			{ label: '0生成、1、退款中、2已退款', name: 'refundStatus', index: 'refund_status', width: 80 }, 			
-			{ label: '0未发货、1发货中、2已发货', name: 'shipStatus', index: 'ship_status', width: 80 }, 			
-			{ label: '商品(sku)原始价总额', name: 'skuOriginalTotalPrice', index: 'sku_original_total_price', width: 80 }, 			
-			{ label: '商品(sku)现价总额', name: 'skuTotalPrice', index: 'sku_total_price', width: 80 }, 			
-			{ label: '运费', name: 'freightPrice', index: 'freight_price', width: 80 }, 			
+			{ label: '用户昵称', name: 'user.nickname', index: 'user_id', width: 80 },
+			{ label: '店铺名称', name: 'shop.shopName', index: 'supplier_id', width: 80 },
+            { label: '订单状态', name: 'orderStatus', width: 60, formatter: function(value, options, row){
+                    return value === 0 ?
+                        '<span class="label label-danger">未处理</span>' :
+                        (value===1?'<span class="label label-success">处理中</span>':
+                         (value===2?'<span class="label label-success">已完成</span>':'已关闭'));
+                }},
+            { label: '支付状态', name: 'payStatus', width: 60, formatter: function(value, options, row){
+                    return value === 0 ?
+                        '<span class="label label-danger">未支付</span>' :
+                        (value===1?'<span class="label label-success">支付中</span>':'已支付');
+                }},
+            { label: '退款状态', name: 'refundStatus', width: 60, formatter: function(value, options, row){
+                    return value === 0 ?
+                        '<span class="label label-danger">未退款</span>' :
+                        (value===1?'<span class="label label-success">退款中</span>':'已退款');
+                }},
+            { label: '发货状态', name: 'shipStatus', width: 60, formatter: function(value, options, row){
+                    return value === 0 ?
+                        '<span class="label label-danger">未发货</span>' :
+                        (value===1?'<span class="label label-success">发货中</span>':'已配送');
+                }},
+			{ label: '运费', name: 'freightPrice', index: 'freight_price', width: 80 },
 			{ label: '代金券优惠价', name: 'couponPrice', index: 'coupon_price', width: 80 }, 			
-			{ label: '代金券id', name: 'couponId', index: 'coupon_id', width: 80 }, 			
-			{ label: '实付订单金额', name: 'actualPrice', index: 'actual_price', width: 80 }, 			
+			{ label: '实付订单金额', name: 'actualPrice', index: 'actual_price', width: 80 },
 			{ label: '支付金额', name: 'payPrice', index: 'pay_price', width: 80 }, 			
-			{ label: '支付流水id(本地支付流水)', name: 'payId', index: 'pay_id', width: 80 }, 			
+			{ label: '支付流水', name: 'payId', index: 'pay_id', width: 80 },
 			{ label: '支付渠道名称', name: 'payChannel', index: 'pay_channel', width: 80 }, 			
-			{ label: '支付时间(支付成功回调获取的支付时间)', name: 'payTime', index: 'pay_time', width: 80 }, 			
-			{ label: '物流方式(物流方式代号)', name: 'shipCode', index: 'ship_code', width: 80 }, 			
-			{ label: '物流单号', name: 'shipNo', index: 'ship_no', width: 80 }, 			
-			{ label: '本地支付单号（用于与第三方支付交互）', name: 'paySn', index: 'pay_sn', width: 80 }, 			
-			{ label: '发货时间', name: 'shipTime', index: 'ship_time', width: 80 }, 			
-			{ label: '确认收货时间', name: 'confirmTime', index: 'confirm_time', width: 80 }, 			
-			{ label: '省', name: 'province', index: 'province', width: 80 }, 			
-			{ label: '市', name: 'city', index: 'city', width: 80 }, 			
-			{ label: '县', name: 'county', index: 'county', width: 80 }, 			
-			{ label: '详细地址', name: 'address', index: 'address', width: 80 }, 			
-			{ label: '', name: 'memo', index: 'memo', width: 80 }, 			
-			{ label: '', name: 'refundReason', index: 'refund_reason', width: 80 }, 			
-			{ label: '', name: 'consignee', index: 'consignee', width: 80 }, 			
-			{ label: '', name: 'phone', index: 'phone', width: 80 }, 			
-			{ label: '', name: 'createTime', index: 'create_time', width: 80 }, 			
-			{ label: '', name: 'modifyTime', index: 'modify_time', width: 80 }			
+			{ label: '支付时间', name: 'payTime', index: 'pay_time', width: 80 },
+			{ label: '发货时间', name: 'shipTime', index: 'ship_time', width: 80 },
+			{ label: '确认收货时间', name: 'confirmTime', index: 'confirm_time', width: 80 }
+
         ],
 		viewrecords: true,
         height: 385,
@@ -70,8 +72,15 @@ var vm = new Vue({
 	data:{
 		showList: true,
 		title: null,
-		smallOrder: {}
-	},
+		smallOrder: {},
+        q:{
+            orderNo:'',
+            nickname:'',
+            shopName:'',
+            startTime:null,
+            endTime:null
+        }
+     },
 	methods: {
 		query: function () {
 			vm.reload();
@@ -151,8 +160,9 @@ var vm = new Vue({
 		reload: function (event) {
 			vm.showList = true;
 			var page = $("#jqGrid").jqGrid('getGridParam','page');
-			$("#jqGrid").jqGrid('setGridParam',{ 
-                page:page
+			$("#jqGrid").jqGrid('setGridParam',{
+                postData:vm.q,
+                page: 1
             }).trigger("reloadGrid");
 		}
 	}

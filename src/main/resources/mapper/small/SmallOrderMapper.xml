@@ -49,106 +49,116 @@ id,channel,order_no,user_id,supplier_id,order_status,pay_status,refund_status,sh
 
 
 <select id="queryMixList" resultMap="BaseResultMap">
-select * from t_small_order t
+select t.*,s.shop_name as "shop.shopName",u.nickname as "user.nickname" from t_small_order t,shop s,t_wx_user u
 <where>
-<if test="id != null">
-    and t.id = #{id}
+t.supplier_id = s.id and t.user_id = u.id
+    <if test="id != null">
+        and t.id = #{id}
+    </if>
+    <if test="channel != null">
+        and t.channel = #{channel}
+    </if>
+    <if test="orderNo != null">
+        and t.order_no = #{orderNo}
+    </if>
+    <if test="userId != null">
+        and t.user_id = #{userId}
+    </if>
+    <if test="supplierId != null">
+        and t.supplier_id = #{supplierId}
+    </if>
+    <if test="orderStatus != null">
+        and t.order_status = #{orderStatus}
+    </if>
+    <if test="payStatus != null">
+        and t.pay_status = #{payStatus}
+    </if>
+    <if test="refundStatus != null">
+        and t.refund_status = #{refundStatus}
+    </if>
+    <if test="shipStatus != null">
+        and t.ship_status = #{shipStatus}
+    </if>
+    <if test="skuOriginalTotalPrice != null">
+        and t.sku_original_total_price = #{skuOriginalTotalPrice}
+    </if>
+    <if test="skuTotalPrice != null">
+        and t.sku_total_price = #{skuTotalPrice}
+    </if>
+    <if test="freightPrice != null">
+        and t.freight_price = #{freightPrice}
+    </if>
+    <if test="couponPrice != null">
+        and t.coupon_price = #{couponPrice}
+    </if>
+    <if test="couponId != null">
+        and t.coupon_id = #{couponId}
+    </if>
+    <if test="actualPrice != null">
+        and t.actual_price = #{actualPrice}
+    </if>
+    <if test="payPrice != null">
+        and t.pay_price = #{payPrice}
+    </if>
+    <if test="payId != null">
+        and t.pay_id = #{payId}
+    </if>
+    <if test="payChannel != null">
+        and t.pay_channel = #{payChannel}
+    </if>
+    <if test="payTime != null">
+        and t.pay_time = #{payTime}
+    </if>
+    <if test="shipCode != null">
+        and t.ship_code = #{shipCode}
+    </if>
+    <if test="shipNo != null">
+        and t.ship_no = #{shipNo}
+    </if>
+    <if test="paySn != null">
+        and t.pay_sn = #{paySn}
+    </if>
+    <if test="shipTime != null">
+        and t.ship_time = #{shipTime}
+    </if>
+    <if test="confirmTime != null">
+        and t.confirm_time = #{confirmTime}
+    </if>
+    <if test="province != null">
+        and t.province = #{province}
+    </if>
+    <if test="city != null">
+        and t.city = #{city}
+    </if>
+    <if test="county != null">
+        and t.county = #{county}
+    </if>
+    <if test="address != null">
+        and t.address = #{address}
+    </if>
+    <if test="memo != null">
+        and t.memo = #{memo}
+    </if>
+    <if test="refundReason != null">
+        and t.refund_reason = #{refundReason}
+    </if>
+    <if test="consignee != null">
+        and t.consignee = #{consignee}
+    </if>
+    <if test="phone != null">
+        and t.phone = #{phone}
+    </if>
+<if test="startTime != null" >
+    <![CDATA[ and t.create_time  >=  #{startTime}  ]]>
 </if>
-<if test="channel != null">
-    and t.channel = #{channel}
+<if test="endTime != null" >
+    <![CDATA[ and t.create_time  <=  #{endTime}  ]]>
 </if>
-<if test="order_no != null">
-    and t.order_no = #{order_no}
+<if test="nickname != null">
+    and u.nickname like CONCAT('%', '${nickname}', '%')
 </if>
-<if test="user_id != null">
-    and t.user_id = #{user_id}
-</if>
-<if test="supplier_id != null">
-    and t.supplier_id = #{supplier_id}
-</if>
-<if test="order_status != null">
-    and t.order_status = #{order_status}
-</if>
-<if test="pay_status != null">
-    and t.pay_status = #{pay_status}
-</if>
-<if test="refund_status != null">
-    and t.refund_status = #{refund_status}
-</if>
-<if test="ship_status != null">
-    and t.ship_status = #{ship_status}
-</if>
-<if test="sku_original_total_price != null">
-    and t.sku_original_total_price = #{sku_original_total_price}
-</if>
-<if test="sku_total_price != null">
-    and t.sku_total_price = #{sku_total_price}
-</if>
-<if test="freight_price != null">
-    and t.freight_price = #{freight_price}
-</if>
-<if test="coupon_price != null">
-    and t.coupon_price = #{coupon_price}
-</if>
-<if test="coupon_id != null">
-    and t.coupon_id = #{coupon_id}
-</if>
-<if test="actual_price != null">
-    and t.actual_price = #{actual_price}
-</if>
-<if test="pay_price != null">
-    and t.pay_price = #{pay_price}
-</if>
-<if test="pay_id != null">
-    and t.pay_id = #{pay_id}
-</if>
-<if test="pay_channel != null">
-    and t.pay_channel = #{pay_channel}
-</if>
-<if test="pay_time != null">
-    and t.pay_time = #{pay_time}
-</if>
-<if test="ship_code != null">
-    and t.ship_code = #{ship_code}
-</if>
-<if test="ship_no != null">
-    and t.ship_no = #{ship_no}
-</if>
-<if test="pay_sn != null">
-    and t.pay_sn = #{pay_sn}
-</if>
-<if test="ship_time != null">
-    and t.ship_time = #{ship_time}
-</if>
-<if test="confirm_time != null">
-    and t.confirm_time = #{confirm_time}
-</if>
-<if test="province != null">
-    and t.province = #{province}
-</if>
-<if test="city != null">
-    and t.city = #{city}
-</if>
-<if test="county != null">
-    and t.county = #{county}
-</if>
-<if test="address != null">
-    and t.address = #{address}
-</if>
-<if test="memo != null">
-    and t.memo = #{memo}
-</if>
-<if test="refund_reason != null">
-    and t.refund_reason = #{refund_reason}
-</if>
-<if test="consignee != null">
-    and t.consignee = #{consignee}
-</if>
-<if test="phone != null">
-    and t.phone = #{phone}
-</if>
-<if test="create_time != null">
-    and t.create_time = #{create_time}
+<if test="shopName != null">
+    and s.shop_name like CONCAT('%', '${shopName}', '%')
 </if>
 </where>
     order by t.create_time desc

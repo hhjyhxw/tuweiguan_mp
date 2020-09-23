@@ -184,11 +184,13 @@ public class ShopApiController {
             @ApiImplicitParam(name = "pageNum", value = "页码", required = false, paramType = "query", dataType = "String"),
             @ApiImplicitParam(name = "pageSize", value = "每页多少记录", required = false, paramType = "query", dataType = "String"),
             @ApiImplicitParam(name = "supplierId", value = "商户id", required = false, paramType = "query", dataType = "Long"),
+            @ApiImplicitParam(name = "keyword", value = "关键字", required = false, paramType = "query", dataType = "String"),
+
     })
     @RequestMapping(value = "/goodsList",method = {RequestMethod.GET})
     @ResponseBody
     @AuthIgnore
-    public R goodsList(String pageNum,String pageSize,Long supplierId) {
+    public R goodsList(String pageNum,String pageSize,Long supplierId,String keyword) {
         //传入id为空则读取平台商品
         if(supplierId==null){
             List<Shop> shoplist = shopService.list(new QueryWrapper<Shop>().eq("sys_flag","1"));
@@ -201,6 +203,7 @@ public class ShopApiController {
         query.put("page",pageNum);
         query.put("limit",pageSize);
         query.put("supplierId",supplierId);
+        query.put("title",keyword);
         query.put("",supplierId);
         PageUtils<GroupSkuVo> page = smallGroupShopService.findByFrontPage(query.getPageNum(),query.getPageSize(), query);
         return R.ok().put("page", page);

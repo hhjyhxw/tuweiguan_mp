@@ -21,18 +21,22 @@ $(function () {
 			{ label: 'id', name: 'id', index: 'id', width: 50, key: true },
 			{ label: '上级店铺名称', name: 'parentName', index: 'parentName', width: 80 },
 			{ label: '名称', name: 'shopName', index: 'shop_name', width: 80 },
-			{ label: '系统店铺标志', name: 'sysFlag', index: 'sys_flag', width: 80 }, 			
+            { label: '系统店铺', name: 'status', width: 60, formatter: function(value, options, row){
+                    return value === '0' ?
+                        '<span class="label label-danger">不是</span>' :
+                        '<span class="label label-success">是</span>';
+                }},
 			{ label: '级别', name: 'shopLevel', index: 'shop_level', width: 80 }, 			
 			{ label: '覆盖范围(米)', name: 'coverScope', index: 'cover_scope', width: 80 },
 			{ label: '状态', name: 'status', width: 60, formatter: function(value, options, row){
-					return value === 0 ?
+					return value === '0' ?
 						'<span class="label label-danger">关闭</span>' :
 						'<span class="label label-success">开启</span>';
 				}},
 			{ label: '审核', name: 'review', width: 60, formatter: function(value, options, row){
-					return value === 0 ?
+					return value === '0' ?
 						'<span class="label label-danger">未审核</span>' :
-						(value===1?'<span class="label label-success">审核通过</span>':'审核失败');
+						(value==='1'?'<span class="label label-success">审核通过</span>':'审核失败');
 				}},
 			{ label: '创建人', name: 'createdBy', index: 'created_by', width: 80 }, 			
 			{ label: '创建时间', name: 'createdTime', index: 'created_time', width: 80 }, 			

@@ -264,8 +264,11 @@ public class MapEntryUtils {
                     continue;
                 }
                 Field field = getClassField(clazz, propertyName);
-                if(field==null)
+                if(field==null){
+//                    //把实体不存在的属性也加入到 columResult中,方便查询
+//                    columResult.put(propertyName,entry.getValue());
                     continue;
+                }
                 TableField myFieldAnnotation = field.getAnnotation(TableField.class);
                 if(!myFieldAnnotation.exist()){//表示布关联数据库
                     continue;

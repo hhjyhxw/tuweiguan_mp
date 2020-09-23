@@ -32,8 +32,8 @@ select * from ${tableName} t
 <where>
 #foreach($column in $columns)
 #if($foreach.hasNext)
-<if test="${column.columnName} != null">
-    and t.${column.columnName} = #{${column.columnName}}
+<if test="${column.attrname} != null">
+    and t.${column.columnName} = #{${column.attrname}}
 </if>
 #end
 #end

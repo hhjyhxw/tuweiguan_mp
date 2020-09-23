@@ -4,7 +4,9 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
+import com.icloud.modules.shop.entity.Shop;
 import com.icloud.modules.small.vo.OrderDetailVo;
+import com.icloud.modules.wx.entity.WxUser;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -131,9 +133,17 @@ public class SmallOrder implements Serializable {
        private Date modifyTime;
 
        @TableField(exist = false)
-      private List<OrderDetailVo> detaillist;
+       private List<OrderDetailVo> detaillist;
         /* 用于控制明细项是否隐藏或者显示 */
+       @TableField(exist = false)
+       private boolean show;
+
+        /* 用户 */
         @TableField(exist = false)
-      private boolean show;
-   	
+        private WxUser user;
+        /* 店铺 */
+        @TableField(exist = false)
+        private Shop shop;
+
+
 }
