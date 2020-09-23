@@ -93,7 +93,7 @@ select * from t_small_group_shop t
                 and t.supplier_id = #{supplierId}
             </if>
             <if test="title != null and title!=''">
-                and (k.title LIKE CONCAT('%', '${title}', '%')  or p.title= LIKE CONCAT('%', '${title}', '%'))
+                and (k.title LIKE CONCAT('%', '${title}', '%')  or p.title LIKE CONCAT('%', '${title}', '%'))
             </if>
         </where>
     </select>
