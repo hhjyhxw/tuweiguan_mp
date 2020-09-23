@@ -6,6 +6,8 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import lombok.Data;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.Date;
 
@@ -25,24 +27,30 @@ public class ShopBank implements Serializable {
        @TableId(value="id", type= IdType.AUTO)
        private Long id;
    	   	   /* 所属店铺 */
+       @NotNull(message = "所属店铺不能为空")
        @TableField("shop_id")
        private String shopId;
    	   	   /* 银行名称 */
+       @NotBlank(message = "银行名称不能为空")
        @TableField("bank_name")
        private String bankName;
    	   	   /* 支行名称 */
        @TableField("sub_branch")
        private String subBranch;
    	   	   /* 银行卡号 */
+       @NotBlank(message = "银行卡号不能为空")
        @TableField("card_no")
        private String cardNo;
    	   	   /* 用户姓名 */
+       @NotBlank(message = "用户名不能为空")
        @TableField("user_name")
        private String userName;
    	   	   /* 手机号 */
+       @NotBlank(message = "用户手机号不能为空")
        @TableField("mobile")
        private String mobile;
    	   	   /* 状态 0：禁用，1：正常 */
+       @NotNull(message = "用户状态不能为空")
        @TableField("status")
        private String status;
    	   	   /* 创建人 */

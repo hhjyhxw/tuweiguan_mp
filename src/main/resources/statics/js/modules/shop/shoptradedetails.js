@@ -7,9 +7,22 @@ $(function () {
 			{ label: '所属店铺', name: 'shopId', index: 'shop_id', width: 80 }, 			
 			{ label: '交易单号', name: 'tradeNo', index: 'trade_no', width: 80 }, 			
 			{ label: '对应单号', name: 'orderNo', index: 'order_no', width: 80 }, 			
-			{ label: '交易类型 10：订单收入，11：账号充值，20：账号提现，21：扣除订单手续费', name: 'bizType', index: 'biz_type', width: 80 }, 			
-			{ label: '收支方向 1：收入，2：支出', name: 'inOrOut', index: 'in_or_out', width: 80 }, 			
-			{ label: '变更前余额', name: 'beforeBlance', index: 'before_blance', width: 80 }, 			
+            { label: '交易类型', name: 'inOrOut', width: 60, formatter: function(value, options, row){
+                    return value === 10 ?
+                        '<span class="label label-success">订单收入</span>' :
+                        (value===11?'<span class="label label-success">账号充值</span>':
+                        (value===20?'<span class="label label-success">账号提现</span>':
+                        (value===21?'<span class="label label-success">扣除订单手续费</span>':'未知类型')
+
+                        )
+                        );
+                }},
+            { label: '收支方向', name: 'inOrOut', width: 60, formatter: function(value, options, row){
+                    return value === '1' ?
+                        '<span class="label label-danger">收入</span>' :
+                        (value==='2'?'<span class="label label-success">支出</span>':'未写来源');
+                }},
+			{ label: '变更前余额', name: 'beforeBlance', index: 'before_blance', width: 80 },
 			{ label: '变更金额', name: 'amount', index: 'amount', width: 80 }, 			
 			{ label: '变更后余额', name: 'afterBlance', index: 'after_blance', width: 80 }, 			
 			{ label: '创建人', name: 'createdBy', index: 'created_by', width: 80 }, 			

@@ -10,7 +10,11 @@ $(function () {
 			{ label: '银行卡号', name: 'cardNo', index: 'card_no', width: 80 }, 			
 			{ label: '用户姓名', name: 'userName', index: 'user_name', width: 80 }, 			
 			{ label: '手机号', name: 'mobile', index: 'mobile', width: 80 }, 			
-			{ label: '状态 0：禁用，1：正常', name: 'status', index: 'status', width: 80 }, 			
+            { label: '状态', name: 'status', width: 60, formatter: function(value, options, row){
+                    return value === '0' ?
+                        '<span class="label label-danger">禁用</span>' :
+                        '<span class="label label-success">正常</span>';
+                }},
 			{ label: '创建人', name: 'createdBy', index: 'created_by', width: 80 }, 			
 			{ label: '创建时间', name: 'createdTime', index: 'created_time', width: 80 }, 			
 			{ label: '更新人', name: 'updatedBy', index: 'updated_by', width: 80 }, 			
@@ -48,7 +52,9 @@ var vm = new Vue({
 	data:{
 		showList: true,
 		title: null,
-		shopBank: {}
+		shopBank: {},
+        shopList:[],
+        shopName:'',
 	},
 	methods: {
 		query: function () {
@@ -67,7 +73,8 @@ var vm = new Vue({
 			vm.showList = false;
             vm.title = "修改";
             
-            vm.getInfo(id)
+            vm.getInfo(id);
+
 		},
 		saveOrUpdate: function (event) {
 		    $('#btnSaveOrUpdate').button('loading').delay(1000).queue(function() {
@@ -124,6 +131,7 @@ var vm = new Vue({
 		getInfo: function(id){
 			$.get(baseURL + "shop/shopbank/info/"+id, function(r){
                 vm.shopBank = r.shopBank;
+                vm.setShopName(r.shopBank.shopId);
             });
 		},
 		reload: function (event) {
@@ -132,6 +140,27 @@ var vm = new Vue({
 			$("#jqGrid").jqGrid('setGridParam',{ 
                 page:page
             }).trigger("reloadGrid");
-		}
+		},
+        //加载getShopList
+        getShopList:function(){
+            $.get(baseURL + "shop/shop/selectlist", function(r){
+                vm.shopList = r.list;
+            });
+        },
+        //选择卡店铺
+        selectShop: function (index) {
+            vm.shopBank.shopId = vm.shopList[index].id;
+            vm.shopName = vm.shopList[index].shopName;
+        },
+        setShopName:function(shopId){
+            if(vm.shopList!=null && vm.shopList.length>0 && shopId!=null){
+                vm.shopList.forEach(p=>{
+                    if(p.id===shopId){
+                        vm.shopName = p.shopName;
+                    }
+                });
+            }
+        }
 	}
 });
+vm.getShopList();

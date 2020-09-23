@@ -140,6 +140,9 @@ public class ShopController extends AbstractController {
     @RequestMapping("/save")
     @RequiresPermissions("shop:shop:save")
     public R save(@RequestBody Shop shop){
+        ValidatorUtils.validateEntity(shop);
+        shop.setCreatedTime(new Date());
+        shop.setCreatedBy(getUser().getUsername());
         shopService.save(shop);
 
         return R.ok();
@@ -152,6 +155,8 @@ public class ShopController extends AbstractController {
     @RequiresPermissions("shop:shop:update")
     public R update(@RequestBody Shop shop){
         ValidatorUtils.validateEntity(shop);
+        shop.setUpdatedTime(new Date());
+        shop.setUpdatedBy(getUser().getUsername());
         shopService.updateById(shop);
         
         return R.ok();

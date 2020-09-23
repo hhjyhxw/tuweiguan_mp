@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import lombok.Data;
 
+import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.io.Serializable;
 import java.util.Date;
@@ -26,6 +27,7 @@ public class ShopTradeDetails implements Serializable {
        @TableId(value="id", type= IdType.AUTO)
        private Long id;
    	   	   /* 所属店铺 */
+       @NotNull(message = "所属店铺不能为空")
        @TableField("shop_id")
        private String shopId;
    	   	   /* 交易单号 */

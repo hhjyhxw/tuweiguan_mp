@@ -1,3 +1,35 @@
+
+
+
+
+//直接输入地址，光标离开的时候，地址解析
+// $("#village").change(function(){
+//     debugger;
+//     // 创建地址解析器实例
+//     var myGeo = new BMap.Geocoder();
+//     //获取到地址
+//     var address = $(this).val();
+//     // 将地址解析结果显示在地图上,并调整地图视野
+//     myGeo.getPoint(address, function(point){
+//         if (point) {
+//             map.centerAndZoom(point, 19);
+//             map.addOverlay(new BMap.Marker(point));
+//             //alert(point.lng+"和"+point.lat);
+//             latitudeBaiDu = point.lat;
+//             longitudeBaiDu = point.lng;
+//             $("#latitude").attr("value",latitudeBaiDu);
+//             $("#longitude").attr("value",longitudeBaiDu);
+//             $("#address").attr("value",address);
+//         }else{
+//             alert("您选择地址没有解析到结果!");
+//         }
+//     }, "深圳市");
+//
+// });
+
+
+
+
 var setting = {
     data: {
         simpleData: {
@@ -21,8 +53,8 @@ $(function () {
 			{ label: 'id', name: 'id', index: 'id', width: 50, key: true },
 			{ label: '上级店铺名称', name: 'parentName', index: 'parentName', width: 80 },
 			{ label: '名称', name: 'shopName', index: 'shop_name', width: 80 },
-            { label: '系统店铺', name: 'status', width: 60, formatter: function(value, options, row){
-                    return value === '0' ?
+            { label: '系统店铺', name: 'sysFlag', width: 60, formatter: function(value, options, row){
+                    return value ==='0' ?
                         '<span class="label label-danger">不是</span>' :
                         '<span class="label label-success">是</span>';
                 }},
@@ -96,6 +128,76 @@ $(function () {
     });
 
 
+    $("#sssssssssss").click(function(){
+        //获取到地址
+        // 创建地址解析器实例
+        var myGeo = new BMap.Geocoder();
+        var address = $("#detailAddress").val();
+        if(address==null || address==''){
+            return;
+        }
+        // 将地址解析结果显示在地图上,并调整地图视野
+        myGeo.getPoint(address, function(point){
+            if (point) {
+                map.centerAndZoom(point, 19);
+                map.addOverlay(new BMap.Marker(point));
+                //alert(point.lng+"和"+point.lat);
+                console.log("point==="+JSON.stringify(point))
+                latitudeBaiDu = point.lat;
+                longitudeBaiDu = point.lng;
+                vm.shop.lnt = longitudeBaiDu;
+                vm.shop.lat = latitudeBaiDu;
+
+                myGeo.getLocation(point, function(rs){
+                    console.log("rs=="+JSON.stringify(rs))
+                    var addComp = rs.addressComponents;
+                    var addressBaiDu =  addComp.city+ addComp.district+ addComp.street+ addComp.streetNumber;
+                    <!--var addressBaiDu = addComp.province + addComp.city+ addComp.district+ addComp.street+ addComp.streetNumber;-->
+                    vm.shop.province = addComp.province;
+                    vm.shop.city = addComp.city;
+                    vm.shop.county = addComp.district;
+                    vm.shop.address = addComp.street + addComp.streetNumber;
+                });
+            }else{
+                alert("您选择地址没有解析到结果!");
+            }
+        }, "深圳市");
+
+    });
+
+    //直接输入地址，光标离开的时候，地址解析
+    $("#address").blur(function(){
+        // 创建地址解析器实例
+        var myGeo = new BMap.Geocoder();
+        //获取到地址
+        var address = $("#address").val();
+        // 将地址解析结果显示在地图上,并调整地图视野
+        myGeo.getPoint(address, function(point){
+            if (point) {
+                map.centerAndZoom(point, 19);
+                map.addOverlay(new BMap.Marker(point));
+                //alert(point.lng+"和"+point.lat);
+                console.log("point==="+JSON.stringify(point))
+                latitudeBaiDu = point.lat;
+                longitudeBaiDu = point.lng;
+                vm.shop.lnt = longitudeBaiDu;
+                vm.shop.lat = latitudeBaiDu;
+
+                myGeo.getLocation(point, function(rs){
+                    console.log("rs=="+JSON.stringify(rs))
+                    var addComp = rs.addressComponents;
+                    var addressBaiDu =  addComp.city+ addComp.district+ addComp.street+ addComp.streetNumber;
+                    <!--var addressBaiDu = addComp.province + addComp.city+ addComp.district+ addComp.street+ addComp.streetNumber;-->
+                    vm.shop.province = addComp.province;
+                    vm.shop.city = addComp.city;
+                    vm.shop.county = addComp.district;
+                    // vm.shop.address = addComp.street + addComp.streetNumber;
+                });
+            }else{
+                alert("您选择地址没有解析到结果!");
+            }
+        }, "深圳市");
+    });
 });
 
 var vm = new Vue({
@@ -103,7 +205,13 @@ var vm = new Vue({
 	data:{
 		showList: true,
 		title: null,
-		shop: {}
+		shop: {
+            parentName:'',
+            parentId:null,
+            status:0,
+            sysFlag:0,
+            review:0,
+        }
 	},
 	methods: {
 		query: function () {
@@ -112,7 +220,19 @@ var vm = new Vue({
 		add: function(){
 			vm.showList = false;
 			vm.title = "新增";
-			vm.shop = {};
+			vm.shop = {
+                parentName:'',
+                parentId:null,
+                status:0,
+                sysFlag:0,
+                review:0,
+                lnt:null,
+                lat:null,
+                province:'',
+                city:'',
+                county:'',
+                address:'',
+            };
             vm.getShopTree();
 		},
 		update: function (event) {
@@ -230,3 +350,39 @@ var vm = new Vue({
         },
 	}
 });
+
+var latitudeBaiDu ;
+var longitudeBaiDu ;
+// 百度地图初始化
+var map = new BMap.Map("allmap");    // 创建Map实例
+console.log("map==="+map)
+var point = new BMap.Point(114.05, 22.55); //深圳市
+map.centerAndZoom(point, 13);  // 初始化地图,设置中心点坐标和地图级别
+map.addControl(new BMap.MapTypeControl());   //添加地图类型控件
+map.enableScrollWheelZoom(true);     //开启鼠标滚轮缩放
+var marker = new BMap.Marker(point);
+map.addOverlay(marker);            //添加标注
+
+
+
+var geoc = new BMap.Geocoder();
+//直接点击地图获取地址和经纬度
+map.addEventListener("click", function(e){
+    var pt = e.point;
+    geoc.getLocation(pt, function(rs){
+        console.log("rs=="+JSON.stringify(rs))
+        var addComp = rs.addressComponents;
+        var addressBaiDu =  addComp.city+ addComp.district+ addComp.street+ addComp.streetNumber;
+        <!--var addressBaiDu = addComp.province + addComp.city+ addComp.district+ addComp.street+ addComp.streetNumber;-->
+        vm.shop.province = addComp.province;
+        vm.shop.city = addComp.city;
+        vm.shop.county = addComp.district;
+        vm.shop.address = addComp.street + addComp.streetNumber;
+    });
+    latitudeBaiDu = e.point.lat;
+    longitudeBaiDu = e.point.lng;
+    vm.shop.lnt = longitudeBaiDu;
+    vm.shop.lat = latitudeBaiDu;
+
+});
+

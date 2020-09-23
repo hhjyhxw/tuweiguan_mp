@@ -12,27 +12,27 @@ $(function () {
                     return value === 0 ?
                         '<span class="label label-danger">未处理</span>' :
                         (value===1?'<span class="label label-success">处理中</span>':
-                         (value===2?'<span class="label label-success">已完成</span>':'已关闭'));
+                         (value===2?'<span class="label label-success">已完成</span>':'<span class="label label-success">已关闭</span>'));
                 }},
             { label: '支付状态', name: 'payStatus', width: 60, formatter: function(value, options, row){
                     return value === 0 ?
                         '<span class="label label-danger">未支付</span>' :
-                        (value===1?'<span class="label label-success">支付中</span>':'已支付');
+                        (value===1?'<span class="label label-success">支付中</span>':'<span class="label label-success">已支付</span>');
                 }},
             { label: '退款状态', name: 'refundStatus', width: 60, formatter: function(value, options, row){
                     return value === 0 ?
                         '<span class="label label-danger">未退款</span>' :
-                        (value===1?'<span class="label label-success">退款中</span>':'已退款');
+                        (value===1?'<span class="label label-success">退款中</span>':'<span class="label label-success">已退款</span>');
                 }},
             { label: '发货状态', name: 'shipStatus', width: 60, formatter: function(value, options, row){
                     return value === 0 ?
                         '<span class="label label-danger">未发货</span>' :
-                        (value===1?'<span class="label label-success">发货中</span>':'已配送');
+                        (value===1?'<span class="label label-success">发货中</span>':'<span class="label label-success">已配送</span>');
                 }},
-			{ label: '运费', name: 'freightPrice', index: 'freight_price', width: 80 },
-			{ label: '代金券优惠价', name: 'couponPrice', index: 'coupon_price', width: 80 }, 			
-			{ label: '实付订单金额', name: 'actualPrice', index: 'actual_price', width: 80 },
-			{ label: '支付金额', name: 'payPrice', index: 'pay_price', width: 80 }, 			
+			{ label: '运费(元)', name: 'freightPrice', index: 'freight_price', width: 80 },
+			{ label: '代金券优惠价(元)', name: 'couponPrice', index: 'coupon_price', width: 80 },
+			{ label: '实付订单金额(元)', name: 'actualPrice', index: 'actual_price', width: 80 },
+			{ label: '支付金额(元)', name: 'payPrice', index: 'pay_price', width: 80 },
 			{ label: '支付流水', name: 'payId', index: 'pay_id', width: 80 },
 			{ label: '支付渠道名称', name: 'payChannel', index: 'pay_channel', width: 80 }, 			
 			{ label: '支付时间', name: 'payTime', index: 'pay_time', width: 80 },

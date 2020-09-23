@@ -195,6 +195,7 @@ var vm = new Vue({
             vm.bsactivityAd.supplierId = vm.shopList[index].id;
             vm.shopName = vm.shopList[index].shopName;
         },
+
 	}
 });
 vm.getShopList();

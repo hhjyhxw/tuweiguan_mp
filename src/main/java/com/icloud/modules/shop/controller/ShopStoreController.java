@@ -1,8 +1,10 @@
 package com.icloud.modules.shop.controller;
 
 import java.util.Arrays;
+import java.util.Date;
 import java.util.Map;
 import com.icloud.basecommon.model.Query;
+import com.icloud.modules.sys.controller.AbstractController;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -28,7 +30,7 @@ import com.icloud.common.validator.ValidatorUtils;
  */
 @RestController
 @RequestMapping("shop/shopstore")
-public class ShopStoreController {
+public class ShopStoreController extends AbstractController {
     @Autowired
     private ShopStoreService shopStoreService;
 
@@ -62,8 +64,10 @@ public class ShopStoreController {
     @RequestMapping("/save")
     @RequiresPermissions("shop:shopstore:save")
     public R save(@RequestBody ShopStore shopStore){
+        ValidatorUtils.validateEntity(shopStore);
+        shopStore.setCreatedTime(new Date());
+        shopStore.setCreatedBy(getUser().getUsername());
         shopStoreService.save(shopStore);
-
         return R.ok();
     }
 
@@ -74,6 +78,8 @@ public class ShopStoreController {
     @RequiresPermissions("shop:shopstore:update")
     public R update(@RequestBody ShopStore shopStore){
         ValidatorUtils.validateEntity(shopStore);
+        shopStore.setUpdatedTime(new Date());
+        shopStore.setUpdatedBy(getUser().getUsername());
         shopStoreService.updateById(shopStore);
         
         return R.ok();

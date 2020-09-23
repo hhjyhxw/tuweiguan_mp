@@ -16,6 +16,7 @@ import com.icloud.basecommon.model.Query;
 import com.icloud.common.PageUtils;
 import com.icloud.common.R;
 import com.icloud.common.validator.ValidatorUtils;
+import com.icloud.modules.sys.controller.AbstractController;
 
 
 /**
@@ -28,7 +29,7 @@ import com.icloud.common.validator.ValidatorUtils;
  */
 @RestController
 @RequestMapping("${moduleName}/${pathName}")
-public class ${className}Controller {
+public class ${className}Controller extends AbstractController{
     @Autowired
     private ${className}Service ${classname}Service;
 

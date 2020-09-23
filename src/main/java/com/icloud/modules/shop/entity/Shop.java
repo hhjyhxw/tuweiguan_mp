@@ -6,6 +6,8 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import lombok.Data;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.io.Serializable;
 import java.util.Date;
@@ -32,9 +34,11 @@ public class Shop implements Serializable {
        @TableField("shop_code")
        private String shopCode;
    	   	   /* 名称 */
+       @NotBlank(message = "店铺名称不能为空")
        @TableField("shop_name")
        private String shopName;
    	   	   /* 系统店铺标志 */
+       @NotNull(message = "系统标识不能为空")
        @TableField("sys_flag")
        private String sysFlag;
    	   	   /* 级别 */
@@ -44,6 +48,7 @@ public class Shop implements Serializable {
        @TableField("shop_tel")
        private String shopTel;
    	   	   /* 图片 */
+       @NotBlank(message = "店铺图标不能为空")
        @TableField("shop_img")
        private String shopImg;
    	   	   /* 简介 */

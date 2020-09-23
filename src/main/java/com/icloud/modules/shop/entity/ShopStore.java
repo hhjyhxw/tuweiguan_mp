@@ -6,6 +6,8 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import lombok.Data;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.io.Serializable;
 import java.util.Date;
@@ -26,9 +28,11 @@ public class ShopStore implements Serializable {
        @TableId(value="id", type= IdType.AUTO)
        private Long id;
    	   	   /* 所属店铺 */
+       @NotNull(message = "所属店铺不能为空")
        @TableField("shop_id")
        private Long shopId;
    	   	   /* 仓库名称 */
+       @NotBlank(message = "仓库名称不能为空")
        @TableField("titile")
        private String titile;
    	   	   /* 省 */

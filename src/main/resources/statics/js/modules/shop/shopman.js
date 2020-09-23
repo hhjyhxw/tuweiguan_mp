@@ -9,9 +9,17 @@ $(function () {
 			{ label: '登录账号', name: 'accountNo', index: 'account_no', width: 80 }, 			
 			{ label: '手机号', name: 'mobile', index: 'mobile', width: 80 }, 			
 			{ label: '登录密码', name: 'pwd', index: 'pwd', width: 80 }, 			
-			{ label: '角色 0:管理员', name: 'role', index: 'role', width: 80 }, 			
-			{ label: '状态 0：关闭，1：开启', name: 'status', index: 'status', width: 80 }, 			
-			{ label: '创建人', name: 'createdBy', index: 'created_by', width: 80 }, 			
+            { label: '角色', name: 'role', width: 60, formatter: function(value, options, row){
+                    return value === 0 ?
+                        '<span class="label label-danger">管理员</span>' :
+                        '<span class="label label-success">店员</span>';
+                }},
+            { label: '状态', name: 'role', width: 60, formatter: function(value, options, row){
+                    return value === '0' ?
+                        '<span class="label label-danger">关闭</span>' :
+                        '<span class="label label-success">开启</span>';
+                }},
+            { label: '创建人', name: 'createdBy', index: 'created_by', width: 80 },
 			{ label: '创建时间', name: 'createdTime', index: 'created_time', width: 80 }, 			
 			{ label: '更新人', name: 'updatedBy', index: 'updated_by', width: 80 }, 			
 			{ label: '更新时间', name: 'updatedTime', index: 'updated_time', width: 80 }			
@@ -48,7 +56,9 @@ var vm = new Vue({
 	data:{
 		showList: true,
 		title: null,
-		shopMan: {}
+		shopMan: {},
+        shopList:[],
+        shopName:'',
 	},
 	methods: {
 		query: function () {
@@ -124,6 +134,7 @@ var vm = new Vue({
 		getInfo: function(id){
 			$.get(baseURL + "shop/shopman/info/"+id, function(r){
                 vm.shopMan = r.shopMan;
+                vm.setShopName(r.shopMan.shopId);
             });
 		},
 		reload: function (event) {
@@ -132,6 +143,27 @@ var vm = new Vue({
 			$("#jqGrid").jqGrid('setGridParam',{ 
                 page:page
             }).trigger("reloadGrid");
-		}
+		},
+        //加载getShopList
+        getShopList:function(){
+            $.get(baseURL + "shop/shop/selectlist", function(r){
+                vm.shopList = r.list;
+            });
+        },
+        //选择卡店铺
+        selectShop: function (index) {
+            vm.shopMan.shopId = vm.shopList[index].id;
+            vm.shopName = vm.shopList[index].shopName;
+        },
+        setShopName:function(shopId){
+            if(vm.shopList!=null && vm.shopList.length>0 && shopId!=null){
+                vm.shopList.forEach(p=>{
+                    if(p.id===shopId){
+                        vm.shopName = p.shopName;
+                    }
+                });
+            }
+        }
 	}
 });
+vm.getShopList();

@@ -3,6 +3,43 @@
 <head>
     <title>店铺仓库 </title>
 		<#include "/header.html">
+    <script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=A23543b3be51778406429cba6b7d74c4"></script>
+    <style>
+        .searchs {
+            /*   width: 650px;*/
+            /* height: 500px; */
+            overflow: hidden;
+            border: 1px solid rgb(204, 204, 204);
+            margin-top: 25px;
+            margin-left: auto;
+            margin-right: auto;
+            position: absolute;
+            z-index: 0;
+            background-color: rgb(243, 241, 236);
+            color: rgb(0, 0, 0);
+            text-align: left;
+            top: 6rem;
+            right: 60.5rem;
+            height: 3rem;
+
+        }
+        .maps {
+            width: 650px;
+            height: 491px;
+            overflow: hidden;
+            border: 1px solid rgb(204, 204, 204);
+            margin-top: 25px;
+            margin-left: auto;
+            margin-right: auto;
+            position: absolute;
+            z-index: 0;
+            background-color: rgb(243, 241, 236);
+            color: rgb(0, 0, 0);
+            text-align: left;
+            top: 9rem;
+            right:26rem;
+        }
+    </style>
 </head>
 <body>
 <div id="icloudapp" v-cloak>
@@ -25,13 +62,20 @@
     <div v-show="!showList" class="panel panel-default">
         <div class="panel-heading">{{title}}</div>
         <form class="form-horizontal">
-														                    <div class="form-group">
+                    <div class="form-group">
                         <div class="col-sm-2 control-label">所属店铺</div>
-                        <div class="col-sm-10">
-                            <input type="text" class="form-control" v-model="shopStore.shopId" placeholder="所属店铺"/>
+                        <div class="dropdown">
+                            <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                                {{shopName}}
+                                <span class="caret"></span>
+                            </button>
+                            <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+                                <li v-for="(item,index) in shopList" :key="index"><a href="#" @click="selectShop(index)">{{item.shopName}}</a></li>
+                            </ul>
                         </div>
                     </div>
-											                    <div class="form-group">
+
+					 <div class="form-group">
                         <div class="col-sm-2 control-label">仓库名称</div>
                         <div class="col-sm-10">
                             <input type="text" class="form-control" v-model="shopStore.titile" placeholder="仓库名称"/>
@@ -58,7 +102,7 @@
 											                    <div class="form-group">
                         <div class="col-sm-2 control-label">详细地址</div>
                         <div class="col-sm-10">
-                            <input type="text" class="form-control" v-model="shopStore.address" placeholder="详细地址"/>
+                            <input type="text" id="address" class="form-control" v-model="shopStore.address" placeholder="详细地址"/>
                         </div>
                     </div>
 											                    <div class="form-group">
@@ -85,37 +129,28 @@
                             <input type="text" class="form-control" v-model="shopStore.distributionScope" placeholder="配送范围(米)"/>
                         </div>
                     </div>
-											                    <div class="form-group">
-                        <div class="col-sm-2 control-label">状态 0：关闭，1：开启</div>
-                        <div class="col-sm-10">
-                            <input type="text" class="form-control" v-model="shopStore.status" placeholder="状态 0：关闭，1：开启"/>
-                        </div>
+
+                    <div class="form-group">
+                        <div class="col-sm-2 control-label">状态</div>
+                        <label class="radio-inline">
+                            <input type="radio" name="status" value="1" v-model="shopStore.status"/> 开启
+                        </label>
+                        <label class="radio-inline">
+                            <input type="radio" name="status" value="0" v-model="shopStore.status" checked="checked"/> 关闭
+                        </label>
                     </div>
-											                    <div class="form-group">
-                        <div class="col-sm-2 control-label">创建人</div>
-                        <div class="col-sm-10">
-                            <input type="text" class="form-control" v-model="shopStore.createdBy" placeholder="创建人"/>
-                        </div>
-                    </div>
-											                    <div class="form-group">
-                        <div class="col-sm-2 control-label">创建时间</div>
-                        <div class="col-sm-10">
-                            <input type="text" class="form-control" v-model="shopStore.createdTime" placeholder="创建时间"/>
-                        </div>
-                    </div>
-											                    <div class="form-group">
-                        <div class="col-sm-2 control-label">更新人</div>
-                        <div class="col-sm-10">
-                            <input type="text" class="form-control" v-model="shopStore.updatedBy" placeholder="更新人"/>
-                        </div>
-                    </div>
-											                    <div class="form-group">
-                        <div class="col-sm-2 control-label">更新时间</div>
-                        <div class="col-sm-10">
-                            <input type="text" class="form-control" v-model="shopStore.updatedTime" placeholder="更新时间"/>
-                        </div>
-                    </div>
-							            <div class="form-group">
+
+
+            <div class="sright">
+                <div class="searchs"  style="display: flex;justify-content: space-around;">
+                    <input id="detailAddress" value=""/>
+                    <a id="sssssssssss" class="ssssssss" style="display: flex;justify-content: space-around;line-height: 3rem;width: 5rem;">搜索</a>
+                </div>
+                <div id="allmap" class="maps"></div>
+            </div>
+            <div style="clear:both;"></div>
+
+		<div class="form-group">
                 <div class="col-sm-2 control-label"></div>
                 <input type="button" class="btn btn-primary" id="btnSaveOrUpdate" data-loading-text="保存中..." @click="saveOrUpdate" value="确定"/>
                 &nbsp;&nbsp;<input type="button" class="btn btn-warning" @click="reload" value="返回"/>

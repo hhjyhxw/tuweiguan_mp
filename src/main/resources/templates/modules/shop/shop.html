@@ -4,6 +4,43 @@
     <title>店铺 </title>
 		<#include "/header.html">
     <script src="${request.contextPath}/statics/libs/ajaxupload.js"></script>
+    <script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=A23543b3be51778406429cba6b7d74c4"></script>
+<style>
+    .searchs {
+     /*   width: 650px;*/
+        /* height: 500px; */
+        overflow: hidden;
+        border: 1px solid rgb(204, 204, 204);
+        margin-top: 25px;
+        margin-left: auto;
+        margin-right: auto;
+        position: absolute;
+        z-index: 0;
+        background-color: rgb(243, 241, 236);
+        color: rgb(0, 0, 0);
+        text-align: left;
+        top: 39rem;
+        right: 60.5rem;
+        height: 3rem;
+
+    }
+   .maps {
+        width: 650px;
+        height: 491px;
+        overflow: hidden;
+        border: 1px solid rgb(204, 204, 204);
+        margin-top: 25px;
+        margin-left: auto;
+        margin-right: auto;
+        position: absolute;
+        z-index: 0;
+        background-color: rgb(243, 241, 236);
+        color: rgb(0, 0, 0);
+        text-align: left;
+        top: 42rem;
+        right:26rem;
+    }
+</style>
 </head>
 <body>
 <div id="icloudapp" v-cloak>
@@ -45,7 +82,7 @@
                             <input type="radio" name="sysFlag" value="1" v-model="shop.sysFlag"/> 是
                         </label>
                         <label class="radio-inline">
-                            <input type="radio" name="sysFlag" value="0" v-model="shop.sysFlag"/> 否
+                            <input type="radio" name="sysFlag" value="0" v-model="shop.sysFlag" checked="checked"/> 否
                         </label>
                     </div>
 					 <div class="form-group">
@@ -78,25 +115,25 @@
 					<div class="form-group">
                         <div class="col-sm-2 control-label">省</div>
                         <div class="col-sm-10">
-                            <input type="text" class="form-control" v-model="shop.province" placeholder="省"/>
+                            <input type="text" class="form-control" v-model="shop.province" placeholder="省" readonly/>
                         </div>
                     </div>
 											                    <div class="form-group">
                         <div class="col-sm-2 control-label">市</div>
                         <div class="col-sm-10">
-                            <input type="text" class="form-control" v-model="shop.city" placeholder="市"/>
+                            <input type="text" class="form-control" v-model="shop.city" placeholder="市" readonly/>
                         </div>
                     </div>
 											                    <div class="form-group">
                         <div class="col-sm-2 control-label">县</div>
                         <div class="col-sm-10">
-                            <input type="text" class="form-control" v-model="shop.county" placeholder="县"/>
+                            <input type="text" class="form-control" v-model="shop.county" placeholder="县" readonly/>
                         </div>
                     </div>
 											                    <div class="form-group">
                         <div class="col-sm-2 control-label">详细地址</div>
                         <div class="col-sm-10">
-                            <input type="text" class="form-control" v-model="shop.address" placeholder="详细地址"/>
+                            <input type="text" id="address" class="form-control" v-model="shop.address" placeholder="详细地址"/>
                         </div>
                     </div>
 											                    <div class="form-group">
@@ -124,7 +161,7 @@
                             <input type="radio" name="status" value="1" v-model="shop.status"/> 开启
                         </label>
                         <label class="radio-inline">
-                            <input type="radio" name="status" value="0" v-model="shop.status"/> 关闭
+                            <input type="radio" name="status" value="0" v-model="shop.status" checked="checked"/> 关闭
                         </label>
                     </div>
 
@@ -134,13 +171,22 @@
                             <input type="radio" name="review" value="0" v-model="shop.review"/> 未审核
                         </label>
                         <label class="radio-inline">
-                            <input type="radio" name="review" value="1" v-model="shop.review"/> 审核通过
+                            <input type="radio" name="review" value="1" v-model="shop.review" checked="checked"/> 审核通过
                         </label>
                         <label class="radio-inline">
                             <input type="radio" name="review" value="2" v-model="shop.review"/> 审核失败
                         </label>
                     </div>
 
+
+            <div class="sright">
+                <div class="searchs"  style="display: flex;justify-content: space-around;">
+                    <input id="detailAddress" value=""/>
+                    <a id="sssssssssss" class="ssssssss" style="display: flex;justify-content: space-around;line-height: 3rem;width: 5rem;">搜索</a>
+                </div>
+                <div id="allmap" class="maps"></div>
+            </div>
+            <div style="clear:both;"></div>
 			<div class="form-group">
                 <div class="col-sm-2 control-label"></div>
                 <input type="button" class="btn btn-primary" id="btnSaveOrUpdate" data-loading-text="保存中..." @click="saveOrUpdate" value="确定"/>
@@ -148,6 +194,9 @@
             </div>
         </form>
     </div>
+
+
+
 </div>
 
 
@@ -155,6 +204,8 @@
 <div id="deptLayer" style="display: none;padding:10px;">
     <ul id="deptTree" class="ztree"></ul>
 </div>
+<script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=A23543b3be51778406429cba6b7d74c4"></script>
 <script src="${request.contextPath}/statics/js/modules/shop/shop.js?_${.now?long}"></script>
 </body>
+
 </html>

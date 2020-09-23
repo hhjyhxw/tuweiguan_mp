@@ -3,6 +3,7 @@ package com.icloud.modules.shop.controller;
 import java.util.Arrays;
 import java.util.Map;
 import com.icloud.basecommon.model.Query;
+import com.icloud.modules.sys.controller.AbstractController;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -28,7 +29,7 @@ import com.icloud.common.validator.ValidatorUtils;
  */
 @RestController
 @RequestMapping("shop/shoptradedetails")
-public class ShopTradeDetailsController {
+public class ShopTradeDetailsController extends AbstractController {
     @Autowired
     private ShopTradeDetailsService shopTradeDetailsService;
 
@@ -62,6 +63,7 @@ public class ShopTradeDetailsController {
     @RequestMapping("/save")
     @RequiresPermissions("shop:shoptradedetails:save")
     public R save(@RequestBody ShopTradeDetails shopTradeDetails){
+
         shopTradeDetailsService.save(shopTradeDetails);
 
         return R.ok();
