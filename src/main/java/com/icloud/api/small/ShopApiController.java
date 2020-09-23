@@ -159,6 +159,14 @@ public class ShopApiController {
             shopImg = shoplist.get(0).getShopImg();
 
         }
+        final long activeShop = shopMainId;
+        shoplist.forEach(p->{
+            if(p.getId().longValue()==activeShop){
+                p.setActive(true);
+            }else{
+                p.setActive(false);
+            }
+        });
        return R.ok()
                .put("shoplist",shoplist)
                .put("adlist",adlist)

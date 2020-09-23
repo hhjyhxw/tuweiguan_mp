@@ -103,5 +103,10 @@ public class Shop implements Serializable {
          */
         @TableField(exist=false)
         private String parentName;
+        /**
+         * 当前激活的店铺
+         */
+        @TableField(exist=false)
+        private boolean active;
    	
 }
