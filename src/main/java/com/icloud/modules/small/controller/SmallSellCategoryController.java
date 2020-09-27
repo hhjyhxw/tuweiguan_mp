@@ -1,6 +1,7 @@
 package com.icloud.modules.small.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.icloud.annotation.DataFilter;
 import com.icloud.basecommon.model.Query;
 import com.icloud.common.PageUtils;
 import com.icloud.common.R;
@@ -65,6 +66,7 @@ public class SmallSellCategoryController extends AbstractController {
      */
     @RequestMapping("/list")
     @RequiresPermissions("small:smallsellcategory:list")
+    @DataFilter
     public R list(@RequestParam Map<String, Object> params){
         Query query = new Query(params);
         PageUtils page = smallSellCategoryService.findByPage(query.getPageNum(),query.getPageSize(), query);

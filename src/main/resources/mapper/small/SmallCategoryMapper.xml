@@ -50,14 +50,17 @@ id,title,parent_id,pic_url,level,status,create_time,modify_time
 <if test="create_time != null">
     and t.create_time = #{create_time}
 </if>
+<if test="sql_filter != null and sql_filter!=''">
+    and ${sql_filter}
+</if>
 </where>
 </select>
 
 
     <select id="queryList" resultType="com.icloud.modules.small.entity.SmallCategory" resultMap="BaseResultMap">
-        select t1.id,t1.title,t1.parent_id,t1.status,t1.sort_num,t1.title name,(select t2.title from t_small_category t2 where t2.id=t1.parent_id) parentName from t_small_category t1
+        select t.id,t.title,t.parent_id,t.status,t.sort_num,t.title name,(select t2.title from t_small_category t2 where t2.id=t.parent_id) parentName from t_small_category t
         <if test="sql_filter != null">
-            and ${sql_filter}
+            where ${sql_filter}
         </if>
     </select>
 

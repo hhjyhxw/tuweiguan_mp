@@ -114,7 +114,9 @@ select * from shop t
 <if test="updatedTime != null">
     and t.updated_time = #{updatedTime}
 </if>
-
+<if test="sql_filter != null and sql_filter!=''">
+    and ${sql_filter}
+</if>
 </where>
 </select>
 </mapper>

@@ -67,9 +67,12 @@ id,shop_id,trade_no,order_no,biz_type,in_or_out,before_blance,amount,after_blanc
 <if test="updatedBy != null">
     and t.updated_by = #{updatedBy}
 </if>
-    <if test="shopName != null and shopName!=''">
-        and s.shop_name like CONCAT('%', '${shopName}', '%')
-    </if>
+<if test="shopName != null and shopName!=''">
+    and s.shop_name like CONCAT('%', '${shopName}', '%')
+</if>
+<if test="sql_filter != null and sql_filter!=''">
+    and ${sql_filter}
+</if>
 </where>
 </select>
 </mapper>

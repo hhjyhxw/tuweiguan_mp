@@ -6,6 +6,7 @@ import com.github.pagehelper.PageInfo;
 import com.icloud.common.DateUtil;
 import com.icloud.common.MapEntryUtils;
 import com.icloud.common.PageUtils;
+import com.icloud.modules.small.entity.SmallCoupon;
 import com.icloud.modules.small.entity.SmallGroupShop;
 import com.icloud.modules.small.vo.GroupSkuVo;
 import org.springframework.stereotype.Service;
@@ -31,6 +32,13 @@ public class SmallGroupShopService extends BaseServiceImpl<SmallGroupShopMapper,
     @Autowired
     private SmallGroupShopMapper smallGroupShopMapper;
 
+    /**
+     * api 端展示
+     * @param pageNo
+     * @param pageSize
+     * @param query
+     * @return
+     */
     public PageUtils<GroupSkuVo> findByFrontPage(int pageNo, int pageSize, Map<String, Object> query) {
         PageHelper.startPage(pageNo, pageSize);
 //        List<SmallGroupShop> list = smallGroupShopMapper.selectList(new QueryWrapper<SmallGroupShop>()
@@ -44,5 +52,15 @@ public class SmallGroupShopService extends BaseServiceImpl<SmallGroupShopMapper,
         return page;
     }
 
+
+    @Override
+    public PageUtils<SmallGroupShop> findByPage(int pageNo, int pageSize, Map<String, Object> query) {
+        PageHelper.startPage(pageNo, pageSize);
+
+        List<SmallGroupShop> list = smallGroupShopMapper.queryMixList(MapEntryUtils.clearNullValue(query));
+        PageInfo<SmallGroupShop> pageInfo = new PageInfo<SmallGroupShop>(list);
+        PageUtils<SmallGroupShop> page = new PageUtils<SmallGroupShop>(list,(int)pageInfo.getTotal(),pageSize,pageNo);
+        return page;
+    }
 }
 

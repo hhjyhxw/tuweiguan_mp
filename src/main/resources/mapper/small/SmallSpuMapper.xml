@@ -96,6 +96,9 @@ select t.*,(t.stock-t.freeze_stock) as remainStock from t_small_spu t
 <if test="create_time != null">
     and t.create_time = #{create_time}
 </if>
+<if test="sql_filter != null and sql_filter!=''">
+    and ${sql_filter}
+</if>
 </where>
 </select>
     <!--增加销量-->

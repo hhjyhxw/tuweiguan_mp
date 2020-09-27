@@ -44,7 +44,7 @@ public class SysLocalUplaodController {
 	 */
 //	@RequestMapping("/upload",)
     @PostMapping(value="/upload",produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	@RequiresPermissions("sys:oss:all")
+//	@RequiresPermissions("sys:oss:all")
     @ResponseBody
 	public JSONObject upload(@RequestParam("file") MultipartFile file) {
         JSONObject result = new JSONObject();

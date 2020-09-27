@@ -57,6 +57,9 @@ select * from t_small_sell_category t
 <if test="sort_num != null">
     and t.sort_num = #{sort_num}
 </if>
+<if test="sql_filter != null and sql_filter!=''">
+    and ${sql_filter}
+</if>
 </where>
 </select>
 

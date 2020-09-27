@@ -61,11 +61,8 @@ select * from t_small_group_shop t
 <if test="status != null">
     and t.status = #{status}
 </if>
-<if test="create_time != null">
-    and t.create_time = #{create_time}
-</if>
-<if test="modify_time != null">
-    and t.modify_time = #{modify_time}
+<if test="sql_filter != null and sql_filter!=''">
+    and ${sql_filter}
 </if>
 </where>
 </select>

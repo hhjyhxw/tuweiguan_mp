@@ -66,6 +66,9 @@ t.shop_id = s.id
 <if test="shopName != null and shopName!=''">
     and s.shop_name like CONCAT('%', '${shopName}', '%')
 </if>
+    <if test="sql_filter != null and sql_filter!=''">
+        and ${sql_filter}
+    </if>
 </where>
 </select>
 </mapper>

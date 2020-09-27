@@ -82,6 +82,9 @@ select * from t_small_coupon t
 <if test="modify_time != null">
     and t.modify_time = #{modify_time}
 </if>
+<if test="sql_filter != null and sql_filter!=''">
+    and ${sql_filter}
+</if>
 </where>
 </select>
 </mapper>
