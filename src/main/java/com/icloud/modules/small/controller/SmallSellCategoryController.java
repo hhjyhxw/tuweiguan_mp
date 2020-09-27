@@ -8,6 +8,7 @@ import com.icloud.common.validator.ValidatorUtils;
 import com.icloud.modules.small.entity.SmallSellCategory;
 import com.icloud.modules.small.service.SmallSellCategoryService;
 import com.icloud.modules.small.vo.SellCategoryVo;
+import com.icloud.modules.sys.controller.AbstractController;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -28,7 +29,7 @@ import java.util.Map;
  */
 @RestController
 @RequestMapping("small/smallsellcategory")
-public class SmallSellCategoryController {
+public class SmallSellCategoryController extends AbstractController {
     @Autowired
     private SmallSellCategoryService smallSellCategoryService;
 
@@ -90,6 +91,7 @@ public class SmallSellCategoryController {
     @RequiresPermissions("small:smallsellcategory:save")
     public R save(@RequestBody SmallSellCategory smallSellCategory){
         ValidatorUtils.validateEntity(smallSellCategory);
+        smallSellCategory.setDeptId(getDeptId());
         smallSellCategoryService.save(smallSellCategory);
 
         return R.ok();

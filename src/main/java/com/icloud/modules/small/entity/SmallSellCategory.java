@@ -57,8 +57,12 @@ public class SmallSellCategory implements Serializable {
        @TableField("supplier_id")
        private Long supplierId;
 
+        /* 企业id*/
+        @TableField("dept_id")
+        private Long deptId;
         /*消费商户*/
         @TableField(exist = false)
         private SmallRetail smallRetail;
+
    	
 }

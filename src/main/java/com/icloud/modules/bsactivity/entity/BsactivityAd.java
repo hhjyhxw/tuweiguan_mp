@@ -58,10 +58,12 @@ public class BsactivityAd implements Serializable {
         /* 店铺id */
         @TableField("supplier_id")
         private Long supplierId;
-        /* 所在广告位 */
+        /* 是否是系统广告 */
         @TableField("sys_flag")
         private String sysFlag;
-
+        /* 企业id */
+        @TableField("dept_id")
+        private Long deptId;
         /* 所属商户 */
         @TableField(exist = false)
         private Shop shop;

@@ -1,6 +1,7 @@
 package com.icloud.modules.small.controller;
 
 import com.alibaba.fastjson.JSON;
+import com.icloud.annotation.DataFilter;
 import com.icloud.basecommon.model.Query;
 import com.icloud.common.Constant;
 import com.icloud.common.R;
@@ -51,6 +52,7 @@ public class SmallCategoryController extends AbstractController {
      */
     @RequestMapping("/list")
     @RequiresPermissions("small:smallcategory:list")
+    @DataFilter
     public List<CategoryVo> list(@RequestParam Map<String, Object> params){
         Query query = new Query(params);
         List<SmallCategory> list = smallCategoryService.queryList(query);
@@ -127,6 +129,7 @@ public class SmallCategoryController extends AbstractController {
     @RequestMapping("/save")
     @RequiresPermissions("small:smallcategory:save")
     public R save(@RequestBody SmallCategory smallCategory){
+        smallCategory.setDeptId(getDeptId());
         smallCategoryService.save(smallCategory);
 
         return R.ok();

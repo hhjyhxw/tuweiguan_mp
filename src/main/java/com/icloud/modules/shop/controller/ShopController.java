@@ -3,6 +3,7 @@ package com.icloud.modules.shop.controller;
 import java.util.*;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.icloud.annotation.DataFilter;
 import com.icloud.basecommon.model.Query;
 import com.icloud.common.Constant;
 import com.icloud.modules.small.entity.SmallCategory;
@@ -41,6 +42,7 @@ public class ShopController extends AbstractController {
      */
     @RequestMapping("/list")
     @RequiresPermissions("shop:shop:list")
+    @DataFilter
     public R list(@RequestParam Map<String, Object> params){
         Query query = new Query(params);
         PageUtils page = shopService.findByPage(query.getPageNum(),query.getPageSize(), query);

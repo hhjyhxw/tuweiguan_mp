@@ -48,5 +48,10 @@ public class SmallUserCoupon implements Serializable {
    	   	   /* 修改时间 */
        @TableField("modify_time")
        private Date modifyTime;
-   	
+        /* 企业id*/
+        @TableField("dept_id")
+        private Long deptId;
+        /* 店铺id*/
+        @TableField("shop_id")
+        private Long shopId;
 }

@@ -104,6 +104,9 @@ public class SmallSpu implements Serializable {
         /* 店铺个性分类id */
         @TableField("sellcategory_id")
         private Long sellcategoryId;
+        /* 企业id*/
+        @TableField("dept_id")
+        private Long deptId;
 
         /*关联分类*/
         @TableField(exist = false)

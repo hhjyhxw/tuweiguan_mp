@@ -46,5 +46,8 @@ public class SmallRefund implements Serializable {
    	   	   /* 退款状态 (0 创建  1退款中 2退款成功) */
        @TableField("status")
        private Integer status;
+        /* 企业id*/
+        @TableField("dept_id")
+        private Long deptId;
    	
 }

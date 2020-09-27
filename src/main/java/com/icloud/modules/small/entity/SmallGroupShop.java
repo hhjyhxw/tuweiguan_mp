@@ -75,6 +75,10 @@ public class SmallGroupShop implements Serializable {
        @TableField("supplier_id")
        private Long supplierId;
 
+        /* 企业id*/
+        @TableField("dept_id")
+        private Long deptId;
+
         /* 所属商户 */
         @TableField(exist = false)
         private Shop shop;
@@ -83,5 +87,7 @@ public class SmallGroupShop implements Serializable {
         private SmallSpu spu;
         @TableField(exist = false)
         private SmallSku sku;
+
+
    	
 }

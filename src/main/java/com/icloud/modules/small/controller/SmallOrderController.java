@@ -2,7 +2,10 @@ package com.icloud.modules.small.controller;
 
 import java.util.Arrays;
 import java.util.Map;
+
+import com.icloud.annotation.DataFilter;
 import com.icloud.basecommon.model.Query;
+import com.icloud.modules.sys.controller.AbstractController;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -28,7 +31,7 @@ import com.icloud.common.validator.ValidatorUtils;
  */
 @RestController
 @RequestMapping("small/smallorder")
-public class SmallOrderController {
+public class SmallOrderController extends AbstractController {
     @Autowired
     private SmallOrderService smallOrderService;
 
@@ -37,6 +40,7 @@ public class SmallOrderController {
      */
     @RequestMapping("/list")
     @RequiresPermissions("small:smallorder:list")
+    @DataFilter
     public R list(@RequestParam Map<String, Object> params){
         Query query = new Query(params);
         PageUtils page = smallOrderService.findByPage(query.getPageNum(),query.getPageSize(), query);

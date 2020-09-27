@@ -1,12 +1,14 @@
 package com.icloud.modules.small.controller;
 
 import com.alibaba.fastjson.JSON;
+import com.icloud.annotation.DataFilter;
 import com.icloud.basecommon.model.Query;
 import com.icloud.common.PageUtils;
 import com.icloud.common.R;
 import com.icloud.common.validator.ValidatorUtils;
 import com.icloud.modules.small.entity.SmallSpu;
 import com.icloud.modules.small.service.SmallSpuService;
+import com.icloud.modules.sys.controller.AbstractController;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +30,7 @@ import java.util.Map;
 @Slf4j
 @RestController
 @RequestMapping("small/smallspu")
-public class SmallSpuController {
+public class SmallSpuController extends AbstractController {
     @Autowired
     private SmallSpuService smallSpuService;
     @Autowired
@@ -39,6 +41,7 @@ public class SmallSpuController {
      */
     @RequestMapping("/list")
     @RequiresPermissions("small:smallspu:list")
+    @DataFilter
     public R list(@RequestParam Map<String, Object> params){
         Query query = new Query(params);
         PageUtils page = smallSpuService.findByPage(query.getPageNum(),query.getPageSize(), query);
@@ -76,6 +79,7 @@ public class SmallSpuController {
     public R save(@RequestBody SmallSpu smallSpu){
         ValidatorUtils.validateEntity(smallSpu);
         log.info("smallSpu==="+ JSON.toJSONString(smallSpu));
+         smallSpu.setDeptId(getDeptId());
         if(smallSpu.getAddStock()!=null && smallSpu.getAddStock()>0){
             smallSpu.setFreezeStock(0);
             smallSpu.setStock(smallSpu.getAddStock());

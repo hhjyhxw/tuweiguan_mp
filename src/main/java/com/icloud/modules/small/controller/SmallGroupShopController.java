@@ -6,11 +6,14 @@ import java.util.List;
 import java.util.Map;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.icloud.annotation.DataFilter;
 import com.icloud.basecommon.model.Query;
+import com.icloud.common.Constant;
 import com.icloud.modules.shop.entity.Shop;
 import com.icloud.modules.shop.service.ShopService;
 import com.icloud.modules.small.entity.SmallSku;
 import com.icloud.modules.small.service.SmallSkuService;
+import com.icloud.modules.sys.controller.AbstractController;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -36,7 +39,7 @@ import com.icloud.common.validator.ValidatorUtils;
  */
 @RestController
 @RequestMapping("small/smallgroupshop")
-public class SmallGroupShopController {
+public class SmallGroupShopController extends AbstractController {
     @Autowired
     private SmallGroupShopService smallGroupShopService;
     @Autowired
@@ -48,6 +51,7 @@ public class SmallGroupShopController {
      */
     @RequestMapping("/list")
     @RequiresPermissions("small:smallgroupshop:list")
+    @DataFilter
     public R list(@RequestParam Map<String, Object> params){
         Query query = new Query(params);
         PageUtils page = smallGroupShopService.findByPage(query.getPageNum(),query.getPageSize(), query);
@@ -83,11 +87,21 @@ public class SmallGroupShopController {
     @RequiresPermissions("small:smallgroupshop:save")
     public R save(@RequestBody SmallGroupShop smallGroupShop){
         ValidatorUtils.validateEntity(smallGroupShop);
+        smallGroupShop.setDeptId(getDeptId());
         //判断spuId \ skuId\ splierId 是否已存在
-        List<SmallGroupShop> list = smallGroupShopService.list(new QueryWrapper<SmallGroupShop>()
-                .eq("sku_id",smallGroupShop.getSkuId())
-                .eq("spu_id",smallGroupShop.getSpuId())
-                .eq("supplier_id",smallGroupShop.getSupplierId()));
+        List<SmallGroupShop> list = null;
+        if(getUserId() == Constant.SUPER_ADMIN) {
+            list = smallGroupShopService.list(new QueryWrapper<SmallGroupShop>()
+                    .eq("sku_id",smallGroupShop.getSkuId())
+                    .eq("spu_id",smallGroupShop.getSpuId())
+                    .eq("supplier_id",smallGroupShop.getSupplierId()));
+        }else{
+            list = smallGroupShopService.list(new QueryWrapper<SmallGroupShop>()
+                    .eq("sku_id",smallGroupShop.getSkuId())
+                    .eq("dept_id",getDeptId())
+                    .eq("spu_id",smallGroupShop.getSpuId())
+                    .eq("supplier_id",smallGroupShop.getSupplierId()));
+        }
         if(list!=null && list.size()>0){
             return R.error("该商品已加入团购列表");
         }

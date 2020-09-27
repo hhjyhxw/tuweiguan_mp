@@ -132,6 +132,10 @@ public class SmallOrder implements Serializable {
        @TableField("modify_time")
        private Date modifyTime;
 
+        /* 企业id*/
+        @TableField("dept_id")
+        private Long deptId;
+
        @TableField(exist = false)
        private List<OrderDetailVo> detaillist;
         /* 用于控制明细项是否隐藏或者显示 */

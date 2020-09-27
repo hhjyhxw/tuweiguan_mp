@@ -65,6 +65,10 @@ public class ShopMan implements Serializable {
    	   	   /* 更新时间 */
        @TableField("updated_time")
        private Date updatedTime;
+
+        /* 企业id*/
+        @TableField("dept_id")
+        private Long deptId;
         /* 店铺 */
        @TableField(exist = false)
        private Shop shop;

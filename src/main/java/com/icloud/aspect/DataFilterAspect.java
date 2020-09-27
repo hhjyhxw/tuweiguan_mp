@@ -47,6 +47,7 @@ public class DataFilterAspect {
     private SysRoleDeptService sysRoleDeptService;
 
     @Pointcut("@annotation(com.icloud.annotation.DataFilter)")
+//    @Pointcut("execution(* com.icloud.modules..controller..*.*(..))")
     public void dataFilterCut() {
 
     }
@@ -56,7 +57,6 @@ public class DataFilterAspect {
         Object params = point.getArgs()[0];
         if(params != null && params instanceof Map){
             SysUserEntity user = ShiroUtils.getUserEntity();
-
             //如果不是超级管理员，则进行数据过滤
             if(user.getUserId() != Constant.SUPER_ADMIN){
                 Map map = (Map)params;
@@ -84,9 +84,10 @@ public class DataFilterAspect {
         //部门ID列表
         Set<Long> deptIdList = new HashSet<>();
 
-        //用户角色对应的部门ID列表
+        //用户拥有角色
         List<Long> roleIdList = sysUserRoleService.queryRoleIdList(user.getUserId());
         if(roleIdList.size() > 0){
+            //用户角色对应的部门ID列表
             List<Long> userDeptIdList = sysRoleDeptService.queryDeptIdList(roleIdList.toArray(new Long[roleIdList.size()]));
             deptIdList.addAll(userDeptIdList);
         }

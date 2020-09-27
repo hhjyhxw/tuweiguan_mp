@@ -2,6 +2,8 @@ package com.icloud.modules.shop.controller;
 
 import java.util.Arrays;
 import java.util.Map;
+
+import com.icloud.annotation.DataFilter;
 import com.icloud.basecommon.model.Query;
 import com.icloud.modules.sys.controller.AbstractController;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
@@ -38,6 +40,7 @@ public class ShopTradeDetailsController extends AbstractController {
      */
     @RequestMapping("/list")
     @RequiresPermissions("shop:shoptradedetails:list")
+    @DataFilter
     public R list(@RequestParam Map<String, Object> params){
         Query query = new Query(params);
         PageUtils page = shopTradeDetailsService.findByPage(query.getPageNum(),query.getPageSize(), query);

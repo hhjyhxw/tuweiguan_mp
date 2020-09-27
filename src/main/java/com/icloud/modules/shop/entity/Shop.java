@@ -102,7 +102,9 @@ public class Shop implements Serializable {
         /* 绑定用户id */
         @TableField("user_id")
         private Long userId;
-
+        /* 企业id*/
+        @TableField("dept_id")
+        private Long deptId;
         /**
          * 上级名称
          */

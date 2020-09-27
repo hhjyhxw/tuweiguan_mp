@@ -19,6 +19,7 @@
      <result property="sortNum" column="sort_num"/>
      <result property="supplierId" column="supplier_id"/>
      <result property="sysFlag" column="sys_flag"/>
+        <result property="deptId" column="dept_id"/>
     </resultMap>
 
    <!-- 基础字段列 -->
@@ -30,36 +31,24 @@ id,ad_name,ad_imgurl,add_jumpurl,status,create_time,create_operator,modify_time,
     <select id="queryMixList" resultMap="BaseResultMap">
             select * from t_bsactivity_ad t
             <where>
-                                                    <if test="id != null">
-                        and t.id = #{id}
-                    </if>
-                                                                    <if test="ad_name != null">
-                        and t.ad_name = #{ad_name}
-                    </if>
-                                                                    <if test="ad_imgurl != null">
-                        and t.ad_imgurl = #{ad_imgurl}
-                    </if>
-                                                                    <if test="add_jumpurl != null">
-                        and t.add_jumpurl = #{add_jumpurl}
-                    </if>
-                                                                    <if test="status != null">
-                        and t.status = #{status}
-                    </if>
-                                                                    <if test="create_time != null">
-                        and t.create_time = #{create_time}
-                    </if>
-                                                                    <if test="create_operator != null">
-                        and t.create_operator = #{create_operator}
-                    </if>
-                                                                    <if test="modify_time != null">
-                        and t.modify_time = #{modify_time}
-                    </if>
-                                                                    <if test="modify_operator != null">
-                        and t.modify_operator = #{modify_operator}
-                    </if>
-                                                                    <if test="posittion_id != null">
-                        and t.posittion_id = #{posittion_id}
-                    </if>
-                                                                            </where>
+             <if test="adName != null and adName !='' ">
+                and t.ad_name = #{adName}
+            </if>
+            <if test="status != null">
+                and t.status = #{status}
+            </if>
+            <if test="supplierId != null">
+                and t.supplier_id = #{supplierId}
+            </if>
+            <if test="deptId != null">
+                and t.dept_id = #{deptId}
+            </if>
+            <if test="sysFlag != null and sysFlag!=''">
+                and t.sys_flag = #{sysFlag}
+            </if>
+            <if test="sql_filter != null and sql_filter!=''">
+                and ${sql_filter}
+            </if>
+             </where>
         </select>
 </mapper>

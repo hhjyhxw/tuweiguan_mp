@@ -1,5 +1,6 @@
 package com.icloud.modules.small.controller;
 
+import com.icloud.annotation.DataFilter;
 import com.icloud.basecommon.model.Query;
 import com.icloud.common.PageUtils;
 import com.icloud.common.R;
@@ -7,6 +8,7 @@ import com.icloud.common.validator.ValidatorUtils;
 import com.icloud.modules.small.entity.SmallRetail;
 import com.icloud.modules.small.service.SmallRetailService;
 import com.icloud.modules.small.vo.ShopTreeVo;
+import com.icloud.modules.sys.controller.AbstractController;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -27,7 +29,7 @@ import java.util.Map;
  */
 @RestController
 @RequestMapping("small/smallretail")
-public class SmallRetailController {
+public class SmallRetailController extends AbstractController {
     @Autowired
     private SmallRetailService smallRetailService;
 
@@ -36,6 +38,7 @@ public class SmallRetailController {
      */
     @RequestMapping("/list")
     @RequiresPermissions("small:smallretail:list")
+    @DataFilter
     public R list(@RequestParam Map<String, Object> params){
         Query query = new Query(params);
         PageUtils page = smallRetailService.findByPage(query.getPageNum(),query.getPageSize(), query);
@@ -83,6 +86,7 @@ public class SmallRetailController {
     @RequestMapping("/save")
     @RequiresPermissions("small:smallretail:save")
     public R save(@RequestBody SmallRetail smallRetail){
+        smallRetail.setDeptId(getDeptId());
         smallRetailService.save(smallRetail);
 
         return R.ok();

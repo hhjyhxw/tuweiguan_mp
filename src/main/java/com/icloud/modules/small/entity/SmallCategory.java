@@ -46,7 +46,9 @@ public class SmallCategory implements Serializable {
         /* 排序*/
         @TableField("sort_num")
         private Integer sortNum;
-
+        /* 企业id*/
+        @TableField("dept_id")
+        private Long deptId;
 
         @TableField(exist=false)
         private String name;

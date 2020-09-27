@@ -88,5 +88,8 @@ public class SmallProvider implements Serializable {
    	   	   /* 纬度 */
        @TableField("lat")
        private BigDecimal lat;
+
+        @TableField("dept_id")
+        private Long deptId;
    	
 }

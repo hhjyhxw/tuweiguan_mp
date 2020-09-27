@@ -1,5 +1,6 @@
 package com.icloud.modules.bsactivity.controller;
 
+import com.icloud.annotation.DataFilter;
 import com.icloud.annotation.SysLog;
 import com.icloud.basecommon.model.Query;
 import com.icloud.common.PageUtils;
@@ -9,6 +10,7 @@ import com.icloud.modules.bsactivity.entity.BsactivityAd;
 import com.icloud.modules.bsactivity.service.BsactivityAdService;
 import com.icloud.modules.shop.entity.Shop;
 import com.icloud.modules.shop.service.ShopService;
+import com.icloud.modules.sys.controller.AbstractController;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -27,7 +29,7 @@ import java.util.Map;
  */
 @RestController
 @RequestMapping("bsactivity/bsactivityad")
-public class BsactivityAdController {
+public class BsactivityAdController extends AbstractController {
     @Autowired
     private BsactivityAdService bsactivityAdService;
     @Autowired
@@ -37,6 +39,7 @@ public class BsactivityAdController {
      */
     @RequestMapping("/list")
     @RequiresPermissions("bsactivity:bsactivityad:list")
+    @DataFilter
     public R list(@RequestParam Map<String, Object> params){
         Query query = new Query(params);
         PageUtils page = bsactivityAdService.findByPage(query.getPageNum(),query.getPageSize(), query);
@@ -68,6 +71,7 @@ public class BsactivityAdController {
     @RequestMapping("/save")
     @RequiresPermissions("bsactivity:bsactivityad:save")
     public R save(@RequestBody BsactivityAd bsactivityAd){
+        bsactivityAd.setDeptId(getDeptId());
         bsactivityAdService.save(bsactivityAd);
 
         return R.ok();

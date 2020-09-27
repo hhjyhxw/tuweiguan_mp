@@ -23,7 +23,9 @@ public @interface DataFilter {
     String tableAlias() default "";
 
     /**  true：没有本部门数据权限，也能查询本人数据 */
-    boolean user() default true;
+    boolean user() default false;
+
+//    boolean user() default true;
 
     /**  true：拥有子部门数据权限 */
     boolean subDept() default false;

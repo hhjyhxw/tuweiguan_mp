@@ -91,6 +91,9 @@ public class SmallRetail implements Serializable {
         /* 店铺头像 */
         @TableField("pay_img")
         private String payImg;
+        /* 企业id*/
+        @TableField("dept_id")
+        private Long deptId;
 
    	
 }

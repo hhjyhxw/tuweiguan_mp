@@ -3,6 +3,7 @@ package com.icloud.modules.small.controller;
 import java.util.Arrays;
 import java.util.Map;
 import com.icloud.basecommon.model.Query;
+import com.icloud.modules.sys.controller.AbstractController;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -28,7 +29,7 @@ import com.icloud.common.validator.ValidatorUtils;
  */
 @RestController
 @RequestMapping("small/smallcommonspu")
-public class SmallCommonSpuController {
+public class SmallCommonSpuController extends AbstractController {
     @Autowired
     private SmallCommonSpuService smallCommonSpuService;
 
@@ -62,6 +63,7 @@ public class SmallCommonSpuController {
     @RequestMapping("/save")
     @RequiresPermissions("small:smallcommonspu:save")
     public R save(@RequestBody SmallCommonSpu smallCommonSpu){
+
         smallCommonSpuService.save(smallCommonSpu);
 
         return R.ok();

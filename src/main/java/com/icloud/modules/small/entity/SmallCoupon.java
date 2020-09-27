@@ -72,5 +72,8 @@ public class SmallCoupon implements Serializable {
    	   	   /* 商户id */
        @TableField("supplier_id")
        private Long supplierId;
+        /* 企业id*/
+        @TableField("dept_id")
+        private Long deptId;
    	
 }

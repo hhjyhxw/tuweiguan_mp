@@ -2,6 +2,8 @@ package com.icloud.modules.small.controller;
 
 import java.util.Arrays;
 import java.util.Map;
+
+import com.icloud.annotation.DataFilter;
 import com.icloud.basecommon.model.Query;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,6 +39,7 @@ public class SmallUserCouponController {
      */
     @RequestMapping("/list")
     @RequiresPermissions("small:smallusercoupon:list")
+    @DataFilter
     public R list(@RequestParam Map<String, Object> params){
         Query query = new Query(params);
         PageUtils page = smallUserCouponService.findByPage(query.getPageNum(),query.getPageSize(), query);

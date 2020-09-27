@@ -6,6 +6,7 @@ import com.icloud.common.R;
 import com.icloud.common.validator.ValidatorUtils;
 import com.icloud.modules.small.entity.SmallAddress;
 import com.icloud.modules.small.service.SmallAddressService;
+import com.icloud.modules.sys.controller.AbstractController;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -24,7 +25,7 @@ import java.util.Map;
  */
 @RestController
 @RequestMapping("small/smalladdress")
-public class SmallAddressController {
+public class SmallAddressController extends AbstractController {
     @Autowired
     private SmallAddressService smallAddressService;
 
