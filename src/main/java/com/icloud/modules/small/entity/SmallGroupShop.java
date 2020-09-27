@@ -78,7 +78,9 @@ public class SmallGroupShop implements Serializable {
        /*公共商品所属店铺Id*/
         @TableField("sys_shop_id")
         private Long sysShopId;
-
+        /* 是否是公共商品0 不是 1是*/
+        @TableField("common_flag")
+        private String commonFlag;
         /* 企业id*/
         @TableField("dept_id")
         private Long deptId;
