@@ -53,7 +53,7 @@ public class SmallSellCategory implements Serializable {
        @TableField("sort_num")
        private Integer sortNum;
        /* 店铺id */
-       @NotNull
+       @NotNull(message = "店铺不能为空")
        @TableField("supplier_id")
        private Long supplierId;
 

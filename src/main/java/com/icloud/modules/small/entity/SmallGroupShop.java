@@ -75,6 +75,10 @@ public class SmallGroupShop implements Serializable {
        @TableField("supplier_id")
        private Long supplierId;
 
+       /*公共商品所属店铺Id*/
+        @TableField("sys_shop_id")
+        private Long sysShopId;
+
         /* 企业id*/
         @TableField("dept_id")
         private Long deptId;

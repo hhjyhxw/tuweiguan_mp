@@ -7,6 +7,7 @@ import com.icloud.common.Constant;
 import com.icloud.common.R;
 import com.icloud.common.beanutils.ColaBeanUtils;
 import com.icloud.common.validator.ValidatorUtils;
+import com.icloud.config.DeptUtils;
 import com.icloud.modules.small.entity.SmallCategory;
 import com.icloud.modules.small.service.SmallCategoryService;
 import com.icloud.modules.small.vo.CategoryVo;
@@ -34,7 +35,8 @@ import java.util.Map;
 public class SmallCategoryController extends AbstractController {
     @Autowired
     private SmallCategoryService smallCategoryService;
-
+    @Autowired
+    private DeptUtils deptUtils;
 //    /**
 //     * 列表
 //     */
@@ -69,8 +71,9 @@ public class SmallCategoryController extends AbstractController {
      */
     @RequestMapping("/select")
     @RequiresPermissions("small:smallcategory:update")
-    public R select(){
-        List<SmallCategory> categoryList = smallCategoryService.queryList(new HashMap<String, Object>());
+    @DataFilter
+    public R select(Map<String, Object> params){
+        List<SmallCategory> categoryList = smallCategoryService.queryList(params);
         if(getUserId() == Constant.SUPER_ADMIN) {
             SmallCategory root = new SmallCategory();
             root.setId(0L);

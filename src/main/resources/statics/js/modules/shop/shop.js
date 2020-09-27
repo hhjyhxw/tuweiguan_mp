@@ -211,8 +211,14 @@ var vm = new Vue({
             status:0,
             sysFlag:0,
             review:0,
-        }
+        },
+        user: {
+		    userId:null
+        },
 	},
+    created: function(){
+        this.getUser();
+    },
 	methods: {
 		query: function () {
 			vm.reload();
@@ -346,6 +352,12 @@ var vm = new Vue({
 
                     layer.close(index);
                 }
+            });
+        },
+        //获取用户信息
+        getUser: function(){
+            $.getJSON(baseURL+"sys/user/info?_"+$.now(), function(r){
+                vm.user = r.user;
             });
         },
 	}

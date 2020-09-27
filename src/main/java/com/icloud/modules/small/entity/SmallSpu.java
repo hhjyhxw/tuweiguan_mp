@@ -70,7 +70,7 @@ public class SmallSpu implements Serializable {
    	   	   /* 0下架 1上架 */
        @TableField("status")
        private Integer status;
-   	   	   /* 商户id */
+   	   	   /* 商户id\店铺Id*/
        @NotNull(message = "关联商户不能为空")
        @TableField("supplier_id")
        private Long supplierId;
@@ -92,7 +92,7 @@ public class SmallSpu implements Serializable {
    	   	   /* 修改时间 */
        @TableField("modify_time")
        private Date modifyTime;
-        /* 零售户id*/
+        /* 零售户id （弃用）*/
         @TableField("retailer_id")
         private Long retailerId;
         /* 库存 */

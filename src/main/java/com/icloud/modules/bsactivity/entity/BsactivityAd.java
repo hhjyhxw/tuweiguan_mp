@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.icloud.modules.shop.entity.Shop;
 import lombok.Data;
 
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.Date;
 
@@ -56,6 +57,7 @@ public class BsactivityAd implements Serializable {
        @TableField("sort_num")
        private Integer sortNum;
         /* 店铺id */
+        @NotNull(message = "店铺id不能为空")
         @TableField("supplier_id")
         private Long supplierId;
         /* 是否是系统广告 */

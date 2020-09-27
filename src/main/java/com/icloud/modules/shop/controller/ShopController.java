@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.icloud.annotation.DataFilter;
 import com.icloud.basecommon.model.Query;
 import com.icloud.common.Constant;
+import com.icloud.config.DeptUtils;
 import com.icloud.modules.small.entity.SmallCategory;
 import com.icloud.modules.small.vo.ShopTreeVo;
 import com.icloud.modules.sys.controller.AbstractController;
@@ -37,6 +38,8 @@ public class ShopController extends AbstractController {
     @Autowired
     private ShopService shopService;
 
+    @Autowired
+    private DeptUtils deptUtils;
     /**
      * 列表
      */
@@ -66,7 +69,7 @@ public class ShopController extends AbstractController {
     @RequestMapping("/select")
     @RequiresPermissions("small:smallcategory:update")
     public R select(){
-        List<Shop> list = shopService.list(new QueryWrapper<Shop>());
+        List<Shop> list = shopService.list(new QueryWrapper<Shop>().in("dept_id", deptUtils.getDeptIdList()));
         List<ShopTreeVo> shopTreeVolist = new ArrayList<ShopTreeVo>();
         if(list!=null && list.size()>0){
             ShopTreeVo shopvo = null;
@@ -99,7 +102,7 @@ public class ShopController extends AbstractController {
      */
     @RequestMapping("/selectlist")
     public R attibutList(){
-        List<Shop> list = shopService.list(new QueryWrapper<Shop>());
+        List<Shop> list = shopService.list(new QueryWrapper<Shop>().in("dept_id", deptUtils.getDeptIdList()));
         return R.ok().put("list", list);
     }
 
@@ -145,6 +148,17 @@ public class ShopController extends AbstractController {
         ValidatorUtils.validateEntity(shop);
         shop.setCreatedTime(new Date());
         shop.setCreatedBy(getUser().getUsername());
+        /*设置部门*/
+        if(shop.getDeptId()==null){
+            shop.setDeptId(getDeptId());
+        }
+        //设置级别
+        if(shop.getParentId().longValue()==0){
+            shop.setShopLevel(1);
+        }else{
+            Shop parentshop = (Shop) shopService.getById(shop.getParentId());
+            shop.setShopLevel(parentshop.getShopLevel()+1);
+        }
         shopService.save(shop);
 
         return R.ok();

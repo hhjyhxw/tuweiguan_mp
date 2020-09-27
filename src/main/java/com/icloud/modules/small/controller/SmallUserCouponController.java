@@ -5,6 +5,7 @@ import java.util.Map;
 
 import com.icloud.annotation.DataFilter;
 import com.icloud.basecommon.model.Query;
+import com.icloud.modules.shop.service.ShopService;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;

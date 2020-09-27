@@ -6,6 +6,9 @@ import com.icloud.basecommon.model.Query;
 import com.icloud.common.PageUtils;
 import com.icloud.common.R;
 import com.icloud.common.validator.ValidatorUtils;
+import com.icloud.config.DeptUtils;
+import com.icloud.modules.shop.entity.Shop;
+import com.icloud.modules.shop.service.ShopService;
 import com.icloud.modules.small.entity.SmallSellCategory;
 import com.icloud.modules.small.service.SmallSellCategoryService;
 import com.icloud.modules.small.vo.SellCategoryVo;
@@ -33,7 +36,8 @@ import java.util.Map;
 public class SmallSellCategoryController extends AbstractController {
     @Autowired
     private SmallSellCategoryService smallSellCategoryService;
-
+    @Autowired
+    private ShopService shopService;
 
     /**
      * 选中店铺自定义分类
@@ -93,7 +97,8 @@ public class SmallSellCategoryController extends AbstractController {
     @RequiresPermissions("small:smallsellcategory:save")
     public R save(@RequestBody SmallSellCategory smallSellCategory){
         ValidatorUtils.validateEntity(smallSellCategory);
-        smallSellCategory.setDeptId(getDeptId());
+        Shop shop = (Shop) shopService.getById(smallSellCategory.getSupplierId());
+        smallSellCategory.setDeptId(shop.getDeptId());
         smallSellCategoryService.save(smallSellCategory);
 
         return R.ok();
@@ -106,6 +111,8 @@ public class SmallSellCategoryController extends AbstractController {
     @RequiresPermissions("small:smallsellcategory:update")
     public R update(@RequestBody SmallSellCategory smallSellCategory){
         ValidatorUtils.validateEntity(smallSellCategory);
+        Shop shop = (Shop) shopService.getById(smallSellCategory.getSupplierId());
+        smallSellCategory.setDeptId(shop.getDeptId());
         smallSellCategoryService.updateById(smallSellCategory);
         
         return R.ok();

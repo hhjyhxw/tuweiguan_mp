@@ -6,11 +6,16 @@ import com.icloud.basecommon.model.Query;
 import com.icloud.common.PageUtils;
 import com.icloud.common.R;
 import com.icloud.common.validator.ValidatorUtils;
+import com.icloud.modules.shop.entity.Shop;
+import com.icloud.modules.shop.service.ShopService;
+import com.icloud.modules.small.entity.SmallSku;
 import com.icloud.modules.small.entity.SmallSpu;
+import com.icloud.modules.small.service.SmallSkuService;
 import com.icloud.modules.small.service.SmallSpuService;
 import com.icloud.modules.sys.controller.AbstractController;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -35,7 +40,10 @@ public class SmallSpuController extends AbstractController {
     private SmallSpuService smallSpuService;
     @Autowired
     private HttpServletRequest httpServletRequest;
-
+    @Autowired
+    private ShopService shopService;
+    @Autowired
+    private SmallSkuService smallSkuService;
     /**
      * 列表
      */
@@ -87,7 +95,15 @@ public class SmallSpuController extends AbstractController {
             smallSpu.setStock(0);
             smallSpu.setFreezeStock(0);
         }
+        Shop shop = (Shop) shopService.getById(smallSpu.getSupplierId());
+        smallSpu.setDeptId(shop.getDeptId());
         smallSpuService.save(smallSpu);
+
+        SmallSku sku = new SmallSku();
+        BeanUtils.copyProperties(smallSpu,sku);
+        sku.setId(null);
+        sku.setSpuId(smallSpu.getId());
+        smallSkuService.save(sku);
         return R.ok().put("smallSpu",smallSpu);
     }
 
@@ -112,6 +128,8 @@ public class SmallSpuController extends AbstractController {
                 smallSpu.setStock(stock-(smallSpu.getFreezeStock()!=null?smallSpu.getFreezeStock():0)>0?stock:smallSpu.getFreezeStock());
             }
         }
+        Shop shop = (Shop) shopService.getById(smallSpu.getSupplierId());
+        smallSpu.setDeptId(shop.getDeptId());
         smallSpuService.updateById(smallSpu);
         return R.ok().put("smallSpu",smallSpu);
     }

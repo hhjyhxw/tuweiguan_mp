@@ -131,6 +131,9 @@ public class SmallOrder implements Serializable {
    	   	   /*  */
        @TableField("modify_time")
        private Date modifyTime;
+        /* 是否是公共商品订单0 不是 1是*/
+        @TableField("common_flag")
+        private String commonFlag;
 
         /* 企业id*/
         @TableField("dept_id")

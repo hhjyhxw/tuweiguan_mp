@@ -42,35 +42,17 @@ select t.*,(t.stock-t.freeze_stock) as remainStock from t_small_spu t
 <if test="id != null">
     and t.id = #{id}
 </if>
-<if test="price != null">
-    and t.price = #{price}
-</if>
-<if test="original_price != null">
-    and t.original_price = #{original_price}
-</if>
-<if test="vip_price != null">
-    and t.vip_price = #{vip_price}
-</if>
 <if test="title != null">
     and t.title = #{title}
-</if>
-<if test="sales != null">
-    and t.sales = #{sales}
 </if>
 <if test="img != null">
     and t.img = #{img}
 </if>
-<if test="detail != null">
-    and t.detail = #{detail}
+<if test="categoryId != null">
+    and t.category_id = #{categoryId}
 </if>
-<if test="description != null">
-    and t.description = #{description}
-</if>
-<if test="category_id != null">
-    and t.category_id = #{category_id}
-</if>
-<if test="freight_template_id != null">
-    and t.freight_template_id = #{freight_template_id}
+<if test="freightTemplateId != null">
+    and t.freight_template_id = #{freightTemplateId}
 </if>
 <if test="unit != null">
     and t.unit = #{unit}
@@ -78,8 +60,8 @@ select t.*,(t.stock-t.freeze_stock) as remainStock from t_small_spu t
 <if test="status != null">
     and t.status = #{status}
 </if>
-<if test="supplier_id != null">
-    and t.supplier_id = #{supplier_id}
+<if test="supplierId != null">
+    and t.supplier_id = #{supplierId}
 </if>
 <if test="ihot != null">
     and t.ihot = #{ihot}

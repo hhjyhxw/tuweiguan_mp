@@ -63,8 +63,14 @@ var vm = new Vue({
             name:'',
             shopName:'',
             accountNo:'',
-        }
+        },
+        user: {
+            userId:null
+        },
 	},
+    created: function(){
+        this.getUser();
+    },
 	methods: {
 		query: function () {
 			vm.reload();
@@ -169,7 +175,13 @@ var vm = new Vue({
                     }
                 });
             }
-        }
+        },
+        //获取用户信息
+        getUser: function(){
+            $.getJSON(baseURL+"sys/user/info?_"+$.now(), function(r){
+                vm.user = r.user;
+            });
+        },
 	}
 });
 vm.getShopList();

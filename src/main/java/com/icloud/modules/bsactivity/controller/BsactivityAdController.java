@@ -73,7 +73,8 @@ public class BsactivityAdController extends AbstractController {
     public R save(@RequestBody BsactivityAd bsactivityAd){
         bsactivityAd.setDeptId(getDeptId());
         bsactivityAdService.save(bsactivityAd);
-
+        Shop shop = (Shop) shopService.getById(bsactivityAd.getSupplierId());
+        bsactivityAd.setDeptId(shop.getDeptId());
         return R.ok();
     }
 
@@ -85,6 +86,8 @@ public class BsactivityAdController extends AbstractController {
     @RequiresPermissions("bsactivity:bsactivityad:update")
     public R update(@RequestBody BsactivityAd bsactivityAd){
         ValidatorUtils.validateEntity(bsactivityAd);
+        Shop shop = (Shop) shopService.getById(bsactivityAd.getSupplierId());
+        bsactivityAd.setDeptId(shop.getDeptId());
         bsactivityAdService.updateById(bsactivityAd);
         
         return R.ok();

@@ -6,6 +6,8 @@ import java.util.Map;
 
 import com.icloud.annotation.DataFilter;
 import com.icloud.basecommon.model.Query;
+import com.icloud.modules.shop.entity.Shop;
+import com.icloud.modules.shop.service.ShopService;
 import com.icloud.modules.sys.controller.AbstractController;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +37,8 @@ import com.icloud.common.validator.ValidatorUtils;
 public class ShopStoreController extends AbstractController {
     @Autowired
     private ShopStoreService shopStoreService;
+    @Autowired
+    private ShopService shopService;
 
     /**
      * 列表
@@ -70,6 +74,9 @@ public class ShopStoreController extends AbstractController {
         ValidatorUtils.validateEntity(shopStore);
         shopStore.setCreatedTime(new Date());
         shopStore.setCreatedBy(getUser().getUsername());
+
+        Shop shop = (Shop) shopService.getById(shopStore.getShopId());
+        shopStore.setDeptId(shop.getDeptId());
         shopStoreService.save(shopStore);
         return R.ok();
     }
@@ -83,6 +90,9 @@ public class ShopStoreController extends AbstractController {
         ValidatorUtils.validateEntity(shopStore);
         shopStore.setUpdatedTime(new Date());
         shopStore.setUpdatedBy(getUser().getUsername());
+
+        Shop shop = (Shop) shopService.getById(shopStore.getShopId());
+        shopStore.setDeptId(shop.getDeptId());
         shopStoreService.updateById(shopStore);
         
         return R.ok();
