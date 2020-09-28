@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.icloud.annotation.DataFilter;
 import com.icloud.basecommon.model.Query;
 import com.icloud.common.Constant;
+import com.icloud.common.util.StringUtil;
 import com.icloud.config.DeptUtils;
 import com.icloud.modules.small.entity.SmallCategory;
 import com.icloud.modules.small.vo.ShopTreeVo;
@@ -68,8 +69,16 @@ public class ShopController extends AbstractController {
      */
     @RequestMapping("/select")
     @RequiresPermissions("small:smallcategory:update")
-    public R select(){
-        List<Shop> list = shopService.list(new QueryWrapper<Shop>().in("dept_id", deptUtils.getDeptIdList()));
+    @DataFilter//超级管理员需要在页面传入企业id,非超级管理员根据当前登陆用户所在企业过滤获取对应企业数据
+    public R select(@RequestParam Map<String, Object> params){
+        List<Shop> list = null;
+        //超级管理员可以为其他企业添加分类
+        if(Constant.SUPER_ADMIN==getUserId() && StringUtil.checkObj(params.get("deptId"))){//超级管理员选择的
+            list = shopService.list(new QueryWrapper<Shop>().in("dept_id", deptUtils.getDeptIdLists(Long.valueOf(params.get("deptId").toString()))));
+        }else{
+            list = shopService.list(new QueryWrapper<Shop>().in("dept_id", deptUtils.getDeptIdList()));//当前登陆用户的
+        }
+
         List<ShopTreeVo> shopTreeVolist = new ArrayList<ShopTreeVo>();
         if(list!=null && list.size()>0){
             ShopTreeVo shopvo = null;

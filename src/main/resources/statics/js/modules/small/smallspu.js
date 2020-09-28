@@ -1,3 +1,30 @@
+var editor1;
+KindEditor.ready(function(K) {
+    editor1 = K.create('textarea[name="detail"]',{
+            //参数配置
+            width : '95%',
+            filePostName: "file",
+            uploadJson:  baseURL + "sys/oss/uploadFrontFoylay",
+            minHeight: '450',
+            resizeType : 0,//禁止拉伸，1可以上下拉伸，2上下左右拉伸
+            filterMode: false,//true时过滤HTML代码，false时允许输入任何代码。
+            itmes:  [
+                'source', '|', 'undo', 'redo', '|', 'preview', 'print', 'template', 'code', 'cut', 'copy', 'paste',
+                'plainpaste', 'wordpaste', '|', 'justifyleft', 'justifycenter', 'justifyright',
+                'justifyfull', 'insertorderedlist', 'insertunorderedlist', 'indent', 'outdent', 'subscript',
+                'superscript', 'clearhtml', 'quickformat', 'selectall', '|', 'fullscreen', '/',
+                'formatblock', 'fontname', 'fontsize', '|', 'forecolor', 'hilitecolor', 'bold',
+                'italic', 'underline', 'strikethrough', 'lineheight', 'removeformat', '|', 'image', 'multiimage',
+                'flash', 'media', 'insertfile', 'table', 'hr', 'emoticons', 'baidumap', 'pagebreak',
+                'anchor', 'link', 'unlink', '|', 'about'
+            ]
+        }
+
+    );
+    //  prettyPrint();
+});
+
+
 $(function () {
     new AjaxUpload('#upload', {
         action: baseURL + "sys/oss/uploadFront",
@@ -28,87 +55,6 @@ $(function () {
 });
 
 
-//实例化编辑器
-var ue = UE.getEditor('detail', {
-    toolbars: [
-        [
-            'undo', //撤销
-            'bold', //加粗
-            'underline', //下划线
-            'preview', //预览
-            'horizontal', //分隔线
-            'inserttitle', //插入标题
-            'cleardoc', //清空文档
-            'fontfamily', //字体
-            'fontsize', //字号
-            'paragraph', //段落格式
-            'simpleupload', //单图上传
-            'insertimage', //多图上传
-            'attachment', //附件
-            'music', //音乐
-            'inserttable', //插入表格
-            'emotion', //表情
-            'insertvideo', //视频
-            'justifyleft', //居左对齐
-            'justifyright', //居右对齐
-            'justifycenter', //居中对
-            'justifyjustify', //两端对齐
-            'forecolor', //字体颜色
-            'fullscreen', //全屏
-            'edittip ', //编辑提示
-            'customstyle', //自定义标题
-            'template', //模板
-        ]
-    ]
-});
-
-var ueDescription = UE.getEditor('description', {
-    toolbars: [
-        [
-            'undo', //撤销
-            'bold', //加粗
-            'underline', //下划线
-            'preview', //预览
-            'horizontal', //分隔线
-            'inserttitle', //插入标题
-            'cleardoc', //清空文档
-            'fontfamily', //字体
-            'fontsize', //字号
-            'paragraph', //段落格式
-            'simpleupload', //单图上传
-            'insertimage', //多图上传
-            'attachment', //附件
-            'music', //音乐
-            'inserttable', //插入表格
-            'emotion', //表情
-            'insertvideo', //视频
-            'justifyleft', //居左对齐
-            'justifyright', //居右对齐
-            'justifycenter', //居中对
-            'justifyjustify', //两端对齐
-            'forecolor', //字体颜色
-            'fullscreen', //全屏
-            'edittip ', //编辑提示
-            'customstyle', //自定义标题
-            'template', //模板
-        ]
-    ]
-});
-
-//获取sessionid
-var smallSessionId = '';
-function getSessionId(){
-    $.get(baseURL + "small/smallspu/getSessionId/", function(r){
-        // console.log("result====="+JSON.stringify(r));
-        smallSessionId = r.sessionId;
-        // console.log("smallSessionId======"+smallSessionId);
-        ue.execCommand('serverparam', 'smallSessionId', smallSessionId);
-    });
-}
-//3.按照键值添加参数
-ue.ready(function() {
-    getSessionId();
-});
 
 /**
  * 商品分类选择树
@@ -241,8 +187,14 @@ var vm = new Vue({
                 title:null
             }
         },
-        skuList:[],
-        attibutList:[]
+        skuList:[],//sku子商品列表
+        attibutList:[],//商品属性
+        user: {
+            userId:null
+        },//当前登陆用户
+        deptId:null,//部门id(企业id)
+        deptList:[],//部门列表（企业列表）
+        deptName:'',
 	},
 
     watch: {
@@ -258,6 +210,10 @@ var vm = new Vue({
             }
             vm.smallSpu.addStock = pnewV;
         }
+    },
+    created: function(){
+        this.getUser();
+        this.getDeptList();
     },
 	methods: {
 		query: function () {
@@ -297,7 +253,10 @@ var vm = new Vue({
 
 		},
 		saveOrUpdate: function (event) {
-            console.log("smallSpu======"+JSON.stringify(vm.smallSpu))
+            console.log("smallSpu1======"+JSON.stringify(vm.smallSpu))
+            vm.smallSpu.detail=editor1.html();
+            console.log("smallSpu2======"+JSON.stringify(vm.smallSpu))
+            // return;
             //参数校验，
             if(vm.smallSpu.title==null || vm.smallSpu.title==''){
                 layer.msg("商品名称不能为空", {icon: 2});
@@ -314,15 +273,15 @@ var vm = new Vue({
                 layer.msg("请选择分类", {icon: 2});
                 return;
             }
-            if(vm.smallSpu.supplierId==null || vm.smallSpu.supplierId==''){
+            if(vm.smallSpu.supplierId==null || vm.smallSpu.supplierId=='' || vm.smallSpu.supplierId==0){
                 layer.msg("请选择店铺", {icon: 2});
                 return;
             }
 		    $('#btnSaveOrUpdate').button('loading').delay(1000).queue(function() {
                 var url = vm.smallSpu.id == null ? "small/smallspu/save" : "small/smallspu/update";
                 // vm.smallSpu.detail = UE.getEditor('detail').getAllHtml();
-                vm.smallSpu.detail = UE.getEditor('detail').getContent();
-                vm.smallSpu.description =  UE.getEditor('description').getContent();
+                // vm.smallSpu.detail = UE.getEditor('detail').getContent();
+                // vm.smallSpu.description =  UE.getEditor('description').getContent();
                 console.log("vm.smallSpu==="+JSON.stringify(vm.smallSpu));
                 $.ajax({
                     type: "POST",
@@ -379,14 +338,15 @@ var vm = new Vue({
                 console.log("smallSpu==="+JSON.stringify(vm.smallSpu));
                 vm.caculatRemainStock = vm.smallSpu.remainStock;//设置剩余库存:只用于临时计算
                 // ue.setHtml(r.smallSpu.detail);//设置富文本值
-                ue.setContent(r.smallSpu.detail);
-                ueDescription.setContent(r.smallSpu.description);
+                // ue.setContent(r.smallSpu.detail);
+                // ueDescription.setContent(r.smallSpu.description);
                 // if(r.smallSpu.detail!=null && r.smallSpu.detail!=''){
                 //     UE.getEditor('detail').setContent(r.smallSpu.detail);
                 // }
                 // if(r.smallSpu.description!=null && r.smallSpu.description!=''){
                 //     UE.getEditor('description').setContent(r.smallSpu.description);
                 // }
+                editor1.html(vm.smallSpu.detail);
                 vm.smallSpu.smallCategory = {
                     title:null
                 };
@@ -396,6 +356,10 @@ var vm = new Vue({
                 vm.smallSpu.smallSellCategory = {
                     title:null
                 };
+
+                //设置部门信息
+                vm.deptId = r.smallSpu.deptId;
+                vm.setDeptName(vm.deptId);
                 //加载商品分类
                 vm.getCategory();
                 //加载零售户
@@ -406,6 +370,7 @@ var vm = new Vue({
                 vm.getSkuList(vm.smallSpu.id);
                 //加载attribute列表
                 vm.getAttibutList(vm.smallSpu.id);
+
             });
 		},
 		reload: function (event) {
@@ -419,7 +384,7 @@ var vm = new Vue({
         //加载分类树
         getCategory: function(){
             //加载分类树
-            $.get(baseURL + "small/smallcategory/select", function(r){
+            $.get(baseURL + "small/smallcategory/select?deptId="+vm.deptId, function(r){
                 ztree = $.fn.zTree.init($("#categroyTree"), setting, r.categoryList);
                 // console.log("ztree====="+JSON.stringify(ztree))
                 var node = ztree.getNodeByParam("id", vm.smallSpu.categoryId);
@@ -446,6 +411,9 @@ var vm = new Vue({
                     //选择分类
                     // console.log("node====="+JSON.stringify(node))
                     if(node!=null) {
+                        if(node[0].id===-1){
+                            return;
+                        }
                         vm.smallSpu.categoryId = node[0].id;
                         vm.smallSpu.smallCategory.title = node[0].name;
                     }
@@ -457,7 +425,7 @@ var vm = new Vue({
         //加载零售户
         getRetailList: function(){
             //加载
-            $.get(baseURL + "shop/shop/select", function(r){
+            $.get(baseURL + "shop/shop/select?deptId="+vm.deptId, function(r){
                 // console.log("r====="+JSON.stringify(r))
                 retialztree = $.fn.zTree.init($("#retailTree"), settingretail, r.retailList);
                 var node = retialztree.getNodeByParam("id", vm.smallSpu.supplierId);
@@ -485,6 +453,9 @@ var vm = new Vue({
                     //选择
                     // console.log("node====="+JSON.stringify(node))
                     if(node!=null){
+                        if(node[0].parentId===-1){
+                            return;
+                        }
                         vm.smallSpu.supplierId = node[0].id;
                         vm.smallSpu.smallRetail.supplierName = node[0].name;
                         //加载店铺对应的个性化商品分类
@@ -670,7 +641,36 @@ var vm = new Vue({
             }, function(){
 
             });
-        }
+        },
+        //加载企业列表
+        getDeptList:function(){
+            $.get(baseURL + "/sys/dept/selectlist", function(r){
+                vm.deptList = r.deptList;
+            });
+        },
+        //选择企业
+        selectDept: function (index) {
+            vm.smallSpu.deptId = vm.deptList[index].deptId;
+            vm.deptName = vm.deptList[index].name;
+            vm.deptId = vm.deptList[index].deptId;
+            vm.getCategory();
+            vm.getRetailList();
+        },
+        setDeptName:function(deptId){
+            if(vm.deptList!=null && vm.deptList.length>0 && deptId!=null){
+                vm.deptList.forEach(p=>{
+                    if(p.deptId===deptId){
+                        vm.deptName = p.name;
+                    }
+                });
+            }
+        },
+        //获取用户信息
+        getUser: function(){
+            $.getJSON(baseURL+"sys/user/info?_"+$.now(), function(r){
+                vm.user = r.user;
+            });
+        },
 
 
 	}

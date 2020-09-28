@@ -4,9 +4,9 @@ import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.icloud.basecommon.service.redis.RedisService;
 import com.icloud.common.PageUtils;
 import com.icloud.common.Query;
-import com.icloud.config.redis.SysConfigRedis;
 import com.icloud.exceptions.BaseException;
 import com.icloud.modules.sys.dao.SysConfigDao;
 import com.icloud.modules.sys.entity.SysConfigEntity;
@@ -22,8 +22,10 @@ import java.util.Map;
 @Service("sysConfigService")
 public class SysConfigServiceImpl extends ServiceImpl<SysConfigDao, SysConfigEntity> implements SysConfigService {
 
-    @Autowired
-	private SysConfigRedis sysConfigRedis;
+//    @Autowired
+//	private SysConfigRedis sysConfigRedis;
+	@Autowired
+	private RedisService redisService;
 
 	@Override
 	public PageUtils queryPage(Map<String, Object> params) {
@@ -41,21 +43,24 @@ public class SysConfigServiceImpl extends ServiceImpl<SysConfigDao, SysConfigEnt
 	@Override
 	public void saveConfig(SysConfigEntity config) {
 		this.save(config);
-		sysConfigRedis.saveOrUpdate(config);
+//		sysConfigRedis.saveOrUpdate(config);
+		redisService.set(config.getParamKey(),config);
 	}
 
 	@Override
 	@Transactional(rollbackFor = Exception.class)
 	public void update(SysConfigEntity config) {
 		this.updateById(config);
-		sysConfigRedis.saveOrUpdate(config);
+//		sysConfigRedis.saveOrUpdate(config);
+		redisService.set(config.getParamKey(),config);
 	}
 
 	@Override
 	@Transactional(rollbackFor = Exception.class)
 	public void updateValueByKey(String key, String value) {
 		baseMapper.updateValueByKey(key, value);
-		sysConfigRedis.delete(key);
+//		sysConfigRedis.delete(key);
+		redisService.remove(key);
 	}
 
 	@Override
@@ -63,7 +68,7 @@ public class SysConfigServiceImpl extends ServiceImpl<SysConfigDao, SysConfigEnt
 	public void deleteBatch(Long[] ids) {
 		for(Long id : ids){
 			SysConfigEntity config = this.getById(id);
-			sysConfigRedis.delete(config.getParamKey());
+//			sysConfigRedis.delete(config.getParamKey());
 		}
 
 		this.removeByIds(Arrays.asList(ids));
@@ -71,12 +76,16 @@ public class SysConfigServiceImpl extends ServiceImpl<SysConfigDao, SysConfigEnt
 
 	@Override
 	public String getValue(String key) {
-		SysConfigEntity config = sysConfigRedis.get(key);
-		if(config == null){
+		Object obj = redisService.get(key);
+//		SysConfigEntity config = sysConfigRedis.get(key);
+		SysConfigEntity config = null;
+		if(obj == null){
 			config = baseMapper.queryByKey(key);
-			sysConfigRedis.saveOrUpdate(config);
+//			sysConfigRedis.saveOrUpdate(config);
+			redisService.set(key,config);
+		}else{
+			config = (SysConfigEntity)obj;
 		}
-
 		return config == null ? null : config.getParamValue();
 	}
 	

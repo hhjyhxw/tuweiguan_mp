@@ -49,7 +49,10 @@ public class ConsoleLogAspect {
         log.info("请求URL : " + request.getRequestURL());
         log.info("请求IP : " + request.getRemoteAddr());
         log.info("请求方法 : " + joinPoint.getSignature().getDeclaringTypeName() + "." + joinPoint.getSignature().getName());
-
+        if(request.getRequestURL().indexOf("oss")>=0 || request.getRequestURL().indexOf("ueditor")>=0){
+            log.info("文件上传不打印参数 : ");
+            return;
+        }
         // 只记录post方法
         if("POST".equals(request.getMethod())){
             // 获取参数, 只取自定义的参数, 自带的HttpServletRequest, HttpServletResponse不管

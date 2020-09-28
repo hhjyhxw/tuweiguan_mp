@@ -2,8 +2,8 @@ package com.icloud.modules.sys.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.icloud.basecommon.service.redis.RedisService;
 import com.icloud.common.Constant;
-import com.icloud.config.redis.RedisUtils;
 import com.icloud.modules.sys.dao.SysMenuDao;
 import com.icloud.modules.sys.entity.SysMenuEntity;
 import com.icloud.modules.sys.entity.SysRoleMenuEntity;
@@ -23,8 +23,10 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuDao, SysMenuEntity> i
 	private SysUserService sysUserService;
 	@Autowired
 	private SysRoleMenuService sysRoleMenuService;
-    @Autowired
-    private RedisUtils redisUtils;
+//    @Autowired
+//    private RedisUtils redisUtils;
+	@Autowired
+	private RedisService redisService;
 	
 	@Override
 	public List<SysMenuEntity> queryListParentId(Long parentId, List<Long> menuIdList) {
@@ -127,6 +129,6 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuDao, SysMenuEntity> i
                 sysMenuEntity.setParentName(parentMenuEntity.getName());
             }
         }
-         redisUtils.set("allmenu",menuList);
+		 redisService.set("allmenu",menuList);
     }
 }

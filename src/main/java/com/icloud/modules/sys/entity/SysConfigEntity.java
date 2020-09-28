@@ -11,7 +11,7 @@ import javax.validation.constraints.NotBlank;
  */
 @Data
 @TableName("sys_config")
-public class SysConfigEntity {
+public class   SysConfigEntity {
     /*  */
     @TableId(value="id", type= IdType.AUTO)
 	private Long id;

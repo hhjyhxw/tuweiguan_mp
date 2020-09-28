@@ -3,6 +3,7 @@ package com.icloud.modules.oss.controller; /**
 
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.google.gson.Gson;
 import com.icloud.common.Constant;
 import com.icloud.common.PageUtils;
@@ -138,6 +139,30 @@ public class SysOssController {
 		sysOssService.save(ossEntity);
 
 		return R.ok().put("url", url);
+	}
+
+	/*
+	 * 上传文件
+	 */
+	@RequestMapping("/uploadFrontFoylay")
+	public JSONObject uploadFrontFoylay(@RequestParam("file") MultipartFile file) throws Exception {
+		JSONObject obj = new JSONObject();
+		if (file.isEmpty()) {
+			throw new OSSException("上传文件不能为空");
+		}
+
+		//上传文件
+		String suffix = file.getOriginalFilename().substring(file.getOriginalFilename().lastIndexOf("."));
+		String url = OSSFactory.build().uploadSuffix(file.getBytes(), suffix);
+
+		//保存文件信息
+		SysOssEntity ossEntity = new SysOssEntity();
+		ossEntity.setUrl(url);
+		ossEntity.setCreateDate(new Date());
+		sysOssService.save(ossEntity);
+		obj.put("error", 0);
+		obj.put("url", url);
+		return obj;
 	}
 
 	/**

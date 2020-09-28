@@ -83,11 +83,25 @@ public class DeptUtils {
         List<Long> subDeptIdList = sysDeptService.getSubDeptIdList(user.getDeptId());
         deptIdList.addAll(subDeptIdList);
 
-
         List<Long> result = new ArrayList<>(deptIdList);
         return result;
     }
 
+
+    /**
+     * 获取部门（企业）id List
+     */
+    public List<Long> getDeptIdLists(Long deptId){
+        List<Long> deptIdList = new ArrayList<>();
+        deptIdList.add(deptId);
+
+        //用户子部门ID列表
+        List<Long> subDeptIdList = sysDeptService.getSubDeptIdList(deptId);
+        deptIdList.addAll(subDeptIdList);
+
+        List<Long> result = new ArrayList<>(deptIdList);
+        return result;
+    }
     /**
      * 封装部门id 成 sql_filter
      */

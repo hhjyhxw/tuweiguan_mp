@@ -13,6 +13,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.Cookie;
@@ -24,8 +25,8 @@ import java.io.PrintWriter;
  * 新建 UeditorController，指定路径rootPath 用来找到config.json文件
  */
 @Slf4j
-//@RestController
-@Controller
+@RestController
+//@Controller
 @RequestMapping("/small/ueditor")
 public class UeditorController {
 
@@ -54,10 +55,11 @@ public class UeditorController {
      * @param response
      * @param action
      */
-    @ResponseBody
+//    @ResponseBody
     @RequestMapping(value = "/config",method = {RequestMethod.GET,RequestMethod.POST})
     public JSONObject editorUpload(HttpServletRequest request, HttpServletResponse response, String action,MultipartFile upfile[],String smallSessionId) {
-//        response.setContentType("application/json");
+        response.setContentType("application/json");
+        response.setHeader("Access-Control-Allow-Credentials", "true");
         if(StringUtil.checkStr(smallSessionId)){
             HttpSession session = request.getSession();
             Cookie cookie=new Cookie("smallSessionId", smallSessionId);
@@ -77,6 +79,7 @@ public class UeditorController {
                 writer.write(exec);
                 writer.flush();
                 writer.close();
+                return null;
             }else if("uploadimage".equals(action) || "uploadvideo".equals(action) || "uploadfile".equals(action)){    //如果是上传图片、视频、和其他文件
                 try {
 

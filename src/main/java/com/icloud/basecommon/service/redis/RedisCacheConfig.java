@@ -27,7 +27,7 @@ import java.lang.reflect.Method;
 
 @Configuration
 @EnableCaching
-@EnableRedisHttpSession(maxInactiveIntervalInSeconds = 3600, redisNamespace = "spring:session:tuweiguan")//跟配置一致 mypropertis session namespace
+@EnableRedisHttpSession(maxInactiveIntervalInSeconds = 7200, redisNamespace = "spring:session:tuweiguan")//跟配置一致 mypropertis session namespace
 public class RedisCacheConfig extends CachingConfigurerSupport {
 
     @Autowired
@@ -111,8 +111,9 @@ public class RedisCacheConfig extends CachingConfigurerSupport {
     public HttpSessionIdResolver httpSessionIdResolver() {
         CookieHttpSessionIdResolver cookieHttpSessionIdResolver = new CookieHttpSessionIdResolver();
         DefaultCookieSerializer cookieSerializer = new DefaultCookieSerializer();
-//        cookieSerializer.setCookieName(myPropertitys.getSession().getCookieName());//cookies名称
+        cookieSerializer.setCookieName(myPropertitys.getSession().getCookieName());//cookies名称
         cookieSerializer.setDomainName(myPropertitys.getSession().getParentDomainName());
+//		cookieSerializer.setUseSecureCookie();
         cookieSerializer.setCookiePath("/");
         cookieSerializer.setUseBase64Encoding(false);
         cookieHttpSessionIdResolver.setCookieSerializer(cookieSerializer);
