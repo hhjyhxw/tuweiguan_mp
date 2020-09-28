@@ -10,8 +10,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import com.icloud.modules.small.entity.SmallCoupon;
-import com.icloud.modules.small.service.SmallCouponService;
+import com.icloud.modules.small.entity.SmallShopconectuser;
+import com.icloud.modules.small.service.SmallShopconectuserService;
 import com.icloud.basecommon.model.Query;
 import com.icloud.common.PageUtils;
 import com.icloud.common.R;
@@ -20,27 +20,27 @@ import com.icloud.modules.sys.controller.AbstractController;
 
 
 /**
- * 折扣券管理
+ * 用户下单后 生成一条用户与店铺关联记录，如果存在则更新
  *
  * @author zdh
  * @email yyyyyy@cm.com
- * @date 2020-09-28 09:14:57
- * 菜单主连接： modules/small/smallcoupon.html
+ * @date 2020-09-28 09:14:58
+ * 菜单主连接： modules/small/smallshopconectuser.html
  */
 @RestController
-@RequestMapping("small/smallcoupon")
-public class SmallCouponController extends AbstractController{
+@RequestMapping("small/smallshopconectuser")
+public class SmallShopconectuserController extends AbstractController{
     @Autowired
-    private SmallCouponService smallCouponService;
+    private SmallShopconectuserService smallShopconectuserService;
 
     /**
      * 列表
      */
     @RequestMapping("/list")
-    @RequiresPermissions("small:smallcoupon:list")
+    @RequiresPermissions("small:smallshopconectuser:list")
     public R list(@RequestParam Map<String, Object> params){
         Query query = new Query(params);
-        PageUtils page = smallCouponService.findByPage(query.getPageNum(),query.getPageSize(), query);
+        PageUtils page = smallShopconectuserService.findByPage(query.getPageNum(),query.getPageSize(), query);
 
         return R.ok().put("page", page);
     }
@@ -50,20 +50,20 @@ public class SmallCouponController extends AbstractController{
      * 信息
      */
     @RequestMapping("/info/{id}")
-    @RequiresPermissions("small:smallcoupon:info")
+    @RequiresPermissions("small:smallshopconectuser:info")
     public R info(@PathVariable("id") Long id){
-        SmallCoupon smallCoupon = (SmallCoupon)smallCouponService.getById(id);
+        SmallShopconectuser smallShopconectuser = (SmallShopconectuser)smallShopconectuserService.getById(id);
 
-        return R.ok().put("smallCoupon", smallCoupon);
+        return R.ok().put("smallShopconectuser", smallShopconectuser);
     }
 
     /**
      * 保存
      */
     @RequestMapping("/save")
-    @RequiresPermissions("small:smallcoupon:save")
-    public R save(@RequestBody SmallCoupon smallCoupon){
-        smallCouponService.save(smallCoupon);
+    @RequiresPermissions("small:smallshopconectuser:save")
+    public R save(@RequestBody SmallShopconectuser smallShopconectuser){
+        smallShopconectuserService.save(smallShopconectuser);
 
         return R.ok();
     }
@@ -72,10 +72,10 @@ public class SmallCouponController extends AbstractController{
      * 修改
      */
     @RequestMapping("/update")
-    @RequiresPermissions("small:smallcoupon:update")
-    public R update(@RequestBody SmallCoupon smallCoupon){
-        ValidatorUtils.validateEntity(smallCoupon);
-        smallCouponService.updateById(smallCoupon);
+    @RequiresPermissions("small:smallshopconectuser:update")
+    public R update(@RequestBody SmallShopconectuser smallShopconectuser){
+        ValidatorUtils.validateEntity(smallShopconectuser);
+        smallShopconectuserService.updateById(smallShopconectuser);
         
         return R.ok();
     }
@@ -84,9 +84,9 @@ public class SmallCouponController extends AbstractController{
      * 删除
      */
     @RequestMapping("/delete")
-    @RequiresPermissions("small:smallcoupon:delete")
+    @RequiresPermissions("small:smallshopconectuser:delete")
     public R delete(@RequestBody Long[] ids){
-        smallCouponService.removeByIds(Arrays.asList(ids));
+        smallShopconectuserService.removeByIds(Arrays.asList(ids));
 
         return R.ok();
     }

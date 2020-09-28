@@ -1,6 +1,7 @@
 package com.icloud.modules.sys.controller;
 
 import com.alibaba.fastjson.JSON;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.icloud.common.Constant;
 import com.icloud.common.R;
 import com.icloud.modules.sys.entity.SysDeptEntity;
@@ -34,6 +35,13 @@ public class SysDeptController extends AbstractController {
 		List<SysDeptEntity> deptList = sysDeptService.queryList(new HashMap<String, Object>());
 		logger.info("deptList====="+ JSON.toJSONString(deptList));
 		return deptList;
+	}
+
+	@RequestMapping("/selectlist")
+	public R selectlist(){
+		List<SysDeptEntity> deptList = sysDeptService.list(new QueryWrapper<SysDeptEntity>().eq("del_flag",0));
+		logger.info("deptList====="+ JSON.toJSONString(deptList));
+		return R.ok().put("deptList",deptList);
 	}
 
 	/**

@@ -66,13 +66,25 @@ var vm = new Vue({
             name: null,
             parentName:null,
             parentId:0,
-            sortNum:999
-        }
+            sortNum:999,
+            deptId:null,
+        },
+        user: {
+            userId:null
+        },
+        deptId:null,
+        deptList:[],
+        deptName:'',
+
 	},
+    created: function(){
+        this.getUser();
+        this.getDeptList();
+    },
 	methods: {
         getCategory: function(){
             //加载分类树
-            $.get(baseURL + "small/smallcategory/select", function(r){
+            $.get(baseURL + "small/smallcategory/select?deptId="+vm.deptId, function(r){
                 // console.info("r==="+JSON.stringify(r))
                 ztree = $.fn.zTree.init($("#deptTree"), setting, r.categoryList);
                 // console.log("ztree====="+JSON.stringify(ztree))
@@ -88,18 +100,30 @@ var vm = new Vue({
 		add: function(){
 			vm.showList = false;
 			vm.title = "新增";
-			//vm.smallCategory = {title:null,parentName:null,parentId:-1,orderNum:0,status:0};
-            vm.getCategory();
+			vm.smallCategory = {
+			    id:null,
+                name: null,
+                parentName:null,
+                parentId:0,
+                sortNum:999,
+                deptId:null,
+            };
+			vm.deptName = ''
+
 		},
 		update: function (event) {
             var id = getCategoryId();
             if(id == null){
                 return ;
             }
+            vm.smallCategory ={};
+            vm.deptId = '';
             $.get(baseURL + "small/smallcategory/info/"+id, function(r){
                 vm.showList = false;
                 vm.title = "修改";
                 vm.smallCategory = r.smallCategory;
+                vm.deptId = r.smallCategory.deptId;
+                vm.setDeptName(vm.deptId);
                 vm.getCategory();
             });
 		},
@@ -158,6 +182,7 @@ var vm = new Vue({
 		getInfo: function(id){
 			$.get(baseURL + "small/smallcategory/info/"+id, function(r){
                 vm.smallCategory = r.smallCategory;
+                vm.deptId = r.smallCategory.deptId;
             });
 		},
         deptTree: function(){
@@ -185,7 +210,35 @@ var vm = new Vue({
         reload: function () {
             vm.showList = true;
             Dept.table.refresh();
-        }
+        },
+        //加载企业列表
+        getDeptList:function(){
+            $.get(baseURL + "/sys/dept/selectlist", function(r){
+                vm.deptList = r.deptList;
+            });
+        },
+        //选择企业
+        selectDept: function (index) {
+            vm.smallCategory.deptId = vm.deptList[index].deptId;
+            vm.deptName = vm.deptList[index].name;
+            vm.deptId = vm.deptList[index].deptId;
+            vm.getCategory();
+        },
+        setDeptName:function(deptId){
+            if(vm.deptList!=null && vm.deptList.length>0 && deptId!=null){
+                vm.deptList.forEach(p=>{
+                    if(p.deptId===deptId){
+                        vm.deptName = p.name;
+                    }
+                });
+            }
+        },
+        //获取用户信息
+        getUser: function(){
+            $.getJSON(baseURL+"sys/user/info?_"+$.now(), function(r){
+                vm.user = r.user;
+            });
+        },
 	}
 });
 

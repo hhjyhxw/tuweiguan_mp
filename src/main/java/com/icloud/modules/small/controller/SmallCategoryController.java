@@ -6,6 +6,7 @@ import com.icloud.basecommon.model.Query;
 import com.icloud.common.Constant;
 import com.icloud.common.R;
 import com.icloud.common.beanutils.ColaBeanUtils;
+import com.icloud.common.util.StringUtil;
 import com.icloud.common.validator.ValidatorUtils;
 import com.icloud.config.DeptUtils;
 import com.icloud.modules.small.entity.SmallCategory;
@@ -71,8 +72,12 @@ public class SmallCategoryController extends AbstractController {
      */
     @RequestMapping("/select")
     @RequiresPermissions("small:smallcategory:update")
-    @DataFilter
-    public R select(Map<String, Object> params){
+//    @DataFilter//超级管理员需要在页面传入企业id,非超级管理员根据当前登陆用户所在企业过滤获取对应企业数据
+    public R select(@RequestParam Map<String, Object> params){
+        //超级管理员可以为其他企业添加分类
+        if(Constant.SUPER_ADMIN==getUserId() && StringUtil.checkObj(params.get("deptId"))){
+            params.put("sql_filter",deptUtils.getDeptIdList(Long.valueOf(params.get("deptId").toString())));
+        }
         List<SmallCategory> categoryList = smallCategoryService.queryList(params);
         if(getUserId() == Constant.SUPER_ADMIN) {
             SmallCategory root = new SmallCategory();

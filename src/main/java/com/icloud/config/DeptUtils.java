@@ -87,4 +87,51 @@ public class DeptUtils {
         List<Long> result = new ArrayList<>(deptIdList);
         return result;
     }
+
+    /**
+     * 封装部门id 成 sql_filter
+     */
+    public String getDeptIdList(Long deptId){
+
+        List<Long> deptIdList = new ArrayList<>();
+        deptIdList.add(deptId);
+        StringBuilder sqlFilter = new StringBuilder();
+        sqlFilter.append(" (");
+
+        if(deptIdList.size() > 0){
+            sqlFilter.append("t.").append("dept_id").append(" in(").append(StringUtils.join(deptIdList, ",")).append(")");
+        }
+        sqlFilter.append(")");
+
+        if(sqlFilter.toString().trim().equals("()")){
+            return null;
+        }
+        return sqlFilter.toString();
+    }
+
+    /**
+     * 封装部门id 和子id  成 sql_filter
+     */
+    public String getDeptIdListAndSon(Long deptId){
+
+        List<Long> deptIdList = new ArrayList<>();
+        deptIdList.add(deptId);
+        //用户子部门ID列表
+        List<Long> subDeptIdList = sysDeptService.getSubDeptIdList(deptId);
+        deptIdList.addAll(subDeptIdList);
+
+
+        StringBuilder sqlFilter = new StringBuilder();
+        sqlFilter.append(" (");
+
+        if(deptIdList.size() > 0){
+            sqlFilter.append("t").append("dept_id").append(" in(").append(StringUtils.join(deptIdList, ",")).append(")");
+        }
+        sqlFilter.append(")");
+
+        if(sqlFilter.toString().trim().equals("()")){
+            return null;
+        }
+        return sqlFilter.toString();
+    }
 }

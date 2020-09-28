@@ -38,7 +38,7 @@ select * from ${tableName} t
 #end
 #end
     <if test="sql_filter != null and sql_filter!=''">
-        and '${sql_filter}'
+        and ${'${sql_filter}'}
     </if>
 </where>
 </select>

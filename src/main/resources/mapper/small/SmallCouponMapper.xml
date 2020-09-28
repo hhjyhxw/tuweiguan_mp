@@ -23,11 +23,12 @@
      <result property="createTime" column="create_time"/>
      <result property="modifyTime" column="modify_time"/>
      <result property="supplierId" column="supplier_id"/>
+     <result property="deptId" column="dept_id"/>
     </resultMap>
 
    <!-- 基础字段列 -->
    <sql id="Base_Column_List" >
-id,title,coup_type,description,total,surplus,limits,discount,min,status,category_id,days,start_time,end_time,create_time,modify_time,supplier_id
+id,title,coup_type,description,total,surplus,limits,discount,min,status,category_id,days,start_time,end_time,create_time,modify_time,supplier_id,dept_id
     </sql>
 
 
@@ -40,8 +41,8 @@ select * from t_small_coupon t
 <if test="title != null">
     and t.title = #{title}
 </if>
-<if test="coup_type != null">
-    and t.coup_type = #{coup_type}
+<if test="coupType != null">
+    and t.coup_type = #{coupType}
 </if>
 <if test="description != null">
     and t.description = #{description}
@@ -64,27 +65,30 @@ select * from t_small_coupon t
 <if test="status != null">
     and t.status = #{status}
 </if>
-<if test="category_id != null">
-    and t.category_id = #{category_id}
+<if test="categoryId != null">
+    and t.category_id = #{categoryId}
 </if>
 <if test="days != null">
     and t.days = #{days}
 </if>
-<if test="start_time != null">
-    and t.start_time = #{start_time}
+<if test="startTime != null">
+    and t.start_time = #{startTime}
 </if>
-<if test="end_time != null">
-    and t.end_time = #{end_time}
+<if test="endTime != null">
+    and t.end_time = #{endTime}
 </if>
-<if test="create_time != null">
-    and t.create_time = #{create_time}
+<if test="createTime != null">
+    and t.create_time = #{createTime}
 </if>
-<if test="modify_time != null">
-    and t.modify_time = #{modify_time}
+<if test="modifyTime != null">
+    and t.modify_time = #{modifyTime}
 </if>
-<if test="sql_filter != null and sql_filter!=''">
-    and ${sql_filter}
+<if test="supplierId != null">
+    and t.supplier_id = #{supplierId}
 </if>
+    <if test="sql_filter != null and sql_filter!=''">
+        and ${sql_filter}
+    </if>
 </where>
 </select>
 </mapper>

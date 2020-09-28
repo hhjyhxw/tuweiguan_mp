@@ -11,6 +11,8 @@ import org.springframework.transaction.annotation.Transactional;
 import com.icloud.basecommon.service.BaseServiceImpl;
 import ${package}.${moduleName}.dao.${className}Mapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import java.util.List;
+import java.util.Map;
 /**
  * ${comments}
  * @author ${author}

@@ -14,7 +14,7 @@ import java.util.Date;
  * 
  * @author zdh
  * @email yyyyyy@cm.com
- * @date 2020-08-13 14:34:01
+ * @date 2020-09-28 09:14:57
  */
 @Data
 @TableName("t_small_coupon")
@@ -72,8 +72,8 @@ public class SmallCoupon implements Serializable {
    	   	   /* 商户id */
        @TableField("supplier_id")
        private Long supplierId;
-        /* 企业id*/
-        @TableField("dept_id")
-        private Long deptId;
+   	   	   /* 企业Id */
+       @TableField("dept_id")
+       private Long deptId;
    	
 }
