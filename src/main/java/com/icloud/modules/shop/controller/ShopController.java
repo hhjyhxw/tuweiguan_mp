@@ -110,8 +110,15 @@ public class ShopController extends AbstractController {
      * 列表
      */
     @RequestMapping("/selectlist")
-    public R attibutList(){
-        List<Shop> list = shopService.list(new QueryWrapper<Shop>().in("dept_id", deptUtils.getDeptIdList()));
+    public R attibutList(@RequestParam Map<String, Object> params){
+        //超级管理员可以为其他企业添加分类
+        List<Shop> list = null;
+        if(Constant.SUPER_ADMIN==getUserId() && StringUtil.checkObj(params.get("deptId"))){//超级管理员选择的
+            list = shopService.list(new QueryWrapper<Shop>().in("dept_id", deptUtils.getDeptIdLists(Long.valueOf(params.get("deptId").toString()))));
+        }else{
+            list = shopService.list(new QueryWrapper<Shop>().in("dept_id", deptUtils.getDeptIdList()));//当前登陆用户的
+        }
+//        List<Shop> list = shopService.list(new QueryWrapper<Shop>().in("dept_id", deptUtils.getDeptIdList()));
         return R.ok().put("list", list);
     }
 

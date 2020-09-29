@@ -62,8 +62,18 @@ var vm = new Vue({
             cardNo:'',
             userName:'',
             mobile:'',
-        }
+        },
+        user: {
+            userId:null
+        },
+        deptId:null,
+        deptList:[],
+        deptName:'',
 	},
+    created: function(){
+        this.getUser();
+        this.getDeptList();
+    },
 	methods: {
 		query: function () {
 			vm.reload();
@@ -72,6 +82,8 @@ var vm = new Vue({
 			vm.showList = false;
 			vm.title = "新增";
 			vm.shopBank = {};
+			vm.deptName = '';
+            vm.getShopList();
 		},
 		update: function (event) {
 			var id = getSelectedRow();
@@ -139,6 +151,7 @@ var vm = new Vue({
 		getInfo: function(id){
 			$.get(baseURL + "shop/shopbank/info/"+id, function(r){
                 vm.shopBank = r.shopBank;
+                vm.getShopList();
                 vm.setShopName(r.shopBank.shopId);
             });
 		},
@@ -152,7 +165,7 @@ var vm = new Vue({
 		},
         //加载getShopList
         getShopList:function(){
-            $.get(baseURL + "shop/shop/selectlist", function(r){
+            $.get(baseURL + "shop/shop/selectlist?deptId="+vm.deptId, function(r){
                 vm.shopList = r.list;
             });
         },
@@ -169,7 +182,34 @@ var vm = new Vue({
                     }
                 });
             }
-        }
+        },
+        //加载企业列表
+        getDeptList:function(){
+            $.get(baseURL + "/sys/dept/selectlist", function(r){
+                vm.deptList = r.deptList;
+            });
+        },
+        //选择企业
+        selectDept: function (index) {
+            vm.shopBank.deptId = vm.deptList[index].deptId;
+            vm.deptName = vm.deptList[index].name;
+            vm.deptId = vm.deptList[index].deptId;
+            vm.getShopList();
+        },
+        setDeptName:function(deptId){
+            if(vm.deptList!=null && vm.deptList.length>0 && deptId!=null){
+                vm.deptList.forEach(p=>{
+                    if(p.deptId===deptId){
+                        vm.deptName = p.name;
+                    }
+                });
+            }
+        },
+        //获取用户信息
+        getUser: function(){
+            $.getJSON(baseURL+"sys/user/info?_"+$.now(), function(r){
+                vm.user = r.user;
+            });
+        },
 	}
 });
-vm.getShopList();

@@ -215,9 +215,13 @@ var vm = new Vue({
         user: {
 		    userId:null
         },
+        deptId:null,
+        deptList:[],
+        deptName:'',
 	},
     created: function(){
         this.getUser();
+        this.getDeptList();
     },
 	methods: {
 		query: function () {
@@ -320,7 +324,7 @@ var vm = new Vue({
         //加载店铺树
         getShopTree: function(){
             //加载分类树
-            $.get(baseURL + "shop/shop/select", function(r){
+            $.get(baseURL + "shop/shop/select?deptId="+vm.deptId, function(r){
                 // console.info("r==="+JSON.stringify(r))
                 ztree = $.fn.zTree.init($("#deptTree"), setting, r.retailList);
                 // console.log("ztree====="+JSON.stringify(ztree))
@@ -347,12 +351,39 @@ var vm = new Vue({
                     var node = ztree.getSelectedNodes();
                     //选择上级部门
                     console.log("node====="+JSON.stringify(node))
-                    vm.shop.parentId = node[0].id;
-                    vm.shop.parentName = node[0].name;
+                    if(node!=null) {
+                        if (node[0].parentId === -1) {
+                            return;
+                        }
+                        vm.shop.parentId = node[0].id;
+                        vm.shop.parentName = node[0].name;
+                    }
 
                     layer.close(index);
                 }
             });
+        },
+        //加载企业列表
+        getDeptList:function(){
+            $.get(baseURL + "/sys/dept/selectlist", function(r){
+                vm.deptList = r.deptList;
+            });
+        },
+        //选择企业
+        selectDept: function (index) {
+            vm.shop.deptId = vm.deptList[index].deptId;
+            vm.deptName = vm.deptList[index].name;
+            vm.deptId = vm.deptList[index].deptId;
+            vm.getShopTree();
+        },
+        setDeptName:function(deptId){
+            if(vm.deptList!=null && vm.deptList.length>0 && deptId!=null){
+                vm.deptList.forEach(p=>{
+                    if(p.deptId===deptId){
+                        vm.deptName = p.name;
+                    }
+                });
+            }
         },
         //获取用户信息
         getUser: function(){

@@ -63,7 +63,19 @@
     <div v-show="!showList" class="panel panel-default">
         <div class="panel-heading">{{title}}</div>
         <form class="form-horizontal">
-
+                    <div v-show="user.userId===1" class="form-group">
+                        <div class="col-sm-2 control-label">所属企业</div>
+                        <div class="dropdown">
+                            <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                                {{deptName}}
+                                <span class="caret"></span>
+                            </button>
+                            <!--超管编辑的时候 不能改变当前数据所在企业-->
+                            <ul v-if="shop.id==null" class="dropdown-menu" aria-labelledby="dropdownMenu1">
+                                <li v-for="(item,index) in deptList" :key="index"><a href="#" @click="selectDept(index)">{{item.name}}</a></li>
+                            </ul>
+                        </div>
+                    </div>
                     <div class="form-group">
                         <div class="col-sm-2 control-label">上级店铺</div>
                         <div class="col-sm-10">
