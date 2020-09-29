@@ -3,8 +3,10 @@ package com.icloud.modules.small.controller;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.icloud.annotation.DataFilter;
 import com.icloud.basecommon.model.Query;
+import com.icloud.common.Constant;
 import com.icloud.common.PageUtils;
 import com.icloud.common.R;
+import com.icloud.common.util.StringUtil;
 import com.icloud.common.validator.ValidatorUtils;
 import com.icloud.config.DeptUtils;
 import com.icloud.modules.shop.entity.Shop;
@@ -45,6 +47,7 @@ public class SmallSellCategoryController extends AbstractController {
     @RequestMapping("/select")
     @RequiresPermissions("small:smallsellcategory:update")
     public R select(@RequestParam Long supplierId){
+
         List<SellCategoryVo>  list = null;
         if(supplierId!=null){
             List<SmallSellCategory> clist = smallSellCategoryService.list(new QueryWrapper<SmallSellCategory>().eq("supplier_id",supplierId));

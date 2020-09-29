@@ -411,7 +411,7 @@ var vm = new Vue({
                     //选择分类
                     // console.log("node====="+JSON.stringify(node))
                     if(node!=null) {
-                        if(node[0].id===-1){
+                        if(node[0].id===0){
                             return;
                         }
                         vm.smallSpu.categoryId = node[0].id;

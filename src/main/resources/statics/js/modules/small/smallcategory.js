@@ -90,8 +90,10 @@ var vm = new Vue({
                 // console.log("ztree====="+JSON.stringify(ztree))
                 var node = ztree.getNodeByParam("id", vm.smallCategory.parentId);
                 console.log("加载node====="+JSON.stringify(node))
-                ztree.selectNode(node);
-                vm.smallCategory.parentName = node.name;
+                if(node!=null){
+                    ztree.selectNode(node);
+                    vm.smallCategory.parentName = node.name;
+                }
             })
         },
 		query: function () {
