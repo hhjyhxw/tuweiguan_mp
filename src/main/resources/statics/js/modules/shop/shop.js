@@ -243,6 +243,8 @@ var vm = new Vue({
                 county:'',
                 address:'',
             };
+            vm.deptName = '',
+            vm.deptId = null,
             vm.getShopTree();
 		},
 		update: function (event) {
@@ -311,6 +313,8 @@ var vm = new Vue({
 		getInfo: function(id){
 			$.get(baseURL + "shop/shop/info/"+id, function(r){
                 vm.shop = r.shop;
+                vm.deptId = r.shop.deptId;
+                vm.setDeptName(vm.deptId);
                 vm.getShopTree();
             });
 		},
@@ -352,8 +356,11 @@ var vm = new Vue({
                     //选择上级部门
                     console.log("node====="+JSON.stringify(node))
                     if(node!=null) {
-                        if (node[0].parentId === -1) {
-                            return;
+                        //系统管理员可以添加一级店铺
+                        if(vm.user.userId!=1){
+                            if (node[0].parentId === -1) {
+                                return;
+                            }
                         }
                         vm.shop.parentId = node[0].id;
                         vm.shop.parentName = node[0].name;

@@ -110,7 +110,9 @@ var vm = new Vue({
                 sortNum:999,
                 deptId:null,
             };
-			vm.deptName = ''
+            vm.deptName = '',
+            vm.deptId = null
+
 
 		},
 		update: function (event) {

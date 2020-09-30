@@ -92,6 +92,7 @@ var vm = new Vue({
             };
             vm.deptId=null,//部门id(企业id)
             vm.deptName='',
+
             vm.getRetailList();
 		},
 		update: function (event) {

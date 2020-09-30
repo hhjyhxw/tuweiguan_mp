@@ -134,8 +134,18 @@ var vm = new Vue({
         q:{
             titile:'',
             shopName:'',
-        }
+        },
+        user: {
+            userId:null
+        },
+        deptId:null,
+        deptList:[],
+        deptName:'',
 	},
+    created: function(){
+        this.getUser();
+        this.getDeptList();
+    },
 	methods: {
 		query: function () {
 			vm.reload();
@@ -152,6 +162,10 @@ var vm = new Vue({
                 county:'',
                 address:'',
             };
+            vm.deptName = '',
+            vm.deptId = null,
+            vm.shopName = null;
+            vm.getShopList();
 		},
 		update: function (event) {
 			var id = getSelectedRow();
@@ -218,7 +232,10 @@ var vm = new Vue({
 		getInfo: function(id){
 			$.get(baseURL + "shop/shopstore/info/"+id, function(r){
                 vm.shopStore = r.shopStore;
-                vm.setShopName(r.shopStore.shopId);
+                vm.deptId = r.shopStore.deptId;
+                vm.setDeptName(vm.deptId);
+                vm.getShopList(r.shopStore.shopId);
+                // vm.setShopName(r.shopStore.shopId);
             });
 		},
 		reload: function (event) {
@@ -230,9 +247,12 @@ var vm = new Vue({
             }).trigger("reloadGrid");
 		},
         //加载getShopList
-        getShopList:function(){
-            $.get(baseURL + "shop/shop/selectlist", function(r){
+        getShopList:function(id){
+            $.get(baseURL + "shop/shop/selectlist?deptId="+vm.deptId, function(r){
                 vm.shopList = r.list;
+                if(id!=null && id!=''){
+                    vm.setShopName(vm.shopStore.shopId);
+                }
             });
         },
         //选择卡店铺
@@ -248,7 +268,35 @@ var vm = new Vue({
                     }
                 });
             }
-        }
+        },
+        //加载企业列表
+        getDeptList:function(){
+            $.get(baseURL + "/sys/dept/selectlist", function(r){
+                vm.deptList = r.deptList;
+            });
+        },
+        //选择企业
+        selectDept: function (index) {
+            vm.shopStore.deptId = vm.deptList[index].deptId;
+            vm.deptName = vm.deptList[index].name;
+            vm.deptId = vm.deptList[index].deptId;
+            vm.getShopList();
+        },
+        setDeptName:function(deptId){
+            if(vm.deptList!=null && vm.deptList.length>0 && deptId!=null){
+                vm.deptList.forEach(p=>{
+                    if(p.deptId===deptId){
+                        vm.deptName = p.name;
+                    }
+                });
+            }
+        },
+        //获取用户信息
+        getUser: function(){
+            $.getJSON(baseURL+"sys/user/info?_"+$.now(), function(r){
+                vm.user = r.user;
+            });
+        },
 	}
 });
 vm.getShopList();

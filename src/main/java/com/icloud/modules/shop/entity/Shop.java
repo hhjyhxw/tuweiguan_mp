@@ -28,7 +28,7 @@ public class Shop implements Serializable {
        @TableId(value="id", type= IdType.AUTO)
        private Long id;
    	   	   /* 上级店铺ID */
-       @NotBlank(message = "上级不能为空")
+       @NotNull(message = "上级不能为空")
        @TableField("parent_id")
        private Long parentId;
    	   	   /* 编码 */

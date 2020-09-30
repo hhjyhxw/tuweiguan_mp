@@ -82,7 +82,10 @@ var vm = new Vue({
 			vm.showList = false;
 			vm.title = "新增";
 			vm.shopBank = {};
-			vm.deptName = '';
+
+            vm.deptName = '',
+            vm.deptId = null,
+            vm.shopName = null;
             vm.getShopList();
 		},
 		update: function (event) {
@@ -92,7 +95,7 @@ var vm = new Vue({
 			}
 			vm.showList = false;
             vm.title = "修改";
-            
+            vm.deptId = '';
             vm.getInfo(id);
 
 		},
@@ -151,8 +154,11 @@ var vm = new Vue({
 		getInfo: function(id){
 			$.get(baseURL + "shop/shopbank/info/"+id, function(r){
                 vm.shopBank = r.shopBank;
-                vm.getShopList();
-                vm.setShopName(r.shopBank.shopId);
+                vm.deptId = r.shopBank.deptId;
+                vm.setDeptName(vm.deptId);
+                vm.getShopList(r.shopBank.shopId);
+                // vm.getShopList();
+                // vm.setShopName(r.shopBank.shopId);
             });
 		},
 		reload: function (event) {
@@ -164,10 +170,15 @@ var vm = new Vue({
             }).trigger("reloadGrid");
 		},
         //加载getShopList
-        getShopList:function(){
+        getShopList:function(id){
+            $.ajaxSettings.async = false;
             $.get(baseURL + "shop/shop/selectlist?deptId="+vm.deptId, function(r){
                 vm.shopList = r.list;
+                if(id!=null && id!=''){
+                    vm.setShopName(vm.shopBank.shopId);
+                }
             });
+            $.ajaxSettings.async = true;
         },
         //选择卡店铺
         selectShop: function (index) {

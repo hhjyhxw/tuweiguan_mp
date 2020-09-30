@@ -71,10 +71,9 @@ public class BsactivityAdController extends AbstractController {
     @RequestMapping("/save")
     @RequiresPermissions("bsactivity:bsactivityad:save")
     public R save(@RequestBody BsactivityAd bsactivityAd){
-        bsactivityAd.setDeptId(getDeptId());
-        bsactivityAdService.save(bsactivityAd);
         Shop shop = (Shop) shopService.getById(bsactivityAd.getSupplierId());
         bsactivityAd.setDeptId(shop.getDeptId());
+        bsactivityAdService.save(bsactivityAd);
         return R.ok();
     }
 

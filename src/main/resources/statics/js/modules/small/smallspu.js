@@ -238,6 +238,8 @@ var vm = new Vue({
                 }
 
             };
+            vm.deptName = '',
+            vm.deptId = null,
             vm.getCategory();
             vm.getRetailList();
 		},
