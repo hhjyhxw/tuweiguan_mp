@@ -8,6 +8,8 @@ import java.util.Map;
 import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.icloud.basecommon.model.Query;
+import com.icloud.modules.shop.entity.Shop;
+import com.icloud.modules.shop.service.ShopService;
 import com.icloud.modules.small.entity.SmallSpu;
 import com.icloud.modules.small.service.SmallSpuService;
 import lombok.extern.slf4j.Slf4j;
@@ -42,6 +44,8 @@ public class SmallSkuController {
     private SmallSkuService smallSkuService;
     @Autowired
     private SmallSpuService smallSpuService;
+    @Autowired
+    private ShopService shopService;
     /**
      * 列表
      */
@@ -70,11 +74,34 @@ public class SmallSkuController {
     /**
      * 添加团购商品使用列表
      */
+    /**
+     *
+     * @param supplierId  上架团购商品的店铺Id
+     * @param sysFlag
+     * @return
+     */
     @RequestMapping("/skulistForGroup")
     @RequiresPermissions("small:smallspu:list")
-    public R skulistForGroup(@RequestParam Long supplierId){
+    public R skulistForGroup(@RequestParam Long supplierId,@RequestParam boolean sysFlag){
+        Shop shop = (Shop) shopService.getById(supplierId);
         //查询到list集合
-        List<SmallSpu> spuList = smallSpuService.list(new QueryWrapper<SmallSpu>().eq("supplier_id",supplierId));
+        List<SmallSpu> spuList = null;
+        //非系统店铺 上架系统店铺商品
+        if(sysFlag && !"1".equals(shop.getSysFlag())){
+            List<Shop> shoplist = shopService.list(new QueryWrapper<Shop>().eq("sys_flag","1"));
+            if(shoplist!=null && shoplist.size()>0){
+                List<Long> shopIds = new ArrayList<>();
+                shoplist.forEach(p->{
+                    shopIds.add(p.getId());
+                });
+                spuList = smallSpuService.list(new QueryWrapper<SmallSpu>().in("supplier_id",shopIds));
+            }
+        }else{
+            spuList = smallSpuService.list(new QueryWrapper<SmallSpu>().eq("supplier_id",supplierId));
+        }
+        if(spuList==null || spuList.size()==0){
+            return R.error();
+        }
         //结果集
         List<Long> spuIds = new ArrayList<>();
         //遍历集合取值

@@ -54,7 +54,17 @@ var vm = new Vue({
         shopName:'',
         shopList:[],//店铺列表
         skuList :[],//对应店铺商品
+        user: {
+            userId:null
+        },
+        deptId:null,
+        deptList:[],
+        deptName:'',
 	},
+    created: function(){
+        this.getUser();
+        this.getDeptList();
+    },
 	methods: {
 		query: function () {
 			vm.reload();
@@ -67,7 +77,9 @@ var vm = new Vue({
                 gmtEnd:null
             };
             vm.goodName='',
-            vm.shopName='',
+            vm.deptName = '',
+            vm.deptId = null,
+            vm.shopName = null;
             vm.getShopList();
 		},
 		update: function (event) {
@@ -137,6 +149,9 @@ var vm = new Vue({
                 vm.smallGroupShop = r.smallGroupShop;
                 vm.shopName = r.smallGroupShop.shop.shopName;
                 vm.goodName = r.smallGroupShop.sku.title;
+                vm.deptId = r.smallGroupShop.deptId;
+                vm.setDeptName(vm.deptId);
+                vm.getShopList(r.smallGroupShop.supplierId);
             });
 		},
 		reload: function (event) {
@@ -147,9 +162,12 @@ var vm = new Vue({
             }).trigger("reloadGrid");
 		},
         //加载AttibutList
-        getShopList:function(){
-            $.get(baseURL + "shop/shop/selectlist", function(r){
+        getShopList:function(id){
+            $.get(baseURL + "shop/shop/selectlist?deptId="+vm.deptId, function(r){
                 vm.shopList = r.list;
+                if(id!=null && id!=''){
+                    vm.setShopName(vm.smallGroupShop.supplierId);
+                }
             });
         },
         //选择店铺
@@ -162,9 +180,21 @@ var vm = new Vue({
             vm.smallGroupShop.skuId = null;
 
         },
+        //选择自营或者公共商品
+        selectCommonFlag: function (commonFlag) {
+		    if(commonFlag==0){
+                vm.getGoodsList(vm.smallGroupShop.supplierId,false);//加载店铺sku列表
+            }else {
+                vm.getGoodsList(vm.smallGroupShop.supplierId,true);//加载店铺sku列表
+            }
+            vm.goodName = '';
+            vm.smallGroupShop.spuId = null;
+            vm.smallGroupShop.skuId = null;
+
+        },
         //加载商品列表
-        getGoodsList:function(supplierId){
-            $.get(baseURL + "small/smallsku/skulistForGroup?supplierId="+supplierId, function(r){
+        getGoodsList:function(supplierId,sysFlag){
+            $.get(baseURL + "small/smallsku/skulistForGroup?supplierId="+supplierId+"&sysFlag="+sysFlag, function(r){
                 vm.skuList = r.list;
             });
         },
@@ -176,6 +206,34 @@ var vm = new Vue({
             vm.smallGroupShop.skuId = goods.id;
             vm.smallGroupShop.minPrice = goods.price;//团购价
             vm.smallGroupShop.maxPrice = goods.originalPrice;//原价
+        },
+        //加载企业列表
+        getDeptList:function(){
+            $.get(baseURL + "/sys/dept/selectlist", function(r){
+                vm.deptList = r.deptList;
+            });
+        },
+        //选择企业
+        selectDept: function (index) {
+            vm.smallGroupShop.deptId = vm.deptList[index].deptId;
+            vm.deptName = vm.deptList[index].name;
+            vm.deptId = vm.deptList[index].deptId;
+            vm.getShopList();
+        },
+        setDeptName:function(deptId){
+            if(vm.deptList!=null && vm.deptList.length>0 && deptId!=null){
+                vm.deptList.forEach(p=>{
+                    if(p.deptId===deptId){
+                        vm.deptName = p.name;
+                    }
+                });
+            }
+        },
+        //获取用户信息
+        getUser: function(){
+            $.getJSON(baseURL+"sys/user/info?_"+$.now(), function(r){
+                vm.user = r.user;
+            });
         },
 
 	}
