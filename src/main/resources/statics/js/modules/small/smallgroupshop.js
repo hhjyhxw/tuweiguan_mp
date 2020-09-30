@@ -183,9 +183,11 @@ var vm = new Vue({
         //选择自营或者公共商品
         selectCommonFlag: function (commonFlag) {
 		    if(commonFlag==0){
-                vm.getGoodsList(vm.smallGroupShop.supplierId,false);//加载店铺sku列表
+		        vm.smallGroupShop.commonFlag = 0;
+                //vm.getGoodsList(vm.smallGroupShop.supplierId,false);//加载店铺sku列表
             }else {
-                vm.getGoodsList(vm.smallGroupShop.supplierId,true);//加载店铺sku列表
+                vm.smallGroupShop.commonFlag = 1;
+                //vm.getGoodsList(vm.smallGroupShop.supplierId,true);//加载店铺sku列表
             }
             vm.goodName = '';
             vm.smallGroupShop.spuId = null;
@@ -199,7 +201,7 @@ var vm = new Vue({
             });
         },
         //选择sku
-        selectSku: function (index) {
+        selectSku_bak: function (index) {
 		    var goods = vm.skuList[index];
             vm.goodName = goods.title;
             vm.smallGroupShop.spuId = goods.spuId;
@@ -235,7 +237,50 @@ var vm = new Vue({
                 vm.user = r.user;
             });
         },
+        //打开添加sku弹窗 选择需要上团购 是航拍
+        selectSku: function () {
+            if(vm.smallGroupShop.commonFlag===0){
+                sysFlag = false;
+            }else {
+                sysFlag = true;
+            }
+            this.skuWinIndex = layer.open({
+                title: '选择sku',
+                type: 2,
+                maxmin: true,
+                move:true,
+                shadeClose: true,
+                area: ['65%', '65%'],
+                btn: ['<i class="fa fa-check"></i> 确定', '<i class="fa fa-close"></i> 关闭'],
+                content: baseURL + "modules/small/smallskuForGroup.html?supplierId="+vm.smallGroupShop.supplierId+"&sysFlag="+sysFlag,
+                yes: function (index, layero) {
+                    var iframeWin = window[layero.find('iframe')[0]['name']];
+                    var smallSku = iframeWin.vm.smallSku;
+                    if($.trim(smallSku.id) == '') {
+                        layer.msg("请选择sku",{icon: 0,time: 1000});return;
+                    }
+                    console.log(smallSku);
+                    vm.smallGroupShop.spuId = smallSku.spuId;
+                    vm.smallGroupShop.skuId = smallSku.id;
+                    vm.smallGroupShop.minPrice = smallSku.price;//团购价
+                    vm.smallGroupShop.maxPrice = smallSku.originalPrice;//原价
+                    layer.close(index);
+                },
+                success: function (layero, index) {
+                    /*var info = '<font color="red" class="pull-left mt10">提示：双击可快速选择。</font>';
+                    layero.find('.layui-layer-btn').append(info);*/
+                }
+            });
+        },
 
+        skuforgroupWinDblClick: function (smallSku) {
+            vm.goodName = smallSku.title;
+            vm.smallGroupShop.spuId = smallSku.spuId;
+            vm.smallGroupShop.skuId = smallSku.id;
+            vm.smallGroupShop.minPrice = smallSku.price;//团购价
+            vm.smallGroupShop.maxPrice = smallSku.originalPrice;//原价
+            layer.close(vm.skuWinIndex);
+        },
 	}
 });
 vm.getShopList();
