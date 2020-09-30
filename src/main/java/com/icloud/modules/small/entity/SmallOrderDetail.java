@@ -70,5 +70,11 @@ public class SmallOrderDetail implements Serializable {
    	   	   /* 修改时间 */
        @TableField("modify_time")
        private Date modifyTime;
+        /* 上架售卖的店铺id */
+        @TableField("supplier_id")
+        private Long supplierId;
+        /*公共商品所属店铺Id*/
+        @TableField("sys_shop_id")
+        private Long sysShopId;
    	
 }

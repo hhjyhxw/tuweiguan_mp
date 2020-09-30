@@ -87,7 +87,7 @@ public class SmallSpuController extends AbstractController {
     public R save(@RequestBody SmallSpu smallSpu){
         ValidatorUtils.validateEntity(smallSpu);
         log.info("smallSpu==="+ JSON.toJSONString(smallSpu));
-         smallSpu.setDeptId(getDeptId());
+//         smallSpu.setDeptId(getDeptId());
         if(smallSpu.getAddStock()!=null && smallSpu.getAddStock()>0){
             smallSpu.setFreezeStock(0);
             smallSpu.setStock(smallSpu.getAddStock());
