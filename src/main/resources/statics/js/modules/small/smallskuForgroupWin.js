@@ -66,7 +66,7 @@ var vm = new Vue({
 		showList: true,
 		title: null,
 		smallSku: {},
-        q:{
+        q: {
             sysFlag:T.p('sysFlag'),
             supplierId: T.p('supplierId'),
             title:''
@@ -161,7 +161,7 @@ var vm = new Vue({
                 layer.msg("请选择商品sku",{icon: 0,time: 1000});
                 return;
             }
-            parent.vm.skuforgroupWinDblClick(vm.tArea);
+            parent.vm.skuforgroupWinDblClick(vm.smallSku);
         }
 	}
 });

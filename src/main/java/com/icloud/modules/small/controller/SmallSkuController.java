@@ -8,6 +8,7 @@ import java.util.Map;
 import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.icloud.basecommon.model.Query;
+import com.icloud.common.util.StringUtil;
 import com.icloud.modules.shop.entity.Shop;
 import com.icloud.modules.shop.service.ShopService;
 import com.icloud.modules.small.entity.SmallSpu;
@@ -57,6 +58,47 @@ public class SmallSkuController {
 
         return R.ok().put("page", page);
     }
+
+    /**
+     *
+     * @param params
+     * @return
+     */
+    @RequestMapping("/listForgroup")
+    public R listForgroup(@RequestParam Map<String, Object> params){
+        Long supplierId = Long.valueOf(params.get("supplierId").toString());
+        Shop shop = (Shop) shopService.getById(supplierId);
+        //查询到list集合
+        List<SmallSpu> spuList = null;
+        //非系统店铺 上架系统店铺商品
+        if(StringUtil.checkObj(params.get("sysFlag")) && Boolean.parseBoolean(params.get("sysFlag").toString()) && !"1".equals(shop.getSysFlag())){
+            List<Shop> shoplist = shopService.list(new QueryWrapper<Shop>().eq("sys_flag","1"));
+            if(shoplist!=null && shoplist.size()>0){
+                List<Long> shopIds = new ArrayList<>();
+                shoplist.forEach(p->{
+                    shopIds.add(p.getId());
+                });
+                spuList = smallSpuService.list(new QueryWrapper<SmallSpu>().in("supplier_id",shopIds));
+            }
+        }else{
+            spuList = smallSpuService.list(new QueryWrapper<SmallSpu>().eq("supplier_id",supplierId));
+        }
+        if(spuList==null || spuList.size()==0){
+            return R.error();
+        }
+        //结果集
+        List<Long> spuIds = new ArrayList<>();
+        //遍历集合取值
+        spuList .forEach(item->{
+            spuIds.add(item.getId());
+        });
+
+        Query query = new Query(params);
+        PageUtils page = smallSkuService.findByPage(query.getPageNum(),query.getPageSize(), query);
+
+        return R.ok().put("page", page);
+    }
+
     /**
      * 列表
      */
