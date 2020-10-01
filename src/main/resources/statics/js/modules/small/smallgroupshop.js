@@ -4,18 +4,18 @@ $(function () {
         datatype: "json",
         colModel: [			
 			{ label: 'id', name: 'id', index: 'id', width: 50, key: true },
-			{ label: '关联商品id', name: 'spuId', index: 'spu_id', width: 80 }, 			
-			{ label: '团购价', name: 'minPrice', index: 'min_price', width: 80 }, 			
-			{ label: '单买价', name: 'maxPrice', index: 'max_price', width: 80 }, 			
-			{ label: '团购开始时间', name: 'gmtStart', index: 'gmt_start', width: 80 }, 			
-			{ label: '团购结束时间', name: 'gmtEnd', index: 'gmt_end', width: 80 }, 			
-			{ label: '团购基础人数', name: 'minimumNumber', index: 'minimum_number', width: 80 }, 			
-			{ label: '团购已经购买人数', name: 'alreadyBuyNumber', index: 'already_buy_number', width: 80 }, 			
-			{ label: '团购结束时购买人数未达到基础人数,是否自动退款（0 不自动退 1自动退款）', name: 'automaticRefund', index: 'automatic_refund', width: 80 }, 			
-			{ label: '判断团购商品是否在活动期间（0 停用 1使用）', name: 'status', index: 'status', width: 80 }, 			
-			{ label: '创建时间', name: 'createTime', index: 'create_time', width: 80 }, 			
-			{ label: '修改时间', name: 'modifyTime', index: 'modify_time', width: 80 }, 			
-			{ label: '商户id', name: 'supplierId', index: 'supplier_id', width: 80 }			
+			{ label: 'spuId', name: 'spuId', index: 'spu_id', width: 80 },
+            { label: 'skuId', name: 'skuId', index: 'spu_id', width: 80 },
+            { label: 'img', name: 'img', index: 'img', width: 80 },
+            { label: '商品图片', name: 'img', width: 60, formatter: function(value, options, row){
+                    return '<img style="height: 3rem;width: 3rem;" src="'+value+'"/>';
+                }},
+            { label: '商品名称', name: 'title', index: 'title', width: 80 },
+            { label: '现价', name: 'price', index: 'price', width: 80 },
+			{ label: '原价', name: 'originalPrice', index: 'originalPrice', width: 80 },
+			{ label: '剩余库存', name: 'remainStock', index: 'remainStock', width: 80 },
+            { label: '店铺名称', name: 'shopName', index: 'shopName', width: 80 }
+
         ],
 		viewrecords: true,
         height: 385,
@@ -52,6 +52,7 @@ var vm = new Vue({
 		smallGroupShop: {},
         goodName:'',
         shopName:'',
+        sysFlag:'0',//1系统店铺 0非系统店铺
         shopList:[],//店铺列表
         skuList :[],//对应店铺商品
         user: {
@@ -60,6 +61,11 @@ var vm = new Vue({
         deptId:null,
         deptList:[],
         deptName:'',
+
+        q:{
+            title:'',
+            shopName:''
+        }
 	},
     created: function(){
         this.getUser();
@@ -157,8 +163,9 @@ var vm = new Vue({
 		reload: function (event) {
 			vm.showList = true;
 			var page = $("#jqGrid").jqGrid('getGridParam','page');
-			$("#jqGrid").jqGrid('setGridParam',{ 
-                page:page
+			$("#jqGrid").jqGrid('setGridParam',{
+                postData:vm.q,
+                page: 1
             }).trigger("reloadGrid");
 		},
         //加载AttibutList
@@ -176,9 +183,19 @@ var vm = new Vue({
             vm.shopName = vm.shopList[index].shopName;
             vm.getGoodsList(vm.shopList[index].id);//加载店铺sku列表
             vm.goodName = '';
+            vm.sysFlag = vm.shopList[index].sysFlag;
             vm.smallGroupShop.spuId = null;
             vm.smallGroupShop.skuId = null;
 
+        },
+        setShopName:function(shopId){
+            if(vm.shopList!=null && vm.shopList.length>0 && shopId!=null){
+                vm.shopList.forEach(p=>{
+                    if(p.id===shopId){
+                        vm.shopName = p.shopName;
+                    }
+                });
+            }
         },
         //选择自营或者公共商品
         selectCommonFlag: function (commonFlag) {
@@ -256,14 +273,18 @@ var vm = new Vue({
                 yes: function (index, layero) {
                     var iframeWin = window[layero.find('iframe')[0]['name']];
                     var smallSku = iframeWin.vm.smallSku;
+                    console.log("smallSku====="+JSON.stringify(smallSku));
                     if($.trim(smallSku.id) == '') {
                         layer.msg("请选择sku",{icon: 0,time: 1000});return;
                     }
-                    console.log(smallSku);
+
+                    vm.goodName = smallSku.title;
                     vm.smallGroupShop.spuId = smallSku.spuId;
                     vm.smallGroupShop.skuId = smallSku.id;
                     vm.smallGroupShop.minPrice = smallSku.price;//团购价
                     vm.smallGroupShop.maxPrice = smallSku.originalPrice;//原价
+                    console.log("vm.smallGroupShop====="+JSON.stringify(vm.smallGroupShop));
+                    console.log("vm.goodName====="+JSON.stringify(vm.goodName));
                     layer.close(index);
                 },
                 success: function (layero, index) {
@@ -272,13 +293,15 @@ var vm = new Vue({
                 }
             });
         },
-
+        //选择商品弹出双击选中
         skuforgroupWinDblClick: function (smallSku) {
             vm.goodName = smallSku.title;
             vm.smallGroupShop.spuId = smallSku.spuId;
             vm.smallGroupShop.skuId = smallSku.id;
             vm.smallGroupShop.minPrice = smallSku.price;//团购价
             vm.smallGroupShop.maxPrice = smallSku.originalPrice;//原价
+            console.log("vm.smallGroupShop====="+JSON.stringify(vm.smallGroupShop));
+            console.log("vm.goodName====="+JSON.stringify(vm.goodName));
             layer.close(vm.skuWinIndex);
         },
 	}

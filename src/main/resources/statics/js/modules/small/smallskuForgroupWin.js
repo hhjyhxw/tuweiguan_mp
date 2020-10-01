@@ -5,13 +5,13 @@ $(function () {
         postData: {"sysFlag":T.p('sysFlag'),"supplierId":T.p('supplierId')},
         colModel: [			
 			{ label: 'id', name: 'id', index: 'id', width: 50, key: true },
-			{ label: '商品spuid', name: 'spuId', index: 'spu_id', width: 80 }, 			
-			{ label: 'sku条码', name: 'barCode', index: 'bar_code', width: 80 }, 			
+			{ label: '商品spuid', name: 'spuId', index: 'spu_id', width: 80 },
+			/*{ label: 'sku条码', name: 'barCode', index: 'bar_code', width: 80 }, */
 			{ label: 'sku名称', name: 'title', index: 'title', width: 80 }, 			
 			{ label: '图片', name: 'img', index: 'img', width: 80 }, 			
 			{ label: '原始价', name: 'originalPrice', index: 'original_price', width: 80 }, 			
 			{ label: '现价', name: 'price', index: 'price', width: 80 }, 			
-			{ label: 'vip价', name: 'vipPrice', index: 'vip_price', width: 80 }, 			
+			/*{ label: 'vip价', name: 'vipPrice', index: 'vip_price', width: 80 }, 			*/
 			{ label: '库存', name: 'stock', index: 'stock', width: 80 }, 			
 			{ label: '冻结库存', name: 'freezeStock', index: 'freeze_stock', width: 80 }, 			
 			{ label: '创建时间', name: 'createTime', index: 'create_time', width: 80 }, 			
@@ -45,13 +45,15 @@ $(function () {
          *  单击选中
          */
         onSelectRow: function (id) {
-            vm.smallSku = $(this).dataGrid('getRowData', id);
+            vm.smallSku = $(this).jqGrid("getRowData",id);
+            // vm.smallSku = $(this).dataGrid('getRowData', id);
         },
         /**
          *  双击选择
          */
         ondblClickRow: function (id) {
-            vm.smallSku = $(this).dataGrid('getRowData', id);
+            vm.smallSku = $(this).jqGrid("getRowData",id);
+            // vm.smallSku = $(this).dataGrid('getRowData', id);
             vm.confirmSelected();
         },
         // gridComplete:function(){

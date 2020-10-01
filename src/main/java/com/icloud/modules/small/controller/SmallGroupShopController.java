@@ -12,7 +12,9 @@ import com.icloud.common.Constant;
 import com.icloud.modules.shop.entity.Shop;
 import com.icloud.modules.shop.service.ShopService;
 import com.icloud.modules.small.entity.SmallSku;
+import com.icloud.modules.small.entity.SmallSpu;
 import com.icloud.modules.small.service.SmallSkuService;
+import com.icloud.modules.small.service.SmallSpuService;
 import com.icloud.modules.sys.controller.AbstractController;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,6 +48,8 @@ public class SmallGroupShopController extends AbstractController {
     private ShopService shopService;
     @Autowired
     private SmallSkuService smallSkuService;
+    @Autowired
+    private SmallSpuService smallSpuService;
     /**
      * 列表
      */
@@ -54,8 +58,7 @@ public class SmallGroupShopController extends AbstractController {
     @DataFilter
     public R list(@RequestParam Map<String, Object> params){
         Query query = new Query(params);
-        PageUtils page = smallGroupShopService.findByPage(query.getPageNum(),query.getPageSize(), query);
-
+        PageUtils page = smallGroupShopService.queryGroupAndSkuForhou(query.getPageNum(),query.getPageSize(), query);
         return R.ok().put("page", page);
     }
 
@@ -87,25 +90,26 @@ public class SmallGroupShopController extends AbstractController {
     @RequiresPermissions("small:smallgroupshop:save")
     public R save(@RequestBody SmallGroupShop smallGroupShop){
         ValidatorUtils.validateEntity(smallGroupShop);
-        smallGroupShop.setDeptId(getDeptId());
-        //判断spuId \ skuId\ splierId 是否已存在
-        List<SmallGroupShop> list = null;
-        if(getUserId() == Constant.SUPER_ADMIN) {
-            list = smallGroupShopService.list(new QueryWrapper<SmallGroupShop>()
-                    .eq("sku_id",smallGroupShop.getSkuId())
-                    .eq("spu_id",smallGroupShop.getSpuId())
-                    .eq("supplier_id",smallGroupShop.getSupplierId()));
-        }else{
-            list = smallGroupShopService.list(new QueryWrapper<SmallGroupShop>()
-                    .eq("sku_id",smallGroupShop.getSkuId())
-                    .eq("dept_id",getDeptId())
-                    .eq("spu_id",smallGroupShop.getSpuId())
-                    .eq("supplier_id",smallGroupShop.getSupplierId()));
+        //设置企业id
+        Shop shop = (Shop) shopService.getById(smallGroupShop.getSupplierId());
+        smallGroupShop.setDeptId(shop.getDeptId());
+        //如果是公共商品，设置公共商品id
+        if("1".equals(smallGroupShop.getCommonFlag()) && "1".equals(shop.getSysFlag())){
+            return R.error("系统店铺不能上架公共商品");
         }
+        SmallSpu spu = (SmallSpu) smallSpuService.getById(smallGroupShop.getSpuId());
+        smallGroupShop.setSysShopId(spu.getSupplierId());
+        //判断spuId \ skuId\ splierId 是否已存在
+        List<SmallGroupShop> list = smallGroupShopService.list(new QueryWrapper<SmallGroupShop>()
+                    .eq("sku_id",smallGroupShop.getSkuId())
+                    .eq("spu_id",smallGroupShop.getSpuId())
+                    .eq("supplier_id",smallGroupShop.getSupplierId()));
+
         if(list!=null && list.size()>0){
             return R.error("该商品已加入团购列表");
         }
         smallGroupShop.setCreateTime(new Date());
+
         smallGroupShopService.save(smallGroupShop);
 
         return R.ok();
@@ -119,6 +123,15 @@ public class SmallGroupShopController extends AbstractController {
     public R update(@RequestBody SmallGroupShop smallGroupShop){
         ValidatorUtils.validateEntity(smallGroupShop);
         smallGroupShop.setModifyTime(new Date());
+        //设置企业id
+        Shop shop = (Shop) shopService.getById(smallGroupShop.getSupplierId());
+        smallGroupShop.setDeptId(shop.getDeptId());
+        //如果是公共商品，设置公共商品id
+        if("1".equals(smallGroupShop.getCommonFlag()) && "1".equals(shop.getSysFlag())){
+            return R.error("系统店铺不能上架公共商品");
+        }
+        SmallSpu spu = (SmallSpu) smallSpuService.getById(smallGroupShop.getSpuId());
+        smallGroupShop.setSysShopId(spu.getSupplierId());
         //判断spuId \ skuId\ splierId 是否已存在
         List<SmallGroupShop> list = smallGroupShopService.list(new QueryWrapper<SmallGroupShop>()
                 .eq("sku_id",smallGroupShop.getSkuId())

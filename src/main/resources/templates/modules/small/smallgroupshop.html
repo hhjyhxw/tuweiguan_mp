@@ -12,6 +12,14 @@
 <div id="icloudapp" v-cloak>
     <div v-show="showList">
         <div class="grid-btn">
+            <div class="form-group col-sm-2">
+                <input type="text" class="form-control" v-model="q.title" @keyup.enter="query" placeholder="商品名称">
+            </div>
+            <div class="form-group col-sm-2">
+                <input type="text" class="form-control" v-model="q.shopName" @keyup.enter="query" placeholder="店铺名称">
+            </div>
+
+            <a class="btn btn-default" @click="query">查询</a>
 			<#if shiro.hasPermission("small:smallgroupshop:save")>
             <a class="btn btn-primary" @click="add"><i class="fa fa-plus"></i>&nbsp;新增</a>
 			</#if>
@@ -59,7 +67,7 @@
                         <label class="radio-inline">
                             <input type="radio" name="status" value="0" v-model="smallGroupShop.commonFlag" checked="checked" @click="selectCommonFlag(0)"/> 自营商品
                         </label>
-                        <label class="radio-inline">
+                        <label v-if="sysFlag==0" class="radio-inline">
                             <input type="radio" name="status" value="1" v-model="smallGroupShop.commonFlag" @click="selectCommonFlag(1)"/> 公共商品
                         </label>
                     </div>
@@ -79,13 +87,15 @@
 					<div class="form-group">
                         <div class="col-sm-2 control-label">团购价</div>
                         <div class="col-sm-10">
-                            <input type="text" class="form-control" v-model="smallGroupShop.minPrice" placeholder="团购价"/>
+                            <input v-if="smallGroupShop.commonFlag==0" type="text" class="form-control" v-model="smallGroupShop.minPrice" placeholder="团购价" />
+                            <input v-if="smallGroupShop.commonFlag==1" type="text" class="form-control" v-model="smallGroupShop.minPrice" placeholder="团购价" readonly/><!--公共商品价格不能改变-->
                         </div>
                     </div>
 					<div class="form-group">
                         <div class="col-sm-2 control-label">单买价</div>
                         <div class="col-sm-10">
-                            <input type="text" class="form-control" v-model="smallGroupShop.maxPrice" placeholder="单买价"/>
+                            <input v-if="smallGroupShop.commonFlag==0" type="text" class="form-control" v-model="smallGroupShop.maxPrice" placeholder="单买价" />
+                            <input v-if="smallGroupShop.commonFlag==1" type="text" class="form-control" v-model="smallGroupShop.maxPrice" placeholder="单买价" readonly/><!--公共商品价格不能改变-->
                         </div>
                     </div>
                     <div class="form-group">

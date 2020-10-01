@@ -52,6 +52,14 @@ public class SmallGroupShopService extends BaseServiceImpl<SmallGroupShopMapper,
         return page;
     }
 
+    public PageUtils<GroupSkuVo> queryGroupAndSkuForhou(int pageNo, int pageSize, Map<String, Object> query) {
+        PageHelper.startPage(pageNo, pageSize);
+        List<GroupSkuVo> list = smallGroupShopMapper.queryGroupAndSkuForhou(query);
+        PageInfo<GroupSkuVo> pageInfo = new PageInfo<GroupSkuVo>(list);
+        PageUtils<GroupSkuVo> page = new PageUtils<GroupSkuVo>(list,(int)pageInfo.getTotal(),pageSize,pageNo);
+        return page;
+    }
+
 
     @Override
     public PageUtils<SmallGroupShop> findByPage(int pageNo, int pageSize, Map<String, Object> query) {
@@ -62,5 +70,7 @@ public class SmallGroupShopService extends BaseServiceImpl<SmallGroupShopMapper,
         PageUtils<SmallGroupShop> page = new PageUtils<SmallGroupShop>(list,(int)pageInfo.getTotal(),pageSize,pageNo);
         return page;
     }
+
+
 }
 

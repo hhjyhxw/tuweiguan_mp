@@ -18,4 +18,6 @@ public interface SmallGroupShopMapper extends BaseMapper<SmallGroupShop> {
 	List<SmallGroupShop> queryMixList(Map<String,Object> map);
 
 	List<GroupSkuVo> queryGroupAndSku(Map<String,Object> map);
+
+	List<GroupSkuVo> queryGroupAndSkuForhou(Map<String,Object> map);
 }

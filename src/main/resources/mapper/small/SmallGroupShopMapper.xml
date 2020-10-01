@@ -80,8 +80,28 @@ select * from t_small_group_shop t
         <result property="supplierId" column="supplier_id"/>
     </resultMap>
 
+    <!--后台分页-->
+    <select id="queryGroupAndSkuForhou" resultMap="GroupSkuMap">
+        select t.supplier_id,sh.shop_name,t.id,t.sku_id,t.spu_id,k.title,IFNULL(k.img,p.img) img,t.min_price as price,t.max_price original_price,k.stock-k.freeze_stock as remainStock from t_small_group_shop t,t_small_sku k,t_small_spu p,shop sh
+        <where>
+            t.sku_id = k.id and k.spu_id = p.id and t.supplier_id = sh.id
+            <if test="supplierId != null">
+                and t.supplier_id = #{supplierId}
+            </if>
+            <if test="title != null and title!=''">
+                and (k.title LIKE CONCAT('%', '${title}', '%')  or p.title LIKE CONCAT('%', '${title}', '%'))
+            </if>
+            <if test="shopName != null and shopName!=''">
+                and sh.shop_name LIKE CONCAT('%', '${shopName}', '%')
+            </if>
 
+            <if test="sql_filter != null and sql_filter!=''">
+                and ${sql_filter}
+            </if>
+        </where>
+    </select>
 
+    <!--前端分页-->
     <select id="queryGroupAndSku" resultMap="GroupSkuMap">
         select t.supplier_id,t.id,t.sku_id,t.spu_id,k.title,IFNULL(k.img,p.img) img,t.min_price as price,t.max_price original_price,k.stock-k.freeze_stock as remainStock from t_small_group_shop t,t_small_sku k,t_small_spu p
         <where>

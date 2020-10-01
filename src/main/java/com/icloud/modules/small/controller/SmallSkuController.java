@@ -66,9 +66,9 @@ public class SmallSkuController {
      */
     @RequestMapping("/listForgroup")
     public R listForgroup(@RequestParam Map<String, Object> params){
-        Long supplierId = Long.valueOf(params.get("supplierId").toString());
+        Long supplierId = Long.valueOf(params.get("supplierId").toString());//当前需要商家商品的店铺
         Shop shop = (Shop) shopService.getById(supplierId);
-        //查询到list集合
+        //查询到复合需求的spuList集合
         List<SmallSpu> spuList = null;
         //非系统店铺 上架系统店铺商品
         if(StringUtil.checkObj(params.get("sysFlag")) && Boolean.parseBoolean(params.get("sysFlag").toString()) && !"1".equals(shop.getSysFlag())){
@@ -78,10 +78,10 @@ public class SmallSkuController {
                 shoplist.forEach(p->{
                     shopIds.add(p.getId());
                 });
-                spuList = smallSpuService.list(new QueryWrapper<SmallSpu>().in("supplier_id",shopIds));
+                spuList = smallSpuService.list(new QueryWrapper<SmallSpu>().in("supplier_id",shopIds));//所有系统店铺的spu
             }
         }else{
-            spuList = smallSpuService.list(new QueryWrapper<SmallSpu>().eq("supplier_id",supplierId));
+            spuList = smallSpuService.list(new QueryWrapper<SmallSpu>().eq("supplier_id",supplierId));//自营商品的
         }
         if(spuList==null || spuList.size()==0){
             return R.error();
@@ -92,9 +92,9 @@ public class SmallSkuController {
         spuList .forEach(item->{
             spuIds.add(item.getId());
         });
-
+        Object title = params.get("title");
         Query query = new Query(params);
-        PageUtils page = smallSkuService.findByPage(query.getPageNum(),query.getPageSize(), query);
+        PageUtils page = smallSkuService.listForgroupPage(query.getPageNum(),query.getPageSize(), spuIds,StringUtil.checkObj(title)?title.toString():null);
 
         return R.ok().put("page", page);
     }
@@ -176,7 +176,8 @@ public class SmallSkuController {
     @RequestMapping("/save")
     @RequiresPermissions("small:smallspu:save")
     public R save(@RequestBody SmallSku smallSku){
-//        ValidatorUtils.validateEntity(smallSku);
+        ValidatorUtils.validateEntity(smallSku);
+
         log.info("smallSpu==="+ JSON.toJSONString(smallSku));
         if(smallSku.getAddStock()!=null && smallSku.getAddStock()>0){
             smallSku.setFreezeStock(0);
@@ -196,6 +197,7 @@ public class SmallSkuController {
     @RequestMapping("/update")
     @RequiresPermissions("small:smallspu:update")
     public R update(@RequestBody SmallSku smallSku){
+        ValidatorUtils.validateEntity(smallSku);
         log.info("smallSpu==="+ JSON.toJSONString(smallSku));
 
         //增加总库存

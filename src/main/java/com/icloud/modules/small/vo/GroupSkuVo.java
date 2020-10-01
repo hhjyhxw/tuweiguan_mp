@@ -33,4 +33,6 @@ public class GroupSkuVo {
     private Integer remainStock;
 
     private Long supplierId;
+
+    private String shopName;
 }

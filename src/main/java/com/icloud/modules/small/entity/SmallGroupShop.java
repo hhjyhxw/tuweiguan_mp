@@ -75,7 +75,7 @@ public class SmallGroupShop implements Serializable {
        @TableField("supplier_id")
        private Long supplierId;
 
-       /*公共商品所属店铺Id*/
+       /*公共商品所属店铺Id (非系统店铺上架系统店铺商品 存储系统店铺id，上架自己店铺商品存储 店铺本身id)*/
         @TableField("sys_shop_id")
         private Long sysShopId;
         /* 是否是公共商品0 不是 1是*/
