@@ -177,7 +177,7 @@
                         </label>
                     </div>
 
-                    <div class="form-group">
+                    <div class="form-group" v-show="user.userId===1">
                         <div class="col-sm-2 control-label">审核状态</div>
                         <label class="radio-inline">
                             <input type="radio" name="review" value="0" v-model="shop.review"/> 未审核
