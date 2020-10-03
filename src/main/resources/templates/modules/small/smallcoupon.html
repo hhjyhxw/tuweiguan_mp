@@ -3,10 +3,28 @@
 <head>
     <title>折扣券管理</title>
 		<#include "/header.html">
+    <link rel="stylesheet" href="${request.contextPath}/statics/css/bootstrap-table.min.css">
+    <link rel="stylesheet" href="${request.contextPath}/statics/plugins/treegrid/jquery.treegrid.css">
+    <script src="${request.contextPath}/statics/libs/bootstrap-table.min.js"></script>
+    <script src="${request.contextPath}/statics/plugins/treegrid/jquery.treegrid.min.js"></script>
+    <script src="${request.contextPath}/statics/plugins/treegrid/jquery.treegrid.bootstrap3.js"></script>
+    <script src="${request.contextPath}/statics/plugins/treegrid/jquery.treegrid.extension.js"></script>
+    <script src="${request.contextPath}/statics/plugins/treegrid/tree.table.js"></script>
+    <script src="${request.contextPath}/statics/libs/ajaxupload.js"></script>
     <!-- 引入样式 -->
     <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css" />
     <!-- 引入组件库 -->
     <script src="https://unpkg.com/element-ui/lib/index.js"></script>
+
+    <script type="text/javascript" src="${request.contextPath}/statics/plugins/layui/layui.js"></script>
+    <link rel="stylesheet" href="${request.contextPath}/statics/plugins/layui/css/layui.css" media="all" />
+    <link rel="stylesheet" href="${request.contextPath}/statics/plugins/font-awesome/css/font-awesome.min.css">
+
+    <link rel="stylesheet" href="${request.contextPath}/statics/plugins/kindeditor/themes/default/default.css" />
+    <link rel="stylesheet" href="${request.contextPath}/statics/plugins/kindeditor/plugins/code/prettify.css" />
+    <script charset="utf-8" src="${request.contextPath}/statics/plugins/kindeditor/kindeditor-all.js"></script>
+    <script charset="utf-8" src="${request.contextPath}/statics/plugins/kindeditor/lang/zh-CN.js"></script>
+    <script charset="utf-8" src="${request.contextPath}/statics/plugins/kindeditor/plugins/code/prettify.js"></script>
 </head>
 <body>
 <div id="icloudapp" v-cloak>
@@ -28,7 +46,7 @@
 
     <div v-show="!showList" class="panel panel-default">
         <div class="panel-heading">{{title}}</div>
-        <form class="form-horizontal">
+                 <form class="form-horizontal" style="width: 100rem;" id="form">>
                     <div v-show="user.userId===1" class="form-group">
                         <div class="col-sm-2 control-label">所属企业</div>
                         <div class="dropdown">
@@ -89,13 +107,13 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <div class="col-sm-2 control-label">最低消费金额</div>
+                        <div class="col-sm-2 control-label">最低消费金额(元)</div>
                         <div class="col-sm-10">
-                            <input type="text" class="form-control" v-model="smallCoupon.min" placeholder="满多少可用"/>
+                            <input type="text" class="form-control" v-model="smallCoupon.min" placeholder="最低消费金额"/>
                         </div>
                     </div>
                     <div class="form-group">
-                        <div class="col-sm-2 control-label">优惠金额</div>
+                        <div class="col-sm-2 control-label">优惠金额(元)</div>
                         <div class="col-sm-10">
                             <input type="text" class="form-control" v-model="smallCoupon.discount" placeholder="优惠金额"/>
                         </div>
@@ -112,43 +130,44 @@
 					<div class="form-group">
                         <div class="col-sm-2 control-label">可用分类</div>
                         <div class="col-sm-10">
-                            <input type="text" class="form-control" v-model="smallCoupon.categoryId" placeholder="可用分类(可为空)"/>
+                            <input type="text" class="form-control" v-model="smallCategoryName" placeholder="可用分类(可为空)" @click="categroyTree" readonly="readonly"/>
                         </div>
                     </div>
-					<div class="form-group" v-show="smallCoupon.surplus===1">
+					<div class="form-group" v-show="smallCoupon.surplus==1">
                         <div class="col-sm-2 control-label">过期天数</div>
                         <div class="col-sm-10">
                             <input type="number" class="form-control" v-model="smallCoupon.days" placeholder="领取后多少天过期"/>
                         </div>
                     </div>
-                    <div v-show="smallCoupon.surplus===0" class="form-group">
+                    <div v-show="smallCoupon.surplus==0" class="form-group">
                         <div class="col-sm-2 control-label">有效开始日期</div>
                         <div class="block">
                             <el-date-picker
                                     v-model="smallCoupon.startTime"
                                     type="datetime"
-                                    placeholder="选择日期时间" value-format="yyyy-MM-dd HH:mm:ss">
+                                    placeholder="选择日期时间" value-format="yyyy-MM-dd HH:mm:ss" :picker-options="startTime">
                             </el-date-picker>
                         </div>
                     </div>
-                    <div  v-show="smallCoupon.surplus===0" class="form-group">
+                    <div  v-show="smallCoupon.surplus==0" class="form-group">
                         <div class="col-sm-2 control-label">有效结束日期</div>
                         <div class="block">
                             <el-date-picker
                                     v-model="smallCoupon.endTime"
                                     type="datetime"
-                                    placeholder="选择日期时间" value-format="yyyy-MM-dd HH:mm:ss">
+                                    placeholder="选择日期时间" value-format="yyyy-MM-dd HH:mm:ss" :picker-options="endTime">
                             </el-date-picker>
                         </div>
                     </div>
-                    <div class="form-group">
+
+                    <div class="form-group" style="width:100rem;">
                         <div class="col-sm-2 control-label">详情</div>
                         <div class="col-sm-10">
                             <div class="layui-form-item">
                                 <textarea class="form-control" name="detail" lay-verify="" id="detail" v-model="smallCoupon.description">{{smallCoupon.description}}</textarea>
                             </div>
                         </div>
-                    </div>
+                     </div>
 			<div class="form-group">
                 <div class="col-sm-2 control-label"></div>
                 <input type="button" class="btn btn-primary" id="btnSaveOrUpdate" data-loading-text="保存中..." @click="saveOrUpdate" value="确定"/>
@@ -158,6 +177,12 @@
     </div>
 </div>
 
+
+<!-- 分类树 -->
+<div id="categroyLayer" style="display: none;padding:10px;">
+    <ul id="categroyTree" class="ztree"></ul>
+</div>
+<script src="${request.contextPath}/statics/js/common/money.js?_${.now?long}"></script>
 <script src="${request.contextPath}/statics/js/modules/small/smallcoupon.js?_${.now?long}"></script>
 </body>
 </html>

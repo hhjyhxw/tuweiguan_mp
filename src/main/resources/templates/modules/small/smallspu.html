@@ -151,16 +151,16 @@
                             <input type="text" class="form-control" v-model="smallSpu.unit" placeholder="计量单位"/>
                         </div>
                     </div>
-                    <div class="form-group">
+                   <!-- <div class="form-group">
                         <div class="col-sm-2 control-label">店铺个性化分类</div>
                         <div class="col-sm-10">
                             <input type="text" class="form-control" v-model="smallSpu.smallSellCategory.title" @click="sellcategroyTree" readonly="readonly"   placeholder="分类id"/>
                         </div>
-                    </div>
-                    <div class="form-group">
+                    </div>-->
+                    <div class="form-group" hidden>
                         <div class="col-sm-2 control-label">状态</div>
                         <label class="radio-inline">
-                            <input type="radio" name="status" value="1" v-model="smallSpu.status"/> 上架
+                            <input type="radio" name="status" value="1" v-model="smallSpu.status" checked="checked"/> 上架
                         </label>
                         <label class="radio-inline">
                             <input type="radio" name="status" value="0" v-model="smallSpu.status"/> 下架

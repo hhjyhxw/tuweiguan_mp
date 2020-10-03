@@ -362,6 +362,7 @@ var vm = new Vue({
                 //设置部门信息
                 vm.deptId = r.smallSpu.deptId;
                 vm.setDeptName(vm.deptId);
+
                 //加载商品分类
                 vm.getCategory();
                 //加载零售户

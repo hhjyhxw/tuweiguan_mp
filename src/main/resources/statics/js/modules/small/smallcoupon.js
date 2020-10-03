@@ -24,6 +24,25 @@ KindEditor.ready(function(K) {
     //  prettyPrint();
 });
 
+/**
+ * 商品分类选择树
+ * @type {{data: {simpleData: {idKey: string, enable: boolean, pIdKey: string, rootPId: number}, key: {url: string}}}}
+ */
+var setting = {
+    data: {
+        simpleData: {
+            enable: true,
+            idKey: "id",
+            pIdKey: "parentId",
+            rootPId: -1
+        },
+        key: {
+            url:"nourl"
+        }
+    }
+};
+var ztree;
+
 $(function () {
     $("#jqGrid").jqGrid({
         url: baseURL + 'small/smallcoupon/list',
@@ -92,6 +111,7 @@ var vm = new Vue({
             startTime:null,
             endTime:null,
         },
+        smallCategoryName:'',
         shopList:[],
         shopName:'',
         q:{
@@ -103,6 +123,24 @@ var vm = new Vue({
         deptId:null,
         deptList:[],
         deptName:'',
+        startTime:{
+            disabledDate: time => {
+                if(this.smallCoupon.endTime!=null){
+                    return time.getTime() < this.smallCoupon.endTime;
+                }else{
+                    return time.getTime()
+                }
+            }
+        },
+        endTime:{
+            disabledDate: time => {
+                if(this.smallCoupon.startTime!=null){
+                    return time.getTime() > this.smallCoupon.startTime;
+                }else{
+                    return time.getTime()
+                }
+            }
+        }
     },
     created: function(){
         this.getUser();
@@ -134,6 +172,25 @@ var vm = new Vue({
             vm.getInfo(id)
 		},
 		saveOrUpdate: function (event) {
+            if(!priceCheck(vm.smallCoupon.min)){
+                layer.msg("最低消费金额不能为空,且为数字,最多保留两位小数", {icon: 2});
+            }
+            if(!priceCheck(vm.smallCoupon.discount)){
+                layer.msg("优惠金额不能为空,且为数字,最多保留两位小数", {icon: 2});
+                return;
+            }
+            if(vm.smallCoupon.surplus==0 && (vm.smallCoupon.startTime==null ||  vm.smallCoupon.startTime=='')){
+                layer.msg("有效开始时间不能为空", {icon: 2});
+                return;
+            }
+            if(vm.smallCoupon.surplus==0 && (vm.smallCoupon.endTime==null ||  vm.smallCoupon.endTime=='')){
+                layer.msg("有效结束时间不能为空", {icon: 2});
+                return;
+            }
+            if(vm.smallCoupon.surplus==1 && (vm.smallCoupon.days==null ||  vm.smallCoupon.days=='' || vm.smallCoupon.days<=0)){
+                layer.msg("有效天天数不能空，且大于0", {icon: 2});
+                return;
+            }
             vm.smallCoupon.description=editor1.html();
 		    $('#btnSaveOrUpdate').button('loading').delay(1000).queue(function() {
                 var url = vm.smallCoupon.id == null ? "small/smallcoupon/save" : "small/smallcoupon/update";
@@ -193,6 +250,8 @@ var vm = new Vue({
                 vm.deptId = r.smallCoupon.deptId;
                 vm.setDeptName(vm.deptId);
                 vm.getShopList(r.smallCoupon.supplierId);
+                //加载商品分类
+                vm.getCategory();
             });
 		},
 		reload: function (event) {
@@ -202,6 +261,47 @@ var vm = new Vue({
                 page:page
             }).trigger("reloadGrid");
 		},
+        //加载分类树
+        getCategory: function(){
+            //加载分类树
+            $.get(baseURL + "small/smallcategory/select?deptId="+vm.deptId, function(r){
+                ztree = $.fn.zTree.init($("#categroyTree"), setting, r.categoryList);
+                // console.log("ztree====="+JSON.stringify(ztree))
+                var node = ztree.getNodeByParam("id", vm.smallCoupon.categoryId);
+                // console.log("加载node====="+JSON.stringify(node))
+                if(node!=null){
+                    ztree.selectNode(node);
+                    vm.smallCategoryName = node.name;
+                }
+            })
+        },
+        categroyTree: function(){
+            layer.open({
+                type: 1,
+                offset: '50px',
+                skin: 'layui-layer-molv',
+                title: "选择分类",
+                area: ['300px', '300px'],
+                shade: 0,
+                shadeClose: false,
+                content: jQuery("#categroyLayer"),
+                btn: ['确定', '取消'],
+                btn1: function (index) {
+                    var node = ztree.getSelectedNodes();
+                    //选择分类
+                    // console.log("node====="+JSON.stringify(node))
+                    if(node!=null) {
+                        if(node[0].id===0){
+                            return;
+                        }
+                        vm.smallCoupon.categoryId = node[0].id;
+                        vm.smallCategoryName = node[0].name;
+                    }
+                    layer.close(index);
+                }
+            });
+        },
+
         //加载getShopList
         getShopList:function(id){
             console.log("id======"+id)
@@ -240,6 +340,7 @@ var vm = new Vue({
             vm.deptName = vm.deptList[index].name;
             vm.deptId = vm.deptList[index].deptId;
             vm.getShopList();
+            vm.getCategory();
         },
         setDeptName:function(deptId){
             if(vm.deptList!=null && vm.deptList.length>0 && deptId!=null){
