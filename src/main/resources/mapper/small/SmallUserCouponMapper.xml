@@ -15,11 +15,13 @@
      <result property="endTime" column="end_time"/>
      <result property="createTime" column="create_time"/>
      <result property="modifyTime" column="modify_time"/>
+     <result property="shopId" column="shop_id"/>
+     <result property="deptId" column="dept_id"/>
     </resultMap>
 
    <!-- 基础字段列 -->
    <sql id="Base_Column_List" >
-id,user_id,coupon_id,order_id,use_time,start_time,end_time,create_time,modify_time
+id,user_id,coupon_id,order_id,use_time,start_time,end_time,create_time,modify_time,shop_id,dept_id
     </sql>
 
 
@@ -29,30 +31,36 @@ select * from t_small_user_coupon t
 <if test="id != null">
     and t.id = #{id}
 </if>
-<if test="user_id != null">
-    and t.user_id = #{user_id}
+<if test="userId != null">
+    and t.user_id = #{userId}
 </if>
-<if test="coupon_id != null">
-    and t.coupon_id = #{coupon_id}
+<if test="couponId != null">
+    and t.coupon_id = #{couponId}
 </if>
-<if test="order_id != null">
-    and t.order_id = #{order_id}
+<if test="orderId != null">
+    and t.order_id = #{orderId}
 </if>
-<if test="use_time != null">
-    and t.use_time = #{use_time}
+<if test="useTime != null">
+    and t.use_time = #{useTime}
 </if>
-<if test="start_time != null">
-    and t.start_time = #{start_time}
+<if test="startTime != null">
+    and t.start_time = #{startTime}
 </if>
-<if test="end_time != null">
-    and t.end_time = #{end_time}
+<if test="endTime != null">
+    and t.end_time = #{endTime}
 </if>
-<if test="create_time != null">
-    and t.create_time = #{create_time}
+<if test="createTime != null">
+    and t.create_time = #{createTime}
 </if>
-<if test="sql_filter != null and sql_filter!=''">
-    and ${sql_filter}
+<if test="modifyTime != null">
+    and t.modify_time = #{modifyTime}
 </if>
+<if test="shopId != null">
+    and t.shop_id = #{shopId}
+</if>
+    <if test="sql_filter != null and sql_filter!=''">
+        and ${sql_filter}
+    </if>
 </where>
 </select>
 </mapper>

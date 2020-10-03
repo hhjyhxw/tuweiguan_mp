@@ -1,8 +1,13 @@
 package com.icloud.modules.small.controller;
 
 import java.util.Arrays;
+import java.util.Date;
 import java.util.Map;
+
+import com.icloud.annotation.DataFilter;
 import com.icloud.basecommon.model.Query;
+import com.icloud.modules.shop.entity.Shop;
+import com.icloud.modules.shop.service.ShopService;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -32,12 +37,14 @@ import com.icloud.modules.sys.controller.AbstractController;
 public class SmallCouponController extends AbstractController{
     @Autowired
     private SmallCouponService smallCouponService;
-
+    @Autowired
+    private ShopService shopService;
     /**
      * 列表
      */
     @RequestMapping("/list")
     @RequiresPermissions("small:smallcoupon:list")
+    @DataFilter
     public R list(@RequestParam Map<String, Object> params){
         Query query = new Query(params);
         PageUtils page = smallCouponService.findByPage(query.getPageNum(),query.getPageSize(), query);
@@ -63,6 +70,10 @@ public class SmallCouponController extends AbstractController{
     @RequestMapping("/save")
     @RequiresPermissions("small:smallcoupon:save")
     public R save(@RequestBody SmallCoupon smallCoupon){
+        ValidatorUtils.validateEntity(smallCoupon);
+        Shop shop = (Shop) shopService.getById(smallCoupon.getSupplierId());
+        smallCoupon.setDeptId(shop.getDeptId());
+        smallCoupon.setCreateTime(new Date());
         smallCouponService.save(smallCoupon);
 
         return R.ok();
@@ -75,6 +86,7 @@ public class SmallCouponController extends AbstractController{
     @RequiresPermissions("small:smallcoupon:update")
     public R update(@RequestBody SmallCoupon smallCoupon){
         ValidatorUtils.validateEntity(smallCoupon);
+        smallCoupon.setModifyTime(new Date());
         smallCouponService.updateById(smallCoupon);
         
         return R.ok();

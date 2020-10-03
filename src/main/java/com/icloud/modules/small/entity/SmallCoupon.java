@@ -6,7 +6,10 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import lombok.Data;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.Date;
 
 /**
@@ -25,36 +28,41 @@ public class SmallCoupon implements Serializable {
        @TableId(value="id", type= IdType.AUTO)
        private Long id;
    	   	   /* 代金券名称 */
+       @NotBlank(message = "优惠券名称不能为空")
        @TableField("title")
        private String title;
-   	   	   /* 使用类型，如满减 */
+   	   	   /* 使用类型，如满减 1满减类型 2*/
        @TableField("coup_type")
        private Integer coupType;
    	   	   /* 描述 */
        @TableField("description")
        private String description;
-   	   	   /* 订单金额 */
+   	   	   /* 发行总数 */
+       @NotNull(message = "投放量不能为空")
        @TableField("total")
        private Integer total;
-   	   	   /* 会员类型0:非会员1:会员2:全部 */
+   	   	   /* 使用类型0:默认满足分类可用 1新用户专用 */
        @TableField("surplus")
        private Integer surplus;
-   	   	   /* 限？？ */
+   	   	   /* 每人限领多少张 */
+       @NotNull(message = "人限领多少张不能为空")
        @TableField("limits")
        private Integer limits;
    	   	   /* 减少金额 */
+       @NotNull(message = "优惠金额不能为空")
        @TableField("discount")
-       private Integer discount;
-   	   	   /* 最低消费金额 */
+       private BigDecimal discount;
+   	   	   /* 满多少金额 */
+       @NotNull(message = "最低消费金额不能为空")
        @TableField("min")
-       private Integer min;
+       private BigDecimal min;
    	   	   /* 是否可用 0不用 1可用 */
        @TableField("status")
        private Integer status;
    	   	   /* 分类id(分类可用) */
        @TableField("category_id")
        private Long categoryId;
-   	   	   /* 过期天数 */
+   	   	   /* 过期天数  新用户领取后多少天有效*/
        @TableField("days")
        private Integer days;
    	   	   /* 领取开始时间 */
@@ -70,6 +78,7 @@ public class SmallCoupon implements Serializable {
        @TableField("modify_time")
        private Date modifyTime;
    	   	   /* 商户id */
+       @NotNull(message = "店铺不能为空")
        @TableField("supplier_id")
        private Long supplierId;
    	   	   /* 企业Id */
