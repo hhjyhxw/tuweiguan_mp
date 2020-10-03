@@ -62,6 +62,9 @@ public class SmallCoupon implements Serializable {
    	   	   /* 分类id(分类可用) */
        @TableField("category_id")
        private Long categoryId;
+        /* 有效期类型（0 领取后开始有效天数，1设置自定义有效期范围） */
+       @TableField("validate_type")
+       private Integer validateType;
    	   	   /* 过期天数  新用户领取后多少天有效*/
        @TableField("days")
        private Integer days;

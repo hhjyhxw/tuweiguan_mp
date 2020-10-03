@@ -133,13 +133,22 @@
                             <input type="text" class="form-control" v-model="smallCategoryName" placeholder="可用分类(可为空)" @click="categroyTree" readonly="readonly"/>
                         </div>
                     </div>
-					<div class="form-group" v-show="smallCoupon.surplus==1">
+                     <div class="form-group">
+                         <div class="col-sm-2 control-label">优惠券类型</div>
+                         <label class="radio-inline">
+                             <input type="radio" name="validateType" value="0" v-model="smallCoupon.validateType"/> 领取后计算有效期
+                         </label>
+                         <label class="radio-inline">
+                             <input type="radio" name="validateType" value="1" v-model="smallCoupon.validateType" checked="checked"/> 固定有效期
+                         </label>
+                     </div>
+					<div class="form-group" v-show="smallCoupon.validateType==0">
                         <div class="col-sm-2 control-label">过期天数</div>
                         <div class="col-sm-10">
                             <input type="number" class="form-control" v-model="smallCoupon.days" placeholder="领取后多少天过期"/>
                         </div>
                     </div>
-                    <div v-show="smallCoupon.surplus==0" class="form-group">
+                    <div v-show="smallCoupon.validateType==1" class="form-group">
                         <div class="col-sm-2 control-label">有效开始日期</div>
                         <div class="block">
                             <el-date-picker
@@ -149,7 +158,7 @@
                             </el-date-picker>
                         </div>
                     </div>
-                    <div  v-show="smallCoupon.surplus==0" class="form-group">
+                    <div  v-show="smallCoupon.validateType==1" class="form-group">
                         <div class="col-sm-2 control-label">有效结束日期</div>
                         <div class="block">
                             <el-date-picker
