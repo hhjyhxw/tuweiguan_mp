@@ -125,13 +125,28 @@ public class CouponApiController {
     @ResponseBody
     public R mycouponList( @RequestParam String status,String pageNum, String pageSize, @RequestParam Long supplierId, @LoginUser WxUser user) {
 
-        if(!StringUtil.checkStr(status)){
-            status = "0";
-        }
+
         Query query = new Query(new HashMap<>());
+        if(!StringUtil.checkStr(status)){
+            query.put("unreceived","unreceived");
+            query.put("received",null);
+            query.put("overtimed",null);
+        }
+        if("unreceived".equals(status)){
+            query.put("unreceived","unreceived");
+            query.put("received",null);
+            query.put("overtimed",null);
+        }else if("received".equals(status)){
+            query.put("unreceived",null);
+            query.put("received","received");
+            query.put("overtimed",null);
+        }else if("overtimed".equals(status)){
+            query.put("unreceived",null);
+            query.put("received",null);
+            query.put("overtimed","overtimed");
+        }
         query.put("shopId",supplierId);
         query.put("userId",user.getId());
-        query.put("status",status);
         PageUtils<MycouponVo> page = smallUserCouponService.findByPageVo(StringUtil.checkStr(pageNum)?Integer.parseInt(pageNum):1,
                 StringUtil.checkStr(pageSize)?Integer.parseInt(pageSize):10,
                 query);
