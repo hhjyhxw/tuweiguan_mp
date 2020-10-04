@@ -119,6 +119,18 @@ select * from t_small_user_coupon t
             <if test="shopId != null">
                 and t.shop_id = #{shopId}
             </if>
+            <!--未使用-->
+            <if test="unreceived != null">
+                and t.order_id is null and t.end_time>now()
+            </if>
+            <!--已使用-->
+            <if test="received != null">
+                and t.order_id is not null
+            </if>
+            <!--已过期-->
+            <if test="overtimed != null">
+                and t.order_id is null and now()>t.end_time
+            </if>
             <if test="sql_filter != null and sql_filter!=''">
                 and ${sql_filter}
             </if>

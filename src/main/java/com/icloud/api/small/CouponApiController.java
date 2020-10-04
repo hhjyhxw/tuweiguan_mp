@@ -127,63 +127,63 @@ public class CouponApiController {
 
 
         Query query = new Query(new HashMap<>());
-//        if(!StringUtil.checkStr(status)){
-//            query.put("unreceived","unreceived");
-//            query.put("received",null);
-//            query.put("overtimed",null);
-//        }
-//        if("unreceived".equals(status)){
-//            query.put("unreceived","unreceived");
-//            query.put("received",null);
-//            query.put("overtimed",null);
-//        }else if("received".equals(status)){
-//            query.put("unreceived",null);
-//            query.put("received","received");
-//            query.put("overtimed",null);
-//        }else if("overtimed".equals(status)){
-//            query.put("unreceived",null);
-//            query.put("received",null);
-//            query.put("overtimed","overtimed");
-//        }
+        if(!StringUtil.checkStr(status)){
+            query.put("unreceived","unreceived");
+            query.put("received",null);
+            query.put("overtimed",null);
+        }
+        if("unreceived".equals(status)){
+            query.put("unreceived","unreceived");
+            query.put("received",null);
+            query.put("overtimed",null);
+        }else if("received".equals(status)){
+            query.put("unreceived",null);
+            query.put("received","received");
+            query.put("overtimed",null);
+        }else if("overtimed".equals(status)){
+            query.put("unreceived",null);
+            query.put("received",null);
+            query.put("overtimed","overtimed");
+        }
         query.put("shopId",supplierId);
         query.put("userId",user.getId());
         PageUtils<MycouponVo> page = smallUserCouponService.findByPageVo(StringUtil.checkStr(pageNum)?Integer.parseInt(pageNum):1,
                 StringUtil.checkStr(pageSize)?Integer.parseInt(pageSize):10,
                 query);
         List<MycouponVo> list = (List<MycouponVo>) page.getList();
-        List<MycouponVo> newlist = new ArrayList<>();
+//        List<MycouponVo> newlist = new ArrayList<>();
         if(list!=null && list.size()>0){
             list.forEach(p->{
 
-//                if(p.getOrderId()==null && p.getEndTime().after(new Date())){
-//                    p.setStatus(0);//未领取
-//                }
-//                if(p.getOrderId()!=null){
-//                    p.setStatus(1);//已领取
-//                }
-//                if(p.getOrderId()==null && p.getEndTime().before(new Date())){
-//                    p.setStatus(2);//已过期
-//                }
+                if(p.getOrderId()==null && p.getEndTime().after(new Date())){
+                    p.setStatus(0);//未领取
+                }
+                if(p.getOrderId()!=null){
+                    p.setStatus(1);//已领取
+                }
+                if(p.getOrderId()==null && p.getEndTime().before(new Date())){
+                    p.setStatus(2);//已过期
+                }
                 p.setStartTimeStr(DateUtil.commonFormatDateDo(p.getStartTime()));
                 p.setEndTimeStr(DateUtil.commonFormatDateDo(p.getEndTime()));
-                if(!StringUtil.checkStr(status) || "unreceived".equals(status)){
-                    if(p.getOrderId()==null && p.getEndTime().after(new Date())){
-                        p.setStatus(0);//未领取
-                        newlist.add(p);
-                    }
-                }
-                if("received".equals(status)){
-                    if(p.getOrderId()!=null){
-                        p.setStatus(1);//已领取
-                        newlist.add(p);
-                    }
-                }
-                if("overtimed".equals(status)){
-                    if(p.getOrderId()==null && p.getEndTime().before(new Date())){
-                        p.setStatus(2);//已过期
-                        newlist.add(p);
-                    }
-                }
+//                if(!StringUtil.checkStr(status) || "unreceived".equals(status)){
+//                    if(p.getOrderId()==null && p.getEndTime().after(new Date())){
+//                        p.setStatus(0);//未领取
+//                        newlist.add(p);
+//                    }
+//                }
+//                if("received".equals(status)){
+//                    if(p.getOrderId()!=null){
+//                        p.setStatus(1);//已领取
+//                        newlist.add(p);
+//                    }
+//                }
+//                if("overtimed".equals(status)){
+//                    if(p.getOrderId()==null && p.getEndTime().before(new Date())){
+//                        p.setStatus(2);//已过期
+//                        newlist.add(p);
+//                    }
+//                }
             });
         }
         page.setList(list);
