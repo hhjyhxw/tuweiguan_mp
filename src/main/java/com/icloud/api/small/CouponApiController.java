@@ -126,10 +126,9 @@ public class CouponApiController {
     public R mycouponList( @RequestParam String status,String pageNum, String pageSize, @RequestParam Long supplierId, @LoginUser WxUser user) {
 
         if(!StringUtil.checkStr(status)){
-            status = "1";
+            status = "0";
         }
         Query query = new Query(new HashMap<>());
-        query.put("status",status);
         query.put("shopId",supplierId);
         query.put("userId",user.getId());
         query.put("status",status);
