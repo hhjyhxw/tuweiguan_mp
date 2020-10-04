@@ -13,6 +13,7 @@ import com.icloud.modules.bsactivity.entity.BsactivityAd;
 import com.icloud.modules.bsactivity.service.BsactivityAdService;
 import com.icloud.modules.shop.entity.Shop;
 import com.icloud.modules.shop.service.ShopService;
+import com.icloud.modules.small.entity.SmallAddress;
 import com.icloud.modules.small.entity.SmallCoupon;
 import com.icloud.modules.small.entity.SmallUserCoupon;
 import com.icloud.modules.small.service.SmallCouponService;
@@ -86,6 +87,14 @@ public class CouponApiController {
         PageUtils<SmallCoupon> page = smallCouponService.findByPage(StringUtil.checkStr(pageNum)?Integer.parseInt(pageNum):1,
                 StringUtil.checkStr(pageSize)?Integer.parseInt(pageSize):10,
                 query);
+        List<SmallCoupon> list = (List<SmallCoupon>) page.getList();
+        if(list!=null && list.size()>0){
+            list.forEach(p->{
+                p.setStartTime(DateUtil.getDateWithoutTime(DateUtil.commonFormatDate(p.getStartTime(),"yyyy-MM-dd HH:mm:ss")));
+                p.setEndTime(DateUtil.getDateWithoutTime(DateUtil.commonFormatDate(p.getEndTime(),"yyyy-MM-dd HH:mm:ss")));
+            });
+        }
+        page.setList(list);
         return R.ok().put("page", page);
     }
 
@@ -120,6 +129,24 @@ public class CouponApiController {
         PageUtils<MycouponVo> page = smallUserCouponService.findByPageVo(StringUtil.checkStr(pageNum)?Integer.parseInt(pageNum):1,
                 StringUtil.checkStr(pageSize)?Integer.parseInt(pageSize):10,
                 query);
+        List<MycouponVo> list = (List<MycouponVo>) page.getList();
+        if(list!=null && list.size()>0){
+            list.forEach(p->{
+                if(p.getOrderId()==null && p.getEndTime().after(new Date())){
+                    p.setStatus(0);//未领取
+                }
+                if(p.getOrderId()!=null){
+                    p.setStatus(1);//已领取
+                }
+                if(p.getOrderId()==null && p.getEndTime().before(new Date())){
+                    p.setStatus(2);//已过期
+                }
+                p.setStartTime(DateUtil.getDateWithoutTime(DateUtil.commonFormatDate(p.getStartTime(),"yyyy-MM-dd HH:mm:ss")));
+                p.setEndTime(DateUtil.getDateWithoutTime(DateUtil.commonFormatDate(p.getEndTime(),"yyyy-MM-dd HH:mm:ss")));
+
+            });
+        }
+        page.setList(list);
         return R.ok().put("page", page);
     }
 
