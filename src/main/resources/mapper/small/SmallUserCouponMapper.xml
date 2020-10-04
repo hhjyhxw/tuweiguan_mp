@@ -74,9 +74,7 @@ select * from t_small_user_coupon t
         <result property="startTime" column="start_time"/>
         <result property="endTime" column="end_time"/>
         <result property="createTime" column="create_time"/>
-        <result property="modifyTime" column="modify_time"/>
         <result property="shopId" column="shop_id"/>
-        <result property="deptId" column="dept_id"/>
 
         <result property="title" column="title"/>
         <result property="description" column="description"/>
