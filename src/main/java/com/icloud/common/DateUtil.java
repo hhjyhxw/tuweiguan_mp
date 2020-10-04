@@ -275,6 +275,28 @@ public class DateUtil {
 		SimpleDateFormat formatter = new SimpleDateFormat(fmt);
 		return formatter.format(date);
 	}
+	public static String commonFormatDateDo(java.util.Date date) {
+		if (null == date)
+			return "";
+		//使用静态方法获取实例，默认为当前的时间日期
+		Calendar calendar=Calendar.getInstance();
+		calendar.setTime(date);
+		int year = calendar.get(Calendar.YEAR);
+		int moth = calendar.get(Calendar.MONTH)+1;
+		int day = calendar.get(Calendar.DAY_OF_MONTH);
+		String result = year+".";
+		if(moth<10){
+			result = result+'0'+moth+".";
+		}else{
+			result = result+moth+".";
+		}
+		if(day<10){
+			result = result+'0'+day;
+		}else{
+			result = result+day;
+		}
+		return result;
+	}
 
 	public static Timestamp getTimestamp(String source) {
 		if (null == source || "".equals(source.trim()))

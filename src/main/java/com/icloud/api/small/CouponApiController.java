@@ -92,14 +92,19 @@ public class CouponApiController {
             list.forEach(p->{
 //                p.setStartTime(DateUtil.getDateWithoutTime(DateUtil.commonFormatDate(p.getStartTime(),"yyyy-MM-dd HH:mm:ss")));
 //                p.setEndTime(DateUtil.getDateWithoutTime(DateUtil.commonFormatDate(p.getEndTime(),"yyyy-MM-dd HH:mm:ss")));
-                p.setStartTimeStr(DateUtil.commonFormatDate(p.getStartTime(),"yyyy-MM-dd"));
-                p.setEndTimeStr(DateUtil.commonFormatDate(p.getEndTime(),"yyyy-MM-dd"));
+                p.setStartTimeStr(DateUtil.commonFormatDateDo(p.getStartTime()));
+                p.setEndTimeStr(DateUtil.commonFormatDateDo(p.getEndTime()));
             });
         }
         page.setList(list);
         return R.ok().put("page", page);
     }
 
+//    public static void main(String[] args) {
+//        Date data = new Date();
+//        System.out.println(DateUtil.commonFormatDateDo(data));
+//
+//    }
     /**
      * 我的优惠券（）
      * 目前需要参数：
@@ -124,7 +129,7 @@ public class CouponApiController {
             status = "1";
         }
         Query query = new Query(new HashMap<>());
-        query.put("status",1);
+        query.put("status",status);
         query.put("shopId",supplierId);
         query.put("userId",user.getId());
         query.put("status",status);
@@ -143,8 +148,8 @@ public class CouponApiController {
                 if(p.getOrderId()==null && p.getEndTime().before(new Date())){
                     p.setStatus(2);//已过期
                 }
-                p.setStartTimeStr(DateUtil.commonFormatDate(p.getStartTime(),"yyyy-MM-dd"));
-                p.setEndTimeStr(DateUtil.commonFormatDate(p.getEndTime(),"yyyy-MM-dd"));
+                p.setStartTimeStr(DateUtil.commonFormatDateDo(p.getStartTime()));
+                p.setEndTimeStr(DateUtil.commonFormatDateDo(p.getEndTime()));
 
             });
         }
