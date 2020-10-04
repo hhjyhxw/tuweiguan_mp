@@ -45,7 +45,6 @@ public class SmallUserCouponService extends BaseServiceImpl<SmallUserCouponMappe
 
     public PageUtils<MycouponVo> findByPageVo(int pageNo, int pageSize, Map<String, Object> query) {
         PageHelper.startPage(pageNo, pageSize);
-
         List<MycouponVo> list = smallUserCouponMapper.queryMixListVo(MapEntryUtils.clearNullValue(query));
         PageInfo<MycouponVo> pageInfo = new PageInfo<MycouponVo>(list);
         PageUtils<MycouponVo> page = new PageUtils<MycouponVo>(list,(int)pageInfo.getTotal(),pageSize,pageNo);
