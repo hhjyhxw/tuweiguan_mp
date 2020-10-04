@@ -90,8 +90,10 @@ public class CouponApiController {
         List<SmallCoupon> list = (List<SmallCoupon>) page.getList();
         if(list!=null && list.size()>0){
             list.forEach(p->{
-                p.setStartTime(DateUtil.getDateWithoutTime(DateUtil.commonFormatDate(p.getStartTime(),"yyyy-MM-dd HH:mm:ss")));
-                p.setEndTime(DateUtil.getDateWithoutTime(DateUtil.commonFormatDate(p.getEndTime(),"yyyy-MM-dd HH:mm:ss")));
+//                p.setStartTime(DateUtil.getDateWithoutTime(DateUtil.commonFormatDate(p.getStartTime(),"yyyy-MM-dd HH:mm:ss")));
+//                p.setEndTime(DateUtil.getDateWithoutTime(DateUtil.commonFormatDate(p.getEndTime(),"yyyy-MM-dd HH:mm:ss")));
+                p.setStartTimeStr(DateUtil.commonFormatDate(p.getStartTime(),"yyyy-MM-dd"));
+                p.setEndTimeStr(DateUtil.commonFormatDate(p.getEndTime(),"yyyy-MM-dd"));
             });
         }
         page.setList(list);
@@ -141,8 +143,8 @@ public class CouponApiController {
                 if(p.getOrderId()==null && p.getEndTime().before(new Date())){
                     p.setStatus(2);//已过期
                 }
-                p.setStartTime(DateUtil.getDateWithoutTime(DateUtil.commonFormatDate(p.getStartTime(),"yyyy-MM-dd HH:mm:ss")));
-                p.setEndTime(DateUtil.getDateWithoutTime(DateUtil.commonFormatDate(p.getEndTime(),"yyyy-MM-dd HH:mm:ss")));
+                p.setStartTimeStr(DateUtil.commonFormatDate(p.getStartTime(),"yyyy-MM-dd"));
+                p.setEndTimeStr(DateUtil.commonFormatDate(p.getEndTime(),"yyyy-MM-dd"));
 
             });
         }

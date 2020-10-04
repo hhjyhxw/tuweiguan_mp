@@ -21,6 +21,10 @@ public class MycouponVo {
     private Date startTime;
     /* 优惠券有效结束时间（领取优惠券过期时间根据策略计算） */
     private Date endTime;
+    /* 优惠券有效开始时间（领取优惠券时写入） */
+    private String startTimeStr;
+    /* 优惠券有效结束时间（领取优惠券过期时间根据策略计算） */
+    private String endTimeStr;
     /* 创建时间 */
     private Date createTime;
 
