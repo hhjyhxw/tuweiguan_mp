@@ -24,6 +24,8 @@
      <result property="modifyTime" column="modify_time"/>
      <result property="supplierId" column="supplier_id"/>
      <result property="deptId" column="dept_id"/>
+        <result property="freezeStore" column="freeze_store"/>
+
     </resultMap>
 
    <!-- 基础字段列 -->
@@ -74,9 +76,11 @@ select * from t_small_coupon t
 <if test="startTime != null">
     and t.start_time = #{startTime}
 </if>
-<if test="endTime != null">
-    and t.end_time = #{endTime}
-</if>
+<!-- 查询有效结束时间大于 当前时间的优惠券 -->
+<!--<if test="endTime != null">
+    <![CDATA[ and t.end_time  >  #{endTime}  ]]>
+</if>-->
+    and t.end_time >now()
 <if test="createTime != null">
     and t.create_time = #{createTime}
 </if>

@@ -41,6 +41,8 @@ public class SmallCoupon implements Serializable {
        @NotNull(message = "投放量不能为空")
        @TableField("total")
        private Integer total;
+        @TableField("freeze_store")
+        private Integer freezeStore;
    	   	   /* 使用类型0:默认满足分类可用 1新用户专用 */
        @TableField("surplus")
        private Integer surplus;

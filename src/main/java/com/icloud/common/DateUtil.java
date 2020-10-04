@@ -1067,7 +1067,17 @@ public class DateUtil {
 		String dateStr = formatDate(calendar.getTime());
 		return dateStr;
 	}
-	
+
+	/*****************************************
+	 * @throws ParseException
+	 * @功能 获取前N天  zdh
+	 ****************************************/
+	public static Date getBeforeNDate(Date date,int n){
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTime(date);
+		calendar.add(Calendar.DATE, n);
+		return calendar.getTime();
+	}
 	/*****************************************
 	 * @throws ParseException 
 	 * @功能 获取N小时后的时间  zdh

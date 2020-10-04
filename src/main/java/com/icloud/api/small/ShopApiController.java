@@ -27,9 +27,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 
 @Api("店铺与商品相关接口")
@@ -49,32 +47,8 @@ public class ShopApiController {
     private RedisService redisService;
     @Autowired
     private HttpServletRequest httpServletRequest;
-    /**
-     * 平台、店铺
-     * @return
-     */
-//    @ApiOperation(value="平台、店铺广告", notes="")
-//    @ApiImplicitParams({
-//            @ApiImplicitParam(name = "supplierId", value = "商家id", required = false, paramType = "query", dataType = "Long"),
-//    })
-//    @RequestMapping(value = "/adlist",method = {RequestMethod.GET})
-//    @ResponseBody
-//    @AuthIgnore
-//    public R shopInfo(@RequestParam Long supplierId)  {
-//        if(supplierId==null){
-//              List<Shop> shoplist = shopService.list(new QueryWrapper<Shop>().eq("sys_flag","1"));
-//              if(shoplist!=null && shoplist.size()>0){
-//                  supplierId = shoplist.get(0).getId();
-//              }
-//        }
-//        if(supplierId==null){
-//            return R.error("暂时没有广告");
-//        }
-//        List<BsactivityAd> list  = bsactivityAdService.list(new QueryWrapper<BsactivityAd>()
-//                .eq("status",1)
-//                .eq("supplier_id",supplierId));
-//        return R.ok().put("list",list);
-//    }
+    @Autowired
+    private SmallCouponService smallCouponService;
 
 
     /**
@@ -115,18 +89,18 @@ public class ShopApiController {
                 WxUser user = (WxUser)sessuser;
                 List<Shop> mylist = shopService.list(new QueryWrapper<Shop>().eq("user_id",user.getId()));
                 if(mylist!=null && mylist.size()>0){
-                   if(mylist.get(0).getId().longValue()!=sysshoplist.get(0).getId().longValue()){
+//                   if(mylist.get(0).getId().longValue()!=sysshoplist.get(0).getId().longValue()){
                        shopId = mylist.get(0).getId();
 //                       shopMainId = shopId;
 //                       shopMainName = mylist.get(0).getShopName();
 //                       shopImg = mylist.get(0).getShopImg();
-                   }
+//                   }
                 }
             }
         }
 
         //查询店主店铺与分店
-       if(shopId!=null && shopId.longValue()!=sysshoplist.get(0).getId().longValue()){
+       if(shopId!=null){
             //查询分享店铺和分店
             Object shopobj = shopService.getById(shopId);
             Shop shop = null;
@@ -160,15 +134,19 @@ public class ShopApiController {
 
         }
         final long activeShop = shopMainId;
+        Set<Shop> shopsets = new HashSet<Shop>();
         shoplist.forEach(p->{
             if(p.getId().longValue()==activeShop){
                 p.setActive(true);
+                shopsets.add(p);
             }else{
                 p.setActive(false);
+                shopsets.add(p);
             }
         });
        return R.ok()
-               .put("shoplist",shoplist)
+               .put("shoplist",shopsets)
+//               .put("shoplist",shoplist)
                .put("adlist",adlist)
                .put("supplierId",shopMainId)
                .put("shopMainId",shopMainId)
@@ -208,13 +186,14 @@ public class ShopApiController {
         }
         Query query = new Query(new HashMap<>());
         query.put("status",1);
-        query.put("page",pageNum);
-        query.put("limit",pageSize);
         query.put("supplierId",supplierId);
         query.put("title",keyword);
-        query.put("",supplierId);
-        PageUtils<GroupSkuVo> page = smallGroupShopService.findByFrontPage(query.getPageNum(),query.getPageSize(), query);
+//        query.put("",supplierId);
+        PageUtils<GroupSkuVo> page = smallGroupShopService.findByFrontPage(StringUtil.checkStr(pageNum)?Integer.parseInt(pageNum):1,
+                StringUtil.checkStr(pageSize)?Integer.parseInt(pageSize):10,
+                query);
         return R.ok().put("page", page);
     }
+
 
 }

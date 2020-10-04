@@ -63,4 +63,80 @@ select * from t_small_user_coupon t
     </if>
 </where>
 </select>
+
+    <!-- 基础map -->
+    <resultMap type="com.icloud.modules.small.vo.MycouponVo" id="BaseResultMapVo">
+        <id property="id" column="id"/>
+        <result property="userId" column="user_id"/>
+        <result property="couponId" column="coupon_id"/>
+        <result property="orderId" column="order_id"/>
+        <result property="useTime" column="use_time"/>
+        <result property="startTime" column="start_time"/>
+        <result property="endTime" column="end_time"/>
+        <result property="createTime" column="create_time"/>
+        <result property="modifyTime" column="modify_time"/>
+        <result property="shopId" column="shop_id"/>
+        <result property="deptId" column="dept_id"/>
+
+        <result property="title" column="title"/>
+        <result property="description" column="description"/>
+        <result property="surplus" column="surplus"/>
+        <result property="discount" column="discount"/>
+        <result property="min" column="min"/>
+        <result property="categoryId" column="category_id"/>
+    </resultMap>
+
+
+    <select id="queryMixListVo" resultMap="BaseResultMap">
+        select t.*,cp.title,cp.description,cp.surplus,cp.discount,cp.min,cp.category_id from t_small_user_coupon t,t_small_coupon cp
+        <where>
+            t.coupon_id = cp.id
+            <if test="id != null">
+                and t.id = #{id}
+            </if>
+            <if test="userId != null">
+                and t.user_id = #{userId}
+            </if>
+            <if test="couponId != null">
+                and t.coupon_id = #{couponId}
+            </if>
+            <if test="orderId != null">
+                and t.order_id = #{orderId}
+            </if>
+            <if test="useTime != null">
+                and t.use_time = #{useTime}
+            </if>
+            <if test="startTime != null">
+                and t.start_time = #{startTime}
+            </if>
+            <if test="endTime != null">
+                and t.end_time = #{endTime}
+            </if>
+            <if test="createTime != null">
+                and t.create_time = #{createTime}
+            </if>
+            <if test="modifyTime != null">
+                and t.modify_time = #{modifyTime}
+            </if>
+            <if test="shopId != null">
+                and t.shop_id = #{shopId}
+            </if>
+            <!--未使用-->
+            <if test="status != null and status=='0'">
+                and t.order_id is null and t.end_time>now()
+            </if>
+            <!--已使用-->
+            <if test="status != null and status=='0'">
+                and t.order_id is not null
+            </if>
+            <!--已过期-->
+            <if test="status != null and status=='0'">
+                and t.order_id is null and now()>t.end_time
+            </if>
+            <if test="sql_filter != null and sql_filter!=''">
+                and ${sql_filter}
+            </if>
+        </where>
+    </select>
+
 </mapper>
