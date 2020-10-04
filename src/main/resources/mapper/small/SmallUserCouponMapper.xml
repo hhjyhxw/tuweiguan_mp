@@ -87,7 +87,7 @@ select * from t_small_user_coupon t
     </resultMap>
 
 
-    <select id="queryMixListVo" resultMap="BaseResultMap">
+    <select id="queryMixListVo" resultMap="BaseResultMapVo">
         select t.*,cp.title,cp.description,cp.surplus,cp.discount,cp.min,cp.category_id from t_small_user_coupon t,t_small_coupon cp
         <where>
             t.coupon_id = cp.id
