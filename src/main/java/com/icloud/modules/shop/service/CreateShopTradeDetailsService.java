@@ -55,7 +55,7 @@ public class CreateShopTradeDetailsService{
             tradeDetails.setAmount(totalAmout);
             tradeDetails.setBeforeBlance(shopbalance!=null?shopbalance:new BigDecimal(0));
             tradeDetails.setAfterBlance(tradeDetails.getBeforeBlance().add(totalAmout));
-            tradeDetails.setBizType(10);///* 交易类型 8、零售采购收入 9、公共订单收入（自营部分+佣金） 10：自营订单收入，11：账号充值，20：账号提现，21：扣除订单手续费 */
+            tradeDetails.setBizType(10);///* 交易类型 7、零售采购收入 8、佣金收入 9、公共订单收入（自营部分 10：自营订单收入，11：账号充值，20：账号提现，21：扣除订单手续费 */
             tradeDetails.setInOrOut(1);//1收入 2支出
             tradeDetails.setCreatedTime(new Date());
             tradeDetails.setOrderNo("B"+SnowflakeUtils.getOrderNoByWordId(serverConfig.getServerPort()%31L));
@@ -85,8 +85,7 @@ public class CreateShopTradeDetailsService{
                     commissionAmout = commissionAmout.add(orderDetail.getPrice().multiply(new BigDecimal(orderDetail.getNum())));
                 }
             }
-            //计算公共商品佣金
-            commissionAmout = commissionAmout.multiply(shop.getCommissionRate());
+
             //保存自营商品金额
             ShopTradeDetails tradeDetails = new ShopTradeDetails();
             BigDecimal shopbalance = shop.getBalance();
@@ -96,7 +95,8 @@ public class CreateShopTradeDetailsService{
             tradeDetails.setBizType(9);///* 交易类型 7、零售采购收入 8、佣金收入 9、公共订单收入（自营部分 10：自营订单收入，11：账号充值，20：账号提现，21：扣除订单手续费 */
             tradeDetails.setInOrOut(1);//1收入 2支出
             tradeDetails.setCreatedTime(new Date());
-            tradeDetails.setOrderNo("B"+SnowflakeUtils.getOrderNoByWordId(serverConfig.getServerPort()%31L));
+            tradeDetails.setOrderNo(order.getOrderNo());
+            tradeDetails.setTradeNo("B"+SnowflakeUtils.getOrderNoByWordId(serverConfig.getServerPort()%31L));
             tradeDetails.setShopId(shop.getId());
             tradeDetails.setDeptId(shop.getDeptId());
             shopTradeDetailsService.save(tradeDetails);
@@ -107,11 +107,13 @@ public class CreateShopTradeDetailsService{
 
             //保存公共商品佣金记录
             tradeDetails = new ShopTradeDetails();
+            //计算公共商品佣金
+            totalAmout = commissionAmout.multiply(shop.getCommissionRate());
             shopbalance = shop.getBalance();
-            tradeDetails.setAmount(totalAmout);
+            tradeDetails.setAmount(commissionAmout);
             tradeDetails.setBeforeBlance(shopbalance!=null?shopbalance:new BigDecimal(0));
             tradeDetails.setAfterBlance(tradeDetails.getBeforeBlance().add(totalAmout));
-            tradeDetails.setBizType(9);///* 交易类型 7、零售采购收入 8、佣金收入 9、公共订单收入（自营部分 10：自营订单收入，11：账号充值，20：账号提现，21：扣除订单手续费 */
+            tradeDetails.setBizType(8);///* 交易类型 7、零售采购收入 8、佣金收入 9、公共订单收入（自营部分 10：自营订单收入，11：账号充值，20：账号提现，21：扣除订单手续费 */
             tradeDetails.setInOrOut(1);//1收入 2支出
             tradeDetails.setCreatedTime(new Date());
             tradeDetails.setOrderNo("B"+SnowflakeUtils.getOrderNoByWordId(serverConfig.getServerPort()%31L));
@@ -153,7 +155,7 @@ public class CreateShopTradeDetailsService{
             tradeDetails.setAmount(totalAmout);
             tradeDetails.setBeforeBlance(shopbalance!=null?shopbalance:new BigDecimal(0));
             tradeDetails.setAfterBlance(tradeDetails.getBeforeBlance().add(totalAmout));
-            tradeDetails.setBizType(8);///* 交易类型 8、零售采购收入 9、公共订单收入（自营部分+佣金） 10：自营订单收入，11：账号充值，20：账号提现，21：扣除订单手续费 */
+            tradeDetails.setBizType(8);///* 交易类型 7、零售采购收入 8、佣金收入 9、公共订单收入（自营部分 10：自营订单收入，11：账号充值，20：账号提现，21：扣除订单手续费 */
             tradeDetails.setInOrOut(1);//1收入 2支出
             tradeDetails.setCreatedTime(new Date());
             tradeDetails.setOrderNo("B"+SnowflakeUtils.getOrderNoByWordId(serverConfig.getServerPort()%31L));

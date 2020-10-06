@@ -263,8 +263,7 @@ public class SmallOrderService extends BaseServiceImpl<SmallOrderMapper,SmallOrd
         for (int i = 0; i <list.size() ; i++) {
             ShopAndOrderDetailVo vo = list.get(i);
             SmallPurorder smallPurorder = new SmallPurorder();
-            BeanUtils.copyProperties(smallPurorder,order);
-
+            BeanUtils.copyProperties(order,smallPurorder);
             smallPurorder.setId(null);
             smallPurorder.setSysShopId(vo.getShop().getId());
             smallPurorder.setOrderId(order.getId());
@@ -277,7 +276,7 @@ public class SmallOrderService extends BaseServiceImpl<SmallOrderMapper,SmallOrd
             for (int j = 0; j <vo.getOrderDetailList().size() ; j++) {
                 SmallOrderDetail detail = vo.getOrderDetailList().get(j);
                 SmallPurorderDetail pdetail = new SmallPurorderDetail();
-                BeanUtils.copyProperties(pdetail,detail);
+                BeanUtils.copyProperties(detail,pdetail);
 
                 pdetail.setId(null);
                 pdetail.setPurorderId(smallPurorder.getId());
