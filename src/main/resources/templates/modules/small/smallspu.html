@@ -192,14 +192,14 @@
                             <td>{{item.title}}</td>
                             <td>
                                 <img :src="item.img" style="width: 5rem;height: 5rem;"/>
-></i>&nbsp;删除</a>
-                            </td>                            </td>
+                           </td>
                             <td>{{item.originalPrice}}</td>
                             <td>{{item.price}}</td>
                             <td>{{item.remainStock}}</td>
                             <td>
                                 <a class="btn btn-primary" @click="addSku('编辑sku',item.id)"><i class="fa fa-pencil-square-o"></i>&nbsp;修改</a>
-                                <a class="btn btn-primary" @click="delSku(item.id)"><i class="fa fa-trash-o"
+                                <a class="btn btn-primary" @click="delSku(item.id)"><i class="fa fa-trash-o"></i>&nbsp;删除</a>
+                            </td>
                         </tr>
                         </tbody>
                     </table>
