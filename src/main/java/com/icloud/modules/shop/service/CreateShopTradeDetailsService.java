@@ -109,8 +109,9 @@ public class CreateShopTradeDetailsService{
             tradeDetails = new ShopTradeDetails();
             //计算公共商品佣金
             totalAmout = commissionAmout.multiply(shop.getCommissionRate());
+            shop = (Shop) shopService.getById(order.getSupplierId());
             shopbalance = shop.getBalance();
-            tradeDetails.setAmount(commissionAmout);
+            tradeDetails.setAmount(totalAmout);
             tradeDetails.setBeforeBlance(shopbalance!=null?shopbalance:new BigDecimal(0));
             tradeDetails.setAfterBlance(tradeDetails.getBeforeBlance().add(totalAmout));
             tradeDetails.setBizType(8);///* 交易类型 7、零售采购收入 8、佣金收入 9、公共订单收入（自营部分 10：自营订单收入，11：账号充值，20：账号提现，21：扣除订单手续费 */
@@ -121,6 +122,7 @@ public class CreateShopTradeDetailsService{
             tradeDetails.setShopId(shop.getId());
             tradeDetails.setDeptId(shop.getDeptId());
             shopTradeDetailsService.save(tradeDetails);
+
             newshop = new Shop();
             newshop.setId(shop.getId());
             newshop.setBalance(shopbalance!=null?shopbalance.add(totalAmout):totalAmout);
@@ -156,7 +158,7 @@ public class CreateShopTradeDetailsService{
             tradeDetails.setAmount(totalAmout);
             tradeDetails.setBeforeBlance(shopbalance!=null?shopbalance:new BigDecimal(0));
             tradeDetails.setAfterBlance(tradeDetails.getBeforeBlance().add(totalAmout));
-            tradeDetails.setBizType(8);///* 交易类型 7、零售采购收入 8、佣金收入 9、公共订单收入（自营部分 10：自营订单收入，11：账号充值，20：账号提现，21：扣除订单手续费 */
+            tradeDetails.setBizType(7);///* 交易类型 7、采购收入 8、佣金收入 9、公共订单收入（自营部分 10：自营订单收入，11：账号充值，20：账号提现，21：扣除订单手续费 */
             tradeDetails.setInOrOut(1);//1收入 2支出
             tradeDetails.setCreatedTime(new Date());
             tradeDetails.setOrderNo(order.getPurorderNo());
