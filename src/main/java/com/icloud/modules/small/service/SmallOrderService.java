@@ -259,7 +259,7 @@ public class SmallOrderService extends BaseServiceImpl<SmallOrderMapper,SmallOrd
                 shopMap.put(orderDetail.getSysShopId().toString(),shopAndOrderDetailVo);
             }
         }
-        List<ShopAndOrderDetailVo> list = (List<ShopAndOrderDetailVo>) shopMap.values();
+        List<ShopAndOrderDetailVo> list = new ArrayList<ShopAndOrderDetailVo>(shopMap.values());
         for (int i = 0; i <list.size() ; i++) {
             ShopAndOrderDetailVo vo = list.get(i);
             SmallPurorder smallPurorder = new SmallPurorder();
