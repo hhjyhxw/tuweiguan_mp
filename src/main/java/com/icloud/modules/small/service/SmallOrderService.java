@@ -216,7 +216,7 @@ public class SmallOrderService extends BaseServiceImpl<SmallOrderMapper,SmallOrd
             smallCartService.remove(new QueryWrapper<SmallCart>()
                     .eq("user_id",user.getId())
                     .eq("group_id",preOrder.getGroupId()[i])
-                    .eq("sku_id",preOrder.getNum()[i])
+                    .eq("sku_id",preOrder.getSkuId()[i])
                     .eq("supplier_id",preOrder.getSupplierId()));
 
         }
