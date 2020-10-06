@@ -20,6 +20,9 @@
      <result property="createTime" column="create_time"/>
      <result property="modifyTime" column="modify_time"/>
      <result property="supplierId" column="supplier_id"/>
+        <result property="sysShopId" column="sys_shop_id"/>
+        <result property="commonFlag" column="common_flag"/>
+        <result property="deptId" column="dept_id"/>
     </resultMap>
 
    <!-- 基础字段列 -->

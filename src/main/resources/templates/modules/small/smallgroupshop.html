@@ -65,10 +65,10 @@
                     <div class="form-group">
                         <div class="col-sm-2 control-label">上架类型</div>
                         <label class="radio-inline">
-                            <input type="radio" name="status" value="0" v-model="smallGroupShop.commonFlag" checked="checked" @click="selectCommonFlag(0)"/> 自营商品
+                            <input type="radio" name="commonFlag" value="0" v-model="smallGroupShop.commonFlag" checked="checked" @click="selectCommonFlag(0)"/> 自营商品
                         </label>
                         <label v-if="sysFlag==0" class="radio-inline">
-                            <input type="radio" name="status" value="1" v-model="smallGroupShop.commonFlag" @click="selectCommonFlag(1)"/> 公共商品
+                            <input type="radio" name="commonFlag" value="1" v-model="smallGroupShop.commonFlag" @click="selectCommonFlag(1)"/> 公共商品
                         </label>
                     </div>
 
@@ -87,15 +87,15 @@
 					<div class="form-group">
                         <div class="col-sm-2 control-label">原价</div>
                         <div class="col-sm-10">
-                            <input v-if="smallGroupShop.commonFlag==0" type="text" class="form-control" v-model="smallGroupShop.minPrice" placeholder="原价" />
-                            <input v-if="smallGroupShop.commonFlag==1" type="text" class="form-control" v-model="smallGroupShop.minPrice" placeholder="原价" readonly/><!--公共商品价格不能改变-->
+                            <input v-if="smallGroupShop.commonFlag==0" type="text" class="form-control" v-model="smallGroupShop.maxPrice" placeholder="原价" />
+                            <input v-if="smallGroupShop.commonFlag==1" type="text" class="form-control" v-model="smallGroupShop.maxPrice" placeholder="原价" readonly/><!--公共商品价格不能改变-->
                         </div>
                     </div>
 					<div class="form-group">
                         <div class="col-sm-2 control-label">现价</div>
                         <div class="col-sm-10">
-                            <input v-if="smallGroupShop.commonFlag==0" type="text" class="form-control" v-model="smallGroupShop.maxPrice" placeholder="现价" />
-                            <input v-if="smallGroupShop.commonFlag==1" type="text" class="form-control" v-model="smallGroupShop.maxPrice" placeholder="现价" readonly/><!--公共商品价格不能改变-->
+                            <input v-if="smallGroupShop.commonFlag==0" type="text" class="form-control" v-model="smallGroupShop.minPrice" placeholder="现价" />
+                            <input v-if="smallGroupShop.commonFlag==1" type="text" class="form-control" v-model="smallGroupShop.minPrice" placeholder="现价" readonly/><!--公共商品价格不能改变-->
                         </div>
                     </div>
                     <!--<div class="form-group">
@@ -142,10 +142,10 @@
                     <div class="form-group">
                         <div class="col-sm-2 control-label">状态</div>
                         <label class="radio-inline">
-                            <input type="radio" name="sysFlag" value="1" v-model="smallGroupShop.status"/> 上架
+                            <input type="radio" name="status" value="1" v-model="smallGroupShop.status"/> 上架
                         </label>
                         <label class="radio-inline">
-                            <input type="radio" name="sysFlag" value="0" v-model="smallGroupShop.status"/> 下架
+                            <input type="radio" name="status" value="0" v-model="smallGroupShop.status"/> 下架
                         </label>
                     </div>
 
