@@ -154,6 +154,7 @@ select * from t_small_user_coupon t
                  or cp.surplus=1
                  )
              and t.status=0
+             and t.user_id = #{userId}
              and t.end_time>now()
          </where>
     </select>
