@@ -2,20 +2,16 @@ package com.icloud.api.small;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.icloud.annotation.LoginUser;
+import com.icloud.api.vo.QuerySkuCategoryVo;
+import com.icloud.api.vo.SkuSpuCategoryVo;
 import com.icloud.basecommon.model.Query;
 import com.icloud.common.PageUtils;
 import com.icloud.common.R;
 import com.icloud.common.beanutils.ColaBeanUtils;
 import com.icloud.common.util.StringUtil;
 import com.icloud.common.validator.ValidatorUtils;
-import com.icloud.modules.small.entity.SmallAddress;
-import com.icloud.modules.small.entity.SmallOrder;
-import com.icloud.modules.small.entity.SmallOrderDetail;
-import com.icloud.modules.small.entity.SmallSpu;
-import com.icloud.modules.small.service.SmallAddressService;
-import com.icloud.modules.small.service.SmallOrderDetailService;
-import com.icloud.modules.small.service.SmallOrderService;
-import com.icloud.modules.small.service.SmallSpuService;
+import com.icloud.modules.small.entity.*;
+import com.icloud.modules.small.service.*;
 import com.icloud.modules.small.util.CartOrderUtil;
 import com.icloud.modules.small.vo.*;
 import com.icloud.modules.wx.entity.WxUser;
@@ -33,6 +29,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Api("订单相关接口")
 @RestController
@@ -47,6 +44,14 @@ public class OrderApiController {
     private SmallOrderDetailService smallOrderDetailService;
     @Autowired
     private SmallAddressService smallAddressService;
+    @Autowired
+    private SmallCouponService smallCouponService;
+    @Autowired
+    private SmallUserCouponService smallUserCouponService;
+    @Autowired
+    private SmallSkuService smallSkuService;
+    @Autowired
+    private SmallCategoryService smallCategoryService;
 
     @Deprecated
     @ApiOperation(value="订单确认", notes="")
@@ -104,6 +109,26 @@ public class OrderApiController {
             if(preOrder.getNum()==null || preOrder.getNum().length==0 || preOrder.getSkuId()==null || preOrder.getNum().length!=preOrder.getSkuId().length){
                 return R.error("商品数量与商品id不匹配");
             }
+            if(preOrder.getMycouponId()!=null){
+                SmallUserCoupon userCoupon = (SmallUserCoupon) smallUserCouponService.getById(preOrder.getMycouponId());
+                SmallCoupon smallCoupon = (SmallCoupon) smallCouponService.getById(userCoupon.getCouponId());
+                //判断是否是新用户专用券
+                if(smallCoupon.getSurplus().intValue()==1){
+                    //判断是否已在该店铺消费过，消费过，则不再显示新用户专用券
+                    List<SmallOrder> list = smallOrderService.list(new QueryWrapper<SmallOrder>()
+                            .eq("supplier_id",preOrder.getSupplierId())
+                            .eq("coupon_id",userCoupon.getId())
+                            .eq("user_id",user.getId()));
+                    if(list!=null && list.size()>0){
+                        return R.error("已使用该类型优惠券，不能再使用");
+                    }
+                }else{
+                    //校验是否所有商品都适合使用该优惠券; 优惠券分类id为空，适合所有店铺所有商品；不为空校验是否所有商品适合优惠券
+                    if(smallCoupon.getCategoryId()!=null){
+                        checkCateory(preOrder,smallCoupon.getCategoryId());
+                    }
+                }
+            }
             //暂时不用收货地址
             SmallAddress address = null;
 //            List<SmallAddress> addressList = smallAddressService.list(new QueryWrapper<SmallAddress>().eq("user_id",user.getId()).eq("id",preOrder.getAddressId()));
@@ -119,6 +144,17 @@ public class OrderApiController {
         }
     }
 
+    private void checkCateory(CreateOrder preOrder,Long categoryId){
+        QuerySkuCategoryVo vo = new QuerySkuCategoryVo();
+        vo.setSkuId(preOrder.getSkuId());
+        vo.setSupplierId(preOrder.getSupplierId());
+        List<SkuSpuCategoryVo>  list = smallSkuService.getSkuAndCategoryList(vo);
+        Map<String, Object> map = new HashMap<>();
+        map.put("id",categoryId);
+        List<SmallCategory>  couponCategoryList =smallCategoryService.queryList(map);
+
+        //比较
+    }
 
     /**
      * 最近订单

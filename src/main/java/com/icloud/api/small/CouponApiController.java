@@ -17,6 +17,7 @@ import com.icloud.modules.shop.entity.Shop;
 import com.icloud.modules.shop.service.ShopService;
 import com.icloud.modules.small.entity.SmallAddress;
 import com.icloud.modules.small.entity.SmallCoupon;
+import com.icloud.modules.small.entity.SmallOrder;
 import com.icloud.modules.small.entity.SmallUserCoupon;
 import com.icloud.modules.small.service.*;
 import com.icloud.modules.small.vo.GroupSkuVo;
@@ -58,6 +59,8 @@ public class CouponApiController {
     private SmallCouponService smallCouponService;
     @Autowired
     private SmallUserCouponService smallUserCouponService;
+    @Autowired
+    private SmallOrderService smallOrderService;
 
 
 
@@ -77,12 +80,16 @@ public class CouponApiController {
     })
     @RequestMapping(value = "/shopcouponList",method = {RequestMethod.GET})
     @ResponseBody
-    @AuthIgnore
-    public R shopcouponList(String pageNum,String pageSize,@RequestParam Long supplierId) {
+    public R shopcouponList(String pageNum,String pageSize,@RequestParam Long supplierId,@LoginUser WxUser user) {
         //传入id为空则读取平台商品
         if(supplierId==null){
            return R.error("店铺id为空");
         }
+        //用于判断是否显示新用户专用类型优惠券，消费过，则不再显示新用户专用券
+        List<SmallOrder> orderlist = smallOrderService.list(new QueryWrapper<SmallOrder>()
+                .eq("supplier_id",supplierId)
+                .eq("pay_status",2)//已支付
+                .eq("user_id",user.getId()));
         Query query = new Query(new HashMap<>());
         query.put("status",1);
         query.put("supplierId",supplierId);
@@ -91,14 +98,21 @@ public class CouponApiController {
                 StringUtil.checkStr(pageSize)?Integer.parseInt(pageSize):10,
                 query);
         List<SmallCoupon> list = (List<SmallCoupon>) page.getList();
+        List<SmallCoupon> newlist = new ArrayList<SmallCoupon>();
         if(list!=null && list.size()>0){
             list.forEach(p->{
 //                p.setStartTime(DateUtil.getDateWithoutTime(DateUtil.commonFormatDate(p.getStartTime(),"yyyy-MM-dd HH:mm:ss")));
 //                p.setEndTime(DateUtil.getDateWithoutTime(DateUtil.commonFormatDate(p.getEndTime(),"yyyy-MM-dd HH:mm:ss")));
                 p.setStartTimeStr(DateUtil.commonFormatDateDo(p.getStartTime()));
                 p.setEndTimeStr(DateUtil.commonFormatDateDo(p.getEndTime()));
+                if(orderlist!=null && orderlist.size()>0 && p.getSurplus().intValue()==1){//已使用过新用户专用券，则不再展示该类型券
+
+                }else{
+                    newlist.add(p);
+                }
             });
         }
+//        page.setList(newlist); 暂时不使用
         page.setList(list);
         return R.ok().put("page", page);
     }
@@ -230,7 +244,7 @@ public class CouponApiController {
         userCoupon.setDeptId(smallCoupon.getDeptId());
         userCoupon.setUserId(user.getId().longValue());
         userCoupon.setCreateTime(new Date());
-        userCoupon.setStatus(1);
+        userCoupon.setStatus(0);
         if(smallCoupon.getValidateType().intValue()==0){
             userCoupon.setStartTime(new Date());
             Date newdate = DateUtil.getBeforeNDate(userCoupon.getStartTime(),smallCoupon.getDays());
@@ -254,6 +268,12 @@ public class CouponApiController {
         ValidatorUtils.validateEntityForFront(queryMycouponVo);
         queryMycouponVo.setUserId(user.getId());
         List<MycouponVo> list = smallUserCouponService.getCategoryidList(queryMycouponVo);
+        if(list!=null && list.size()>0) {
+            list.forEach(p -> {
+                p.setStartTimeStr(DateUtil.commonFormatDateDo(p.getStartTime()));
+                p.setEndTimeStr(DateUtil.commonFormatDateDo(p.getEndTime()));
+            });
+        }
         return R.ok().put("list",list);
     }
 

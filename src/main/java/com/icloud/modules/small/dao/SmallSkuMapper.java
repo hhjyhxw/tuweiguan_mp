@@ -1,5 +1,8 @@
 package com.icloud.modules.small.dao;
 
+import com.icloud.api.vo.QueryMycouponVo;
+import com.icloud.api.vo.QuerySkuCategoryVo;
+import com.icloud.api.vo.SkuSpuCategoryVo;
 import com.icloud.modules.small.entity.SmallSku;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import java.util.List;
@@ -14,4 +17,6 @@ import java.util.Map;
 public interface SmallSkuMapper extends BaseMapper<SmallSku> {
 
 	List<SmallSku> queryMixList(Map<String,Object> map);
+
+	List<SkuSpuCategoryVo>  getSkuAndCategoryList(QuerySkuCategoryVo querySkuCategoryVo);
 }

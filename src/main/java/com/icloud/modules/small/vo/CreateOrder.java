@@ -16,6 +16,8 @@ public class CreateOrder {
     @NotNull(message = "店铺id不能为空")
     private Long supplierId;//商户id
     private Long addressId;//地址id
+    private Long mycouponId;//我的优惠券id
+
     private String memo;//订单留言
     @NotNull(message = "支付方式不能为空")
     private String payType;//支付方式

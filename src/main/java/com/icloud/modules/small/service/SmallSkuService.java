@@ -3,6 +3,8 @@ package com.icloud.modules.small.service;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.icloud.api.vo.QuerySkuCategoryVo;
+import com.icloud.api.vo.SkuSpuCategoryVo;
 import com.icloud.common.MapEntryUtils;
 import com.icloud.common.PageUtils;
 import com.icloud.common.util.StringUtil;
@@ -43,6 +45,10 @@ public class SmallSkuService extends BaseServiceImpl<SmallSkuMapper,SmallSku> {
         PageInfo<SmallSku> pageInfo = new PageInfo<SmallSku>(list);
         PageUtils<SmallSku> page = new PageUtils<SmallSku>(list,(int)pageInfo.getTotal(),pageSize,pageNo);
         return page;
+    }
+
+    public List<SkuSpuCategoryVo>  getSkuAndCategoryList(QuerySkuCategoryVo querySkuCategoryVo){
+        return smallSkuMapper.getSkuAndCategoryList(querySkuCategoryVo);
     }
 }
 
