@@ -140,12 +140,12 @@ select * from t_small_user_coupon t
 
     <!--根据店铺id 和商品sku 查询我领取的对应可用优惠券-->
     <select id="getCategoryidList" resultMap="BaseResultMapVo">
-        select t.*,cp.title,cp.description,cp.surplus,cp.discount,cp.min,cp.category_idfrom t_small_user_coupon t,t_small_sku sk,t_small_spu sp,t_small_category cg,t_small_coupon cp
+        select t.*,cp.title,cp.description,cp.surplus,cp.discount,cp.min,cp.category_id from t_small_user_coupon t,t_small_sku sk,t_small_spu sp,t_small_category cg,t_small_coupon cp
          <where>
              t.coupon_id = cp.id and sp.supplier_id = #{supplierId}
              and
                  ( (cp.category_id=cg.id and sk.spu_id=sp.id and sp.category_id=cg.id
-                 and sku.id in
+                 and sk.id in
                  <foreach item="item" index="index" collection="skuId" open="("
                           separator="," close=")">
                      #{item}
