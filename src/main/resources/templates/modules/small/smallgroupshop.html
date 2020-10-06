@@ -85,20 +85,20 @@
                         </div>
                     </div>
 					<div class="form-group">
-                        <div class="col-sm-2 control-label">团购价</div>
+                        <div class="col-sm-2 control-label">原价</div>
                         <div class="col-sm-10">
-                            <input v-if="smallGroupShop.commonFlag==0" type="text" class="form-control" v-model="smallGroupShop.minPrice" placeholder="团购价" />
-                            <input v-if="smallGroupShop.commonFlag==1" type="text" class="form-control" v-model="smallGroupShop.minPrice" placeholder="团购价" readonly/><!--公共商品价格不能改变-->
+                            <input v-if="smallGroupShop.commonFlag==0" type="text" class="form-control" v-model="smallGroupShop.minPrice" placeholder="原价" />
+                            <input v-if="smallGroupShop.commonFlag==1" type="text" class="form-control" v-model="smallGroupShop.minPrice" placeholder="原价" readonly/><!--公共商品价格不能改变-->
                         </div>
                     </div>
 					<div class="form-group">
-                        <div class="col-sm-2 control-label">单买价</div>
+                        <div class="col-sm-2 control-label">现价</div>
                         <div class="col-sm-10">
-                            <input v-if="smallGroupShop.commonFlag==0" type="text" class="form-control" v-model="smallGroupShop.maxPrice" placeholder="单买价" />
-                            <input v-if="smallGroupShop.commonFlag==1" type="text" class="form-control" v-model="smallGroupShop.maxPrice" placeholder="单买价" readonly/><!--公共商品价格不能改变-->
+                            <input v-if="smallGroupShop.commonFlag==0" type="text" class="form-control" v-model="smallGroupShop.maxPrice" placeholder="现价" />
+                            <input v-if="smallGroupShop.commonFlag==1" type="text" class="form-control" v-model="smallGroupShop.maxPrice" placeholder="现价" readonly/><!--公共商品价格不能改变-->
                         </div>
                     </div>
-                    <div class="form-group">
+                    <!--<div class="form-group">
                         <div class="col-sm-2 control-label">团购开始时间</div>
                         <div class="block">
                             <el-date-picker
@@ -138,7 +138,7 @@
                                 <input type="radio" name="automaticRefund" value="1" v-model="smallGroupShop.automaticRefund"/> 自动退款
                             </label>
                         </div>
-
+-->
                     <div class="form-group">
                         <div class="col-sm-2 control-label">状态</div>
                         <label class="radio-inline">

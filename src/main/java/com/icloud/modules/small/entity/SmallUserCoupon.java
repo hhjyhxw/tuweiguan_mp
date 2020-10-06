@@ -54,4 +54,8 @@ public class SmallUserCoupon implements Serializable {
         /* 店铺id*/
         @TableField("shop_id")
         private Long shopId;
+        /* 0领取 1使用 2过期*/
+        @TableField("status")
+        private Integer status;
+
 }

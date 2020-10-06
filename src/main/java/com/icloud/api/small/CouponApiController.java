@@ -3,12 +3,14 @@ package com.icloud.api.small;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.icloud.annotation.AuthIgnore;
 import com.icloud.annotation.LoginUser;
+import com.icloud.api.vo.QueryMycouponVo;
 import com.icloud.basecommon.model.Query;
 import com.icloud.basecommon.service.redis.RedisService;
 import com.icloud.common.DateUtil;
 import com.icloud.common.PageUtils;
 import com.icloud.common.R;
 import com.icloud.common.util.StringUtil;
+import com.icloud.common.validator.ValidatorUtils;
 import com.icloud.modules.bsactivity.entity.BsactivityAd;
 import com.icloud.modules.bsactivity.service.BsactivityAdService;
 import com.icloud.modules.shop.entity.Shop;
@@ -16,10 +18,7 @@ import com.icloud.modules.shop.service.ShopService;
 import com.icloud.modules.small.entity.SmallAddress;
 import com.icloud.modules.small.entity.SmallCoupon;
 import com.icloud.modules.small.entity.SmallUserCoupon;
-import com.icloud.modules.small.service.SmallCouponService;
-import com.icloud.modules.small.service.SmallGroupShopService;
-import com.icloud.modules.small.service.SmallSpuService;
-import com.icloud.modules.small.service.SmallUserCouponService;
+import com.icloud.modules.small.service.*;
 import com.icloud.modules.small.vo.GroupSkuVo;
 import com.icloud.modules.small.vo.MycouponVo;
 import com.icloud.modules.wx.entity.WxUser;
@@ -45,6 +44,10 @@ public class CouponApiController {
     private SmallGroupShopService smallGroupShopService;
     @Autowired
     private SmallSpuService smallSpuService;
+    @Autowired
+    private SmallSkuService smallSkuService;
+
+
     @Autowired
     private ShopService shopService;
     @Autowired
@@ -227,6 +230,7 @@ public class CouponApiController {
         userCoupon.setDeptId(smallCoupon.getDeptId());
         userCoupon.setUserId(user.getId().longValue());
         userCoupon.setCreateTime(new Date());
+        userCoupon.setStatus(1);
         if(smallCoupon.getValidateType().intValue()==0){
             userCoupon.setStartTime(new Date());
             Date newdate = DateUtil.getBeforeNDate(userCoupon.getStartTime(),smallCoupon.getDays());
@@ -237,6 +241,20 @@ public class CouponApiController {
         }
         boolean result = smallUserCouponService.addUserCoupon(userCoupon,smallCoupon);
         return result?R.ok():R.error("领取失败");
+    }
+
+    /**
+     * 根据店铺id和skuId 查询商品分类 Ids和子分类ids ;然后根据ids查询可以使用的代金券
+     * @return
+     */
+    @ApiOperation(value="根据商品分类及分类的子类查询可用优惠券", notes="")
+    @RequestMapping(value = "/queryMycouponList",method = {RequestMethod.POST})
+    @ResponseBody
+    public R queryMycouponList(@RequestBody QueryMycouponVo queryMycouponVo,@LoginUser WxUser user){
+        ValidatorUtils.validateEntityForFront(queryMycouponVo);
+        queryMycouponVo.setUserId(user.getId());
+        List<MycouponVo> list = smallUserCouponService.getCategoryidList(queryMycouponVo);
+        return R.ok().put("list",list);
     }
 
 }

@@ -1,5 +1,6 @@
 package com.icloud.modules.small.dao;
 
+import com.icloud.api.vo.QueryMycouponVo;
 import com.icloud.modules.small.entity.SmallUserCoupon;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.icloud.modules.small.vo.MycouponVo;
@@ -18,4 +19,6 @@ public interface SmallUserCouponMapper extends BaseMapper<SmallUserCoupon> {
 	List<SmallUserCoupon> queryMixList(Map<String,Object> map);
 
     List<MycouponVo> queryMixListVo(Map<String, Object> map);
+
+    List<MycouponVo> getCategoryidList(QueryMycouponVo queryMycouponVo);
 }

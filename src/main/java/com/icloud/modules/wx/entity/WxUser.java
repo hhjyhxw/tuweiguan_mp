@@ -23,7 +23,7 @@ public class WxUser implements Serializable {
 
     /*  */
     @TableId(value="id", type= IdType.AUTO)
-    private Integer id;
+    private Long id;
     /* openid */
     @TableField("openid")
     private String openid;

@@ -49,7 +49,9 @@ var vm = new Vue({
 	data:{
 		showList: true,
 		title: null,
-		smallGroupShop: {},
+		smallGroupShop: {
+            commonFlag:0
+        },
         goodName:'',
         shopName:'',
         sysFlag:'0',//1系统店铺 0非系统店铺
@@ -80,7 +82,8 @@ var vm = new Vue({
 			vm.title = "新增";
 			vm.smallGroupShop = {
                 gmtStart:null,
-                gmtEnd:null
+                gmtEnd:null,
+                commonFlag:0
             };
             vm.goodName='',
             vm.deptName = '',

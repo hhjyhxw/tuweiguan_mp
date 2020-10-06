@@ -2,6 +2,7 @@ package com.icloud.modules.small.service;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.icloud.api.vo.QueryMycouponVo;
 import com.icloud.common.MapEntryUtils;
 import com.icloud.common.PageUtils;
 import com.icloud.exceptions.ApiException;
@@ -64,6 +65,10 @@ public class SmallUserCouponService extends BaseServiceImpl<SmallUserCouponMappe
            return false;
        }
         return true;
+    }
+
+    public List<MycouponVo> getCategoryidList(QueryMycouponVo queryMycouponVo) {
+        return smallUserCouponMapper.getCategoryidList(queryMycouponVo);
     }
 }
 

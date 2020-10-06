@@ -110,6 +110,7 @@ var vm = new Vue({
             surplus:0,
             startTime:null,
             endTime:null,
+            validateType:1
         },
         smallCategoryName:'',
         shopList:[],
@@ -123,24 +124,6 @@ var vm = new Vue({
         deptId:null,
         deptList:[],
         deptName:'',
-        startTime:{
-            disabledDate: time => {
-                if(this.smallCoupon.endTime!=null){
-                    return time.getTime() < this.smallCoupon.endTime;
-                }else{
-                    return time.getTime()
-                }
-            }
-        },
-        endTime:{
-            disabledDate: time => {
-                if(this.smallCoupon.startTime!=null){
-                    return time.getTime() > this.smallCoupon.startTime;
-                }else{
-                    return time.getTime()
-                }
-            }
-        }
     },
     created: function(){
         this.getUser();
@@ -158,6 +141,7 @@ var vm = new Vue({
                 surplus:0,
                 startTime:null,
                 endTime:null,
+                validateType:1
             };
 			vm.getShopList();
 		},

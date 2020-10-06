@@ -44,15 +44,15 @@ public class SmallGroupShop implements Serializable {
        @TableField("max_price")
        private BigDecimal maxPrice;
    	   	   /* 团购开始时间 */
-       @NotNull(message = "团购开始时间不能为空")
+//       @NotNull(message = "团购开始时间不能为空")
        @TableField("gmt_start")
        private Date gmtStart;
    	   	   /* 团购结束时间 */
-       @NotNull(message = "团购结束时间不能为空")
+//       @NotNull(message = "团购结束时间不能为空")
        @TableField("gmt_end")
        private Date gmtEnd;
    	   	   /* 团购基础人数 */
-       @NotNull(message = "团购基础人数不能为空")
+//       @NotNull(message = "团购基础人数不能为空")
        @TableField("minimum_number")
        private Integer minimumNumber;
    	   	   /* 团购已经购买人数 */
