@@ -11,15 +11,15 @@ import java.math.BigDecimal;
 import java.util.Date;
 
 /**
- * 订单明细
+ * 采购单明细
  * 
  * @author zdh
  * @email yyyyyy@cm.com
- * @date 2020-08-13 14:34:02
+ * @date 2020-10-06 20:50:58
  */
 @Data
-@TableName("t_small_order_detail")
-public class SmallOrderDetail implements Serializable {
+@TableName("t_small_purorder_detail")
+public class SmallPurorderDetail implements Serializable {
 	private static final long serialVersionUID = 1L;
 
    	   /*  */
@@ -31,15 +31,12 @@ public class SmallOrderDetail implements Serializable {
    	   	   /* 商品（spuid） */
        @TableField("spu_id")
        private Long spuId;
-       /* 团购id */
-       @TableField("group_id")
-       private Long groupId;
    	   	   /* 订单id */
-       @TableField("order_id")
-       private Long orderId;
+       @TableField("purorder_id")
+       private Long purorderId;
    	   	   /* 订单编号 */
-       @TableField("order_no")
-       private String orderNo;
+       @TableField("purorder_no")
+       private String purorderNo;
    	   	   /* 商品spu名称 */
        @TableField("spu_title")
        private String spuTitle;
@@ -61,6 +58,11 @@ public class SmallOrderDetail implements Serializable {
    	   	   /* 现价 */
        @TableField("price")
        private BigDecimal price;
+        /* 现价 */
+        @TableField("supplier_id")
+        private Long supplierId;
+
+
    	   	   /* spu图片 */
        @TableField("spu_img")
        private String spuImg;
@@ -70,14 +72,5 @@ public class SmallOrderDetail implements Serializable {
    	   	   /* 修改时间 */
        @TableField("modify_time")
        private Date modifyTime;
-        /* 上架售卖的店铺id */
-        @TableField("supplier_id")
-        private Long supplierId;
-        /*公共商品所属店铺Id*/
-        @TableField("sys_shop_id")
-        private Long sysShopId;
-        /* 是否是公共商品0 不是 1是*/
-        @TableField("common_flag")
-        private String commonFlag;
    	
 }

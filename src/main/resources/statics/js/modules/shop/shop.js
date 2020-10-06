@@ -211,6 +211,7 @@ var vm = new Vue({
             status:0,
             sysFlag:0,
             review:0,
+            commissionRate:0,
         },
         user: {
 		    userId:null
@@ -242,6 +243,7 @@ var vm = new Vue({
                 city:'',
                 county:'',
                 address:'',
+                commissionRate:0,
             };
             vm.deptName = '',
             vm.deptId = null,
@@ -259,6 +261,10 @@ var vm = new Vue({
 
 		},
 		saveOrUpdate: function (event) {
+            if(!priceCheck(vm.shop.commissionRate)){
+                layer.msg("佣金率不能为空,且为数字,最多保留两位小数", {icon: 2});
+                return;
+            }
 		    $('#btnSaveOrUpdate').button('loading').delay(1000).queue(function() {
                 var url = vm.shop.id == null ? "shop/shop/save" : "shop/shop/update";
                 $.ajax({

@@ -1,5 +1,6 @@
 package com.icloud.api.small;
 
+import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.icloud.annotation.LoginUser;
 import com.icloud.api.vo.QuerySkuCategoryVo;
@@ -10,6 +11,7 @@ import com.icloud.common.R;
 import com.icloud.common.beanutils.ColaBeanUtils;
 import com.icloud.common.util.StringUtil;
 import com.icloud.common.validator.ValidatorUtils;
+import com.icloud.exceptions.ApiException;
 import com.icloud.modules.small.entity.*;
 import com.icloud.modules.small.service.*;
 import com.icloud.modules.small.util.CartOrderUtil;
@@ -19,6 +21,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.beanutils.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -31,13 +34,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Api("订单相关接口")
 @RestController
-    @RequestMapping("/api/order")
+@RequestMapping("/api/order")
 public class OrderApiController {
 
     @Autowired
     private SmallSpuService smallSpuService;
+    @Autowired
+    private SmallGroupShopService smallGroupShopService;
     @Autowired
     private SmallOrderService smallOrderService;
     @Autowired
@@ -104,14 +110,15 @@ public class OrderApiController {
     @ResponseBody
     public R createOrder(@RequestBody CreateOrder preOrder, @LoginUser WxUser user) {
         try {
-
+            SmallUserCoupon userCoupon = null;
+            SmallCoupon smallCoupon = null;
 
             if(preOrder.getNum()==null || preOrder.getNum().length==0 || preOrder.getSkuId()==null || preOrder.getNum().length!=preOrder.getSkuId().length){
                 return R.error("商品数量与商品id不匹配");
             }
             if(preOrder.getMycouponId()!=null){
-                SmallUserCoupon userCoupon = (SmallUserCoupon) smallUserCouponService.getById(preOrder.getMycouponId());
-                SmallCoupon smallCoupon = (SmallCoupon) smallCouponService.getById(userCoupon.getCouponId());
+                 userCoupon = (SmallUserCoupon) smallUserCouponService.getById(preOrder.getMycouponId());
+                 smallCoupon = (SmallCoupon) smallCouponService.getById(userCoupon.getCouponId());
                 //判断是否是新用户专用券
                 if(smallCoupon.getSurplus().intValue()==1){
                     //判断是否已在该店铺消费过，消费过，则不再显示新用户专用券
@@ -137,22 +144,56 @@ public class OrderApiController {
 //            }
 //            address = addressList.get(0);
                 //2、生成订单、冻结库存
-            return  smallOrderService.createOrder(preOrder,user,address);
+            return  smallOrderService.createOrder(preOrder,user,address,userCoupon,smallCoupon);
         }catch (Exception e){
             e.printStackTrace();
             return R.error(e.getMessage());
         }
     }
 
+    /**
+     * //存在优惠券情况下，校验是否存在公共商品，有公共商品 不能使用优惠券
+     * @param preOrder
+     */
+    private void checkCommonFlag(CreateOrder preOrder){
+      List<SmallGroupShop> list = smallGroupShopService.list(new QueryWrapper<SmallGroupShop>().in("id",preOrder.getGroupId()));
+       for (SmallGroupShop goods:list){
+           if("1".equals(goods.getCommonFlag())){
+               log.info("团购商品是公共商品:id="+ goods.getId()+",不能使用优惠券");
+               throw new ApiException("商品不满足使用使用优惠券条件");
+           }
+       }
+        //比较
+    }
+
+    //存在优惠券情况下，校验商品是否符合使用条件
     private void checkCateory(CreateOrder preOrder,Long categoryId){
         QuerySkuCategoryVo vo = new QuerySkuCategoryVo();
         vo.setSkuId(preOrder.getSkuId());
         vo.setSupplierId(preOrder.getSupplierId());
         List<SkuSpuCategoryVo>  list = smallSkuService.getSkuAndCategoryList(vo);
+        List<SkuSpuCategoryVo>  exislist = new ArrayList<>();
+        log.info("SkuSpuCategoryVoList==="+ JSON.toJSONString(list));
         Map<String, Object> map = new HashMap<>();
         map.put("id",categoryId);
         List<SmallCategory>  couponCategoryList =smallCategoryService.queryList(map);
-
+        log.info("couponCategoryList==="+ JSON.toJSONString(couponCategoryList));
+        int k = 0;
+        for (int i = 0; i <list.size(); i++) {
+            for (int j = 0; j <couponCategoryList.size() ; j++) {
+                if(list.get(i).getCategoryId().longValue()==couponCategoryList.get(j).getId().longValue()){
+                    k++;
+                    exislist.add(list.get(i));
+                    continue;
+                }
+            }
+        }
+        if(list.size()!=k){
+            for (int i = 0; i <exislist.size() ; i++) {
+                list.remove(exislist.get(i));
+            }
+            throw new ApiException(list.get(0).getTitle()+"不能使用优惠券");
+        }
         //比较
     }
 

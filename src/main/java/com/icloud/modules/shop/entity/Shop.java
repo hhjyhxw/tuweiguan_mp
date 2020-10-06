@@ -106,6 +106,10 @@ public class Shop implements Serializable {
         /* 企业id*/
         @TableField("dept_id")
         private Long deptId;
+        /*佣金率*/
+        @TableField("commission_rate")
+        private BigDecimal commissionRate;
+
         /**
          * 上级名称
          */

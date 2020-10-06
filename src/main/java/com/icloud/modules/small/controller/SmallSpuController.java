@@ -97,6 +97,7 @@ public class SmallSpuController extends AbstractController {
         }
         Shop shop = (Shop) shopService.getById(smallSpu.getSupplierId());
         smallSpu.setDeptId(shop.getDeptId());
+        smallSpu.setSales(0);
         smallSpuService.save(smallSpu);
 
         SmallSku sku = new SmallSku();

@@ -5,6 +5,9 @@ import com.github.binarywang.wxpay.bean.notify.WxPayNotifyResponse;
 import com.github.binarywang.wxpay.bean.notify.WxPayOrderNotifyResult;
 import com.icloud.common.DateUtil;
 import com.icloud.common.PayUtil;
+import com.icloud.config.threadpool.ThreadPoodExecuteService;
+import com.icloud.modules.shop.service.CreateShopTradeDetailsService;
+import com.icloud.modules.shop.service.OrderTaskService;
 import com.icloud.modules.small.entity.SmallOrder;
 import com.icloud.modules.small.entity.SmallOrderDetail;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -66,6 +69,8 @@ public class WxNotifyService {
             //增加销量
             smallSpuService.incSales(item.getSpuId(), item.getNum());
         });
+        //异步处理资金流水
+        ThreadPoodExecuteService.getTaskExecutor().execute(new OrderTaskService(order));
         return WxPayNotifyResponse.success("支付成功");
     }
 }

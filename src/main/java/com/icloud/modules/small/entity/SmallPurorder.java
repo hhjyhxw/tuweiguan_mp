@@ -4,26 +4,22 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
-import com.icloud.modules.shop.entity.Shop;
-import com.icloud.modules.small.vo.OrderDetailVo;
-import com.icloud.modules.wx.entity.WxUser;
 import lombok.Data;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
-import java.util.List;
 
 /**
- * 订单表
+ * 采购单
  * 
  * @author zdh
  * @email yyyyyy@cm.com
- * @date 2020-08-13 14:34:02
+ * @date 2020-10-06 20:50:58
  */
 @Data
-@TableName("t_small_order")
-public class SmallOrder implements Serializable {
+@TableName("t_small_purorder")
+public class SmallPurorder implements Serializable {
 	private static final long serialVersionUID = 1L;
 
    	   /*  */
@@ -32,18 +28,21 @@ public class SmallOrder implements Serializable {
    	   	   /* 下单渠道 */
        @TableField("channel")
        private String channel;
-   	   	   /* 订单号 */
-       @TableField("order_no")
-       private String orderNo;
-        /* 订单类型 订单类型（0团购订单、1普通订单）*/
-        @TableField("order_type")
-        private String orderType;
-   	   	   /* 用户id */
-       @TableField("user_id")
-       private Long userId;
-   	   	   /* 店铺id */
+   	   	   /* 采购单号 */
+       @TableField("purorder_no")
+       private String purorderNo;
+   	   	   /* 关联订单id */
+       @TableField("order_id")
+       private Long orderId;
+   	   	   /* 采购店铺id */
        @TableField("supplier_id")
        private Long supplierId;
+        /*公共商品所属店铺Id*/
+        @TableField("sys_shop_id")
+        private Long sysShopId;
+   	   	   /* 采购单类型(0公共商品售卖产生 1其他渠道采购) */
+       @TableField("purorder_type")
+       private Integer purorderType;
    	   	   /* 0生成、处理中、已完成 */
        @TableField("order_status")
        private Integer orderStatus;
@@ -65,12 +64,6 @@ public class SmallOrder implements Serializable {
    	   	   /* 运费 */
        @TableField("freight_price")
        private BigDecimal freightPrice;
-   	   	   /* 代金券优惠价 */
-       @TableField("coupon_price")
-       private BigDecimal couponPrice;
-   	   	   /* 代金券id */
-       @TableField("coupon_id")
-       private Long couponId;
    	   	   /* 实付订单金额 */
        @TableField("actual_price")
        private BigDecimal actualPrice;
@@ -79,22 +72,13 @@ public class SmallOrder implements Serializable {
        private BigDecimal payPrice;
    	   	   /* 支付流水id(本地支付流水) */
        @TableField("pay_id")
-       private String payId;
+       private Long payId;
    	   	   /* 支付渠道名称 */
        @TableField("pay_channel")
        private String payChannel;
    	   	   /* 支付时间(支付成功回调获取的支付时间) */
        @TableField("pay_time")
        private Date payTime;
-   	   	   /* 物流方式(物流方式代号) */
-       @TableField("ship_code")
-       private String shipCode;
-   	   	   /* 物流单号 */
-       @TableField("ship_no")
-       private String shipNo;
-   	   	   /* 本地支付单号（用于与第三方支付交互） */
-       @TableField("pay_sn")
-       private String paySn;
    	   	   /* 发货时间 */
        @TableField("ship_time")
        private Date shipTime;
@@ -117,9 +101,6 @@ public class SmallOrder implements Serializable {
        @TableField("memo")
        private String memo;
    	   	   /*  */
-       @TableField("refund_reason")
-       private String refundReason;
-   	   	   /*  */
        @TableField("consignee")
        private String consignee;
    	   	   /*  */
@@ -131,29 +112,5 @@ public class SmallOrder implements Serializable {
    	   	   /*  */
        @TableField("modify_time")
        private Date modifyTime;
-        /* 是否是公共商品订单0 不是 1是*/
-        @TableField("common_flag")
-        private String commonFlag;
-        /* （0未生成了店铺订单收入流水，1生成了店铺订单收入流水）*/
-        @TableField("deal_status")
-        private String dealStatus;
-
-        /* 企业id*/
-        @TableField("dept_id")
-        private Long deptId;
-
-       @TableField(exist = false)
-       private List<OrderDetailVo> detaillist;
-        /* 用于控制明细项是否隐藏或者显示 */
-       @TableField(exist = false)
-       private boolean show;
-
-        /* 用户 */
-        @TableField(exist = false)
-        private WxUser user;
-        /* 店铺 */
-        @TableField(exist = false)
-        private Shop shop;
-
-
+   	
 }

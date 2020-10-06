@@ -1,5 +1,6 @@
 package com.icloud.modules.shop.controller;
 
+import java.math.BigDecimal;
 import java.util.*;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -174,6 +175,9 @@ public class ShopController extends AbstractController {
         }else{
             Shop parentshop = (Shop) shopService.getById(shop.getParentId());
             shop.setShopLevel(parentshop.getShopLevel()+1);
+        }
+        if(shop.getCommissionRate()==null){
+            shop.setCommissionRate(new BigDecimal(0));
         }
         shopService.save(shop);
 

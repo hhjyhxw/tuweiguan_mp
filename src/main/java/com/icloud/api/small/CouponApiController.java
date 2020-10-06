@@ -11,14 +11,12 @@ import com.icloud.common.PageUtils;
 import com.icloud.common.R;
 import com.icloud.common.util.StringUtil;
 import com.icloud.common.validator.ValidatorUtils;
+import com.icloud.exceptions.ApiException;
 import com.icloud.modules.bsactivity.entity.BsactivityAd;
 import com.icloud.modules.bsactivity.service.BsactivityAdService;
 import com.icloud.modules.shop.entity.Shop;
 import com.icloud.modules.shop.service.ShopService;
-import com.icloud.modules.small.entity.SmallAddress;
-import com.icloud.modules.small.entity.SmallCoupon;
-import com.icloud.modules.small.entity.SmallOrder;
-import com.icloud.modules.small.entity.SmallUserCoupon;
+import com.icloud.modules.small.entity.*;
 import com.icloud.modules.small.service.*;
 import com.icloud.modules.small.vo.GroupSkuVo;
 import com.icloud.modules.small.vo.MycouponVo;
@@ -27,6 +25,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -34,6 +33,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.*;
 
 
+@Slf4j
 @Api("优惠券相关接口")
 @RestController
 @RequestMapping("/api/coupon")
@@ -266,6 +266,14 @@ public class CouponApiController {
     @ResponseBody
     public R queryMycouponList(@RequestBody QueryMycouponVo queryMycouponVo,@LoginUser WxUser user){
         ValidatorUtils.validateEntityForFront(queryMycouponVo);
+        List<SmallGroupShop> grouplist = smallGroupShopService.list(new QueryWrapper<SmallGroupShop>().in("id",queryMycouponVo.getGroupId()));
+        for (SmallGroupShop goods:grouplist){
+            if("1".equals(goods.getCommonFlag())){
+                log.info("团购商品是公共商品:id="+ goods.getId()+",不能使用优惠券");
+                return R.error();
+            }
+        }
+
         queryMycouponVo.setUserId(user.getId());
         List<MycouponVo> list = smallUserCouponService.getCategoryidList(queryMycouponVo);
         if(list!=null && list.size()>0) {
