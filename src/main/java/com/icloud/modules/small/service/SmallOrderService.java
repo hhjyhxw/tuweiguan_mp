@@ -190,6 +190,7 @@ public class SmallOrderService extends BaseServiceImpl<SmallOrderMapper,SmallOrd
             detail.setSkuTitle(sku.getTitle());
             detail.setSupplierId(preOrder.getSupplierId());
             detail.setSpuImg(sku.getImg()!=null?sku.getImg(): spus.getImg());
+            detail.setOriginalPrice(group.getMaxPrice());
             detail.setPrice(group.getMinPrice());
             productInfo+=sku.getTitle()+"x"+detail.getNum()+";";
 //            detail

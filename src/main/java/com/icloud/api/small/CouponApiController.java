@@ -270,7 +270,7 @@ public class CouponApiController {
         for (SmallGroupShop goods:grouplist){
             if("1".equals(goods.getCommonFlag())){
                 log.info("团购商品是公共商品:id="+ goods.getId()+",不能使用优惠券");
-                return R.error();
+                return R.ok().put("list",null);
             }
         }
 
