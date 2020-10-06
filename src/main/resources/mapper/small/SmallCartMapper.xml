@@ -69,7 +69,7 @@ select * from t_small_cart t
                 and t.user_id = #{user_id}
             </if>
             <if test="supplier_id != null">
-                and p.supplier_id = #{supplier_id}
+                and gp.supplier_id = #{supplier_id}
             </if>
         </where>
     </select>
