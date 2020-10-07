@@ -66,6 +66,8 @@ public class SmallOrderService extends BaseServiceImpl<SmallOrderMapper,SmallOrd
     @Autowired
     private SmallUserCouponService smallUserCouponService;
     @Autowired
+    private SmallShopconectuserService smallShopconectuserService;
+    @Autowired
     private DistributedLockUtil distributedLockUtil;
 
     @Autowired
@@ -216,7 +218,18 @@ public class SmallOrderService extends BaseServiceImpl<SmallOrderMapper,SmallOrd
         if("1".equals(order.getCommonFlag())){
             createPurorder(orderDetailList,order);
         }
-
+        //生成店铺与会员记录
+        List<SmallShopconectuser> userlist =smallShopconectuserService.list(new QueryWrapper<SmallShopconectuser>()
+                .eq("shop_id",order.getSupplierId())
+                .eq("user_id",order.getUserId()));
+        if(userlist==null || userlist.size()==0){
+            SmallShopconectuser couser = new SmallShopconectuser();
+            couser.setShopId(order.getSupplierId());
+            couser.setUserId(order.getUserId());
+            couser.setCreateTime(new Date());
+            couser.setDeptId(order.getDeptId());
+            smallShopconectuserService.save(couser);
+        }
         //清空对应的购物车
         for(int i=0;i<preOrder.getSkuId().length;i++){
             smallCartService.remove(new QueryWrapper<SmallCart>()
