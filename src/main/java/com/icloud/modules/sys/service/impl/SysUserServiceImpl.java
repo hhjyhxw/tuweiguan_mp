@@ -1,6 +1,7 @@
 package com.icloud.modules.sys.service.impl;
 
 
+import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -52,7 +53,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserDao, SysUserEntity> i
 				.like(StringUtils.isNotBlank(username),"username", username)
 				.apply(params.get(Constant.SQL_FILTER) != null, (String)params.get(Constant.SQL_FILTER))
 		);
-
+		System.out.println("page.getRecords()====="+ JSON.toJSONString(page.getRecords()));
 		for(SysUserEntity sysUserEntity : page.getRecords()){
 			SysDeptEntity sysDeptEntity = sysDeptService.getById(sysUserEntity.getDeptId());
 			sysUserEntity.setDeptName(sysDeptEntity.getName());

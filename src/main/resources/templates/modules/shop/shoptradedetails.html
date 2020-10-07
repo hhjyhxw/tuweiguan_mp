@@ -15,9 +15,14 @@
                 <input type="text" class="form-control" v-model="q.orderNo" @keyup.enter="query" placeholder="订单号">
             </div>
             <div class="form-group col-sm-1">
-                <input type="text" class="form-control" v-model="q.shopName" @keyup.enter="query" placeholder="交易类型">
+              <!--  <input type="text" class="form-control" v-model="q.shopName" @keyup.enter="query" placeholder="交易类型">-->
                 <select class="form-control"  v-model="q.bizType">
-                    <option value=10>订单收入</option>
+                    <!---->
+                    <option value="">选择交易类型</option>
+                    <option value="7">公共商品订单收入</option>
+                    <option value="8">佣金收入</option>
+                    <option value="9">公共订单(自营部分商品收入)</option>
+                    <option value="10">自营订单收入</option>
                     <option value="11">账号充值</option>
                     <option value="20">账号提现</option>
                     <option value="21">扣除订单手续费</option>
