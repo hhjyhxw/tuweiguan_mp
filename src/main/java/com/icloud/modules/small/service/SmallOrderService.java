@@ -64,6 +64,8 @@ public class SmallOrderService extends BaseServiceImpl<SmallOrderMapper,SmallOrd
     @Autowired
     private SmallPurorderDetailService smallPurorderDetailService;
     @Autowired
+    private SmallUserCouponService smallUserCouponService;
+    @Autowired
     private DistributedLockUtil distributedLockUtil;
 
     @Autowired
@@ -142,6 +144,10 @@ public class SmallOrderService extends BaseServiceImpl<SmallOrderMapper,SmallOrd
             order.setSkuTotalPrice(totalAmout);
             order.setActualPrice(totalAmout.subtract(smallCoupon.getDiscount()));
             order.setSkuOriginalTotalPrice(origintotalAmout);
+            SmallUserCoupon newuserCoupon = new SmallUserCoupon();
+            newuserCoupon.setId(userCoupon.getId());
+            newuserCoupon.setStatus(1);
+            smallUserCouponService.updateById(newuserCoupon);
         }else{
             order.setActualPrice(totalAmout);
             order.setSkuTotalPrice(totalAmout);
