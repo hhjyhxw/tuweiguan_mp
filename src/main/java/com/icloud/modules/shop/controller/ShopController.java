@@ -65,6 +65,19 @@ public class ShopController extends AbstractController {
         page.setList(list);
         return R.ok().put("page", page);
     }
+
+
+    /**
+     * 查询处需要提现的店铺名称 和店铺余额列表，方便店铺管理员提交提现
+     */
+    @RequestMapping("/withdrawlist")
+    @RequiresPermissions("shop:shop:withdrawlist")
+    @DataFilter
+    public R withdrawlist(@RequestParam Map<String, Object> params){
+        Query query = new Query(params);
+        PageUtils page = shopService.findByPage(query.getPageNum(),query.getPageSize(), query);
+        return R.ok().put("page", page);
+    }
     /**
      * 店铺树
      */

@@ -52,6 +52,46 @@ public class ShopBankController  extends AbstractController {
         return R.ok().put("page", page);
     }
 
+    /**
+     * 银行卡列表（用于审核）
+     * @param params
+     * @return
+     */
+    @RequestMapping("/shenhelist")
+    @RequiresPermissions("shop:shopbank:shenhelist")
+    public R shenhelist(@RequestParam Map<String, Object> params){
+        Query query = new Query(params);
+        PageUtils page = shopBankService.findByPage(query.getPageNum(),query.getPageSize(), query);
+
+        return R.ok().put("page", page);
+    }
+
+    /**
+     * 修改
+     */
+    @RequestMapping("/shenhe")
+    @RequiresPermissions("shop:shopbank:shenhe")
+    public R shenhe(@RequestBody ShopBank shopBank){
+        ValidatorUtils.validateEntity(shopBank);
+        shopBank.setUpdatedTime(new Date());
+        shopBank.setUpdatedBy(getUser().getUsername());
+        shopBank.setUpdatedBy(getUser().getUsername());
+        Shop shop = (Shop) shopService.getById(shopBank.getShopId());
+        shopBank.setDeptId(shop.getDeptId());
+        shopBankService.updateById(shopBank);
+
+        return R.ok();
+    }
+    /**
+     * 信息
+     */
+    @RequestMapping("/shenheinfo/{id}")
+    @RequiresPermissions("shop:shopbank:shenheinfo")
+    public R shenheinfo(@PathVariable("id") Long id){
+        ShopBank shopBank = (ShopBank)shopBankService.getById(id);
+
+        return R.ok().put("shopBank", shopBank);
+    }
 
     /**
      * 信息
