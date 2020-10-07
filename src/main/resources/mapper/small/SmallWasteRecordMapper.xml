@@ -33,6 +33,7 @@ id,shop_id,pay_type,waste_flag,amount,create_time,approve_flag,waste_state,trans
 <select id="queryMixList" resultMap="BaseResultMap">
     select t.*,s.shop_name as "shop.shopName" from t_small_waste_record t,shop s
 <where>
+t.shop_id=s.id
 <if test="id != null">
     and t.id = #{id}
 </if>

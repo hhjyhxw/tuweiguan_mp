@@ -68,6 +68,9 @@ public class SmallWasteRecord implements Serializable {
    	   	   /* 申请人 */
        @TableField("create_by")
        private String createBy;
+    /* 申请人 */
+    @TableField("dept_id")
+    private Long deptId;
     /*  */
     @TableField(exist = false)
     private Shop shop;

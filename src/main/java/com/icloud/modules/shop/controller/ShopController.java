@@ -10,6 +10,8 @@ import com.icloud.common.Constant;
 import com.icloud.common.util.StringUtil;
 import com.icloud.config.DeptUtils;
 import com.icloud.modules.small.entity.SmallCategory;
+import com.icloud.modules.small.entity.SmallWasteRecord;
+import com.icloud.modules.small.service.SmallWasteRecordService;
 import com.icloud.modules.small.vo.ShopTreeVo;
 import com.icloud.modules.sys.controller.AbstractController;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
@@ -39,7 +41,8 @@ import com.icloud.common.validator.ValidatorUtils;
 public class ShopController extends AbstractController {
     @Autowired
     private ShopService shopService;
-
+    @Autowired
+    private SmallWasteRecordService smallWasteRecordService;
     @Autowired
     private DeptUtils deptUtils;
     /**
@@ -69,15 +72,43 @@ public class ShopController extends AbstractController {
 
     /**
      * 查询处需要提现的店铺名称 和店铺余额列表，方便店铺管理员提交提现
+     * 只获取当前登陆用户所在
      */
     @RequestMapping("/withdrawlist")
     @RequiresPermissions("shop:shop:withdrawlist")
     @DataFilter
     public R withdrawlist(@RequestParam Map<String, Object> params){
         Query query = new Query(params);
+//        if(getUserId()!= Constant.SUPER_ADMIN){
+//            query.put("deptId",getDeptId());
+//        }
         PageUtils page = shopService.findByPage(query.getPageNum(),query.getPageSize(), query);
         return R.ok().put("page", page);
     }
+    /**
+     * 信息
+     */
+    @RequestMapping("/withdrawinfo/{id}")
+    @RequiresPermissions("shop:shop:withdrawinfo")
+    public R withdrawinfo(@PathVariable("id") Long id){
+        Shop shop = (Shop)shopService.getById(id);
+        return R.ok().put("shop", shop);
+    }
+    /**
+     * 查询处需要提现的店铺名称 和店铺余额列表，方便店铺管理员提交提现
+     */
+    @RequestMapping("/withdraw")
+    @RequiresPermissions("shop:shop:withdraw")
+    public R withdraw(@RequestBody SmallWasteRecord smallWasteRecord){
+        Shop shop = (Shop)shopService.getById(smallWasteRecord.getShopId());
+        smallWasteRecord.setDeptId(shop.getDeptId());
+        smallWasteRecord.setCreateBy(getUser().getUsername());
+        smallWasteRecord.setCreateTime(new Date());
+        smallWasteRecordService.save(smallWasteRecord);
+        return R.ok();
+    }
+
+
     /**
      * 店铺树
      */
