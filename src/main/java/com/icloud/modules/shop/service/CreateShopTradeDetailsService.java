@@ -58,7 +58,8 @@ public class CreateShopTradeDetailsService{
             tradeDetails.setBizType(10);///* 交易类型 7、零售采购收入 8、佣金收入 9、公共订单收入（自营部分 10：自营订单收入，11：账号充值，20：账号提现，21：扣除订单手续费 */
             tradeDetails.setInOrOut(1);//1收入 2支出
             tradeDetails.setCreatedTime(new Date());
-            tradeDetails.setOrderNo("B"+SnowflakeUtils.getOrderNoByWordId(serverConfig.getServerPort()%31L));
+            tradeDetails.setTradeNo("B"+SnowflakeUtils.getOrderNoByWordId(serverConfig.getServerPort()%31L));
+            tradeDetails.setOrderNo(order.getOrderNo());
             tradeDetails.setShopId(shop.getId());
             tradeDetails.setDeptId(shop.getDeptId());
             shopTradeDetailsService.save(tradeDetails);
