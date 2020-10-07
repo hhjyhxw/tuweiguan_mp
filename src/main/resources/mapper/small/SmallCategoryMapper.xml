@@ -56,6 +56,7 @@ id,title,parent_id,pic_url,level,status,create_time,modify_time
     and ${sql_filter}
 </if>
 </where>
+    order by t.create_time desc
 </select>
 
 
@@ -69,6 +70,7 @@ id,title,parent_id,pic_url,level,status,create_time,modify_time
              ${sql_filter}
         </if>
         </where>
+        order by t.create_time desc
     </select>
 
     <select id="queryDetpIdList" resultType="long">

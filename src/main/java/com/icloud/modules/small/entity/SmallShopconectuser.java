@@ -4,6 +4,8 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
+import com.icloud.modules.shop.entity.Shop;
+import com.icloud.modules.wx.entity.WxUser;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -39,5 +41,11 @@ public class SmallShopconectuser implements Serializable {
    	   	   /* 修改时间 */
        @TableField("modify_time")
        private Date modifyTime;
+
+        @TableField(exist = false)
+        private WxUser user;
+
+        @TableField(exist = false)
+        private Shop shop;
    	
 }

@@ -68,6 +68,7 @@ select * from t_small_group_shop t
     and ${sql_filter}
 </if>
 </where>
+    order by t.create_time desc
 </select>
 
     <!-- 基础map -->
@@ -102,6 +103,7 @@ select * from t_small_group_shop t
                 and ${sql_filter}
             </if>
         </where>
+        order by t.create_time desc
     </select>
 
     <!--前端分页-->

@@ -82,6 +82,7 @@ select t.*,(t.stock-t.freeze_stock) as remainStock from t_small_spu t
     and ${sql_filter}
 </if>
 </where>
+    order by t.create_time desc
 </select>
     <!--增加销量-->
     <update id="incSales">

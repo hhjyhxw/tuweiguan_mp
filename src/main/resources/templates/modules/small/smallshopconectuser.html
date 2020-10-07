@@ -1,14 +1,20 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>用户下单后 生成一条用户与店铺关联记录，如果存在则更新</title>
+    <title>如果存在则更新</title>
 		<#include "/header.html">
+
+    <style>
+        table td{
+            line-height: 3rem;
+        }
+    </style>
 </head>
 <body>
 <div id="icloudapp" v-cloak>
     <div v-show="showList">
         <div class="grid-btn">
-			<#if shiro.hasPermission("small:smallshopconectuser:save")>
+			<!--<#if shiro.hasPermission("small:smallshopconectuser:save")>
             <a class="btn btn-primary" @click="add"><i class="fa fa-plus"></i>&nbsp;新增</a>
 			</#if>
 			<#if shiro.hasPermission("small:smallshopconectuser:update")>
@@ -16,9 +22,11 @@
 			</#if>
 			<#if shiro.hasPermission("small:smallshopconectuser:delete")>
             <a class="btn btn-primary" @click="del"><i class="fa fa-trash-o"></i>&nbsp;删除</a>
-			</#if>
+			</#if>-->
         </div>
-        <table id="jqGrid"></table>
+        <table id="jqGrid">
+
+        </table>
         <div id="jqGridPager"></div>
     </div>
 

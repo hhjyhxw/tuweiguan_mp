@@ -4,8 +4,11 @@ $(function () {
         datatype: "json",
         colModel: [			
 			{ label: 'id', name: 'id', index: 'id', width: 50, key: true },
-			{ label: '用户id', name: 'userId', index: 'user_id', width: 80 }, 			
-			{ label: '店铺id', name: 'shopId', index: 'shop_id', width: 80 }, 			
+			{ label: '用户昵称', name: 'user.nickname', index: 'user_id', width: 80 },
+            { label: '用户头像', name: 'user.headimgurl', width: 60, formatter: function(value, options, row){
+                    return '<img style="height: 3rem;width: 3rem;" src="'+value+'"/>';
+                }},
+			{ label: '店铺名称', name: 'shop.shopName', index: 'shop_id', width: 80 },
 			{ label: '创建时间', name: 'createTime', index: 'create_time', width: 80 }, 			
 			{ label: '修改时间', name: 'modifyTime', index: 'modify_time', width: 80 }			
         ],

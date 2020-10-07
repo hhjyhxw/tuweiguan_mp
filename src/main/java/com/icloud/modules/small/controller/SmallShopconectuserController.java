@@ -2,6 +2,8 @@ package com.icloud.modules.small.controller;
 
 import java.util.Arrays;
 import java.util.Map;
+
+import com.icloud.annotation.DataFilter;
 import com.icloud.basecommon.model.Query;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,10 +40,10 @@ public class SmallShopconectuserController extends AbstractController{
      */
     @RequestMapping("/list")
     @RequiresPermissions("small:smallshopconectuser:list")
+    @DataFilter
     public R list(@RequestParam Map<String, Object> params){
         Query query = new Query(params);
         PageUtils page = smallShopconectuserService.findByPage(query.getPageNum(),query.getPageSize(), query);
-
         return R.ok().put("page", page);
     }
 

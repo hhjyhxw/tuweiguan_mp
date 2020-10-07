@@ -157,6 +157,7 @@ select * from t_small_user_coupon t
              and t.user_id = #{userId}
              and t.end_time>now()
          </where>
+        order by t.create_time desc
     </select>
 
 </mapper>

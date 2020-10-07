@@ -72,6 +72,7 @@ select * from t_small_cart t
                 and gp.supplier_id = #{supplier_id}
             </if>
         </where>
+        order by t.create_time desc
     </select>
 
 </mapper>
