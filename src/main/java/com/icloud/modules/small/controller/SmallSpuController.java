@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.Map;
 
 
@@ -98,12 +99,14 @@ public class SmallSpuController extends AbstractController {
         Shop shop = (Shop) shopService.getById(smallSpu.getSupplierId());
         smallSpu.setDeptId(shop.getDeptId());
         smallSpu.setSales(0);
+        smallSpu.setCreateTime(new Date());
         smallSpuService.save(smallSpu);
 
         SmallSku sku = new SmallSku();
         BeanUtils.copyProperties(smallSpu,sku);
         sku.setId(null);
         sku.setSpuId(smallSpu.getId());
+        sku.setCreateTime(new Date());
         smallSkuService.save(sku);
         return R.ok().put("smallSpu",smallSpu);
     }
@@ -131,6 +134,7 @@ public class SmallSpuController extends AbstractController {
         }
         Shop shop = (Shop) shopService.getById(smallSpu.getSupplierId());
         smallSpu.setDeptId(shop.getDeptId());
+        smallSpu.setModifyTime(new Date());
         smallSpuService.updateById(smallSpu);
         return R.ok().put("smallSpu",smallSpu);
     }

@@ -29,6 +29,17 @@
 <div id="icloudapp" v-cloak>
     <div v-show="showList">
         <div class="grid-btn">
+            <div class="form-group col-sm-2">
+                <input type="text" class="form-control" v-model="q.title" @keyup.enter="query" placeholder="商品名称">
+            </div>
+            <div class="form-group col-sm-2">
+                <input type="text" class="form-control" v-model="q.shopName" @keyup.enter="query" placeholder="店铺名称">
+            </div>
+            <div class="form-group col-sm-2">
+                <input type="text" class="form-control" v-model="q.categoryTitle" @keyup.enter="query" placeholder="分类名称">
+            </div>
+            <a class="btn btn-default" @click="query">查询</a>
+
 			<#if shiro.hasPermission("small:smallspu:save")>
             <a class="btn btn-primary" @click="add"><i class="fa fa-plus"></i>&nbsp;新增</a>
 			</#if>
@@ -62,7 +73,7 @@
                 <div class="form-group">
                     <div class="col-sm-2 control-label">所属商户</div>
                     <div class="col-sm-10">
-                        <input type="text" class="form-control" v-model="smallSpu.smallRetail.supplierName" @click="retailTree" readonly="readonly" placeholder="所属商户"/>
+                        <input type="text" class="form-control" v-model="smallSpu.shop.shopName" @click="retailTree" readonly="readonly" placeholder="所属商户"/>
                     </div>
                 </div>
                 <div class="form-group">

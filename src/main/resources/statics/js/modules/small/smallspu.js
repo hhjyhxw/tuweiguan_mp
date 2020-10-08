@@ -128,13 +128,13 @@ $(function () {
             { label: '剩余库存', name: 'remainStock', index: 'remainStock', width: 80 },
             // { label: '分类id', name: 'categoryId', index: 'category_id', width: 80 },
             { label: '所属分类', name: 'smallCategory.title', index: 'category_id', width: 80 },
-            { label: '状态', name: 'status', width: 60, formatter: function(value, options, row){
+          /*  { label: '状态', name: 'status', width: 60, formatter: function(value, options, row){
                     return value === 0 ?
                         '<span class="label label-danger">下架</span>' :
                         '<span class="label label-success">上架</span>';
-                }},
+                }},*/
 			// { label: '商户id', name: 'supplierId', index: 'supplier_id', width: 80 },
-            { label: '所属零售户', name: 'smallRetail.supplierName', index: 'supplier_id', width: 80 },
+            { label: '所属零售户', name: 'shop.shopName', index: 'supplier_id', width: 80 },
             { label: '创建时间', name: 'createTime', index: 'create_time', width: 80 },
 			{ label: '修改时间', name: 'modifyTime', index: 'modify_time', width: 80 }			
         ],
@@ -179,8 +179,8 @@ var vm = new Vue({
                 title:null
             },
             supplierId:null,
-            smallRetail:{
-                supplierName:null
+            shop:{
+                shopName:null
             },
             sellcategoryId:null,
             smallSellCategory:{
@@ -195,6 +195,12 @@ var vm = new Vue({
         deptId:null,//部门id(企业id)
         deptList:[],//部门列表（企业列表）
         deptName:'',
+
+        q:{
+            title:'',
+            shopName:'',
+            categoryTitle:'',
+        }
 	},
 
     watch: {
@@ -229,8 +235,8 @@ var vm = new Vue({
                     title:null
                 },
                 retailerId:null,
-                smallRetail:{
-                    supplierName:null
+                shop:{
+                    shopName:null
                 },
                 sellcategoryId:null,
                 smallSellCategory:{
@@ -352,8 +358,8 @@ var vm = new Vue({
                 vm.smallSpu.smallCategory = {
                     title:null
                 };
-                vm.smallSpu.smallRetail = {
-                    supplierName:null
+                vm.smallSpu.shop = {
+                    shopName:null
                 };
                 vm.smallSpu.smallSellCategory = {
                     title:null
@@ -379,8 +385,9 @@ var vm = new Vue({
 		reload: function (event) {
 			vm.showList = true;
 			var page = $("#jqGrid").jqGrid('getGridParam','page');
-			$("#jqGrid").jqGrid('setGridParam',{ 
-                page:page
+			$("#jqGrid").jqGrid('setGridParam',{
+                postData:vm.q,
+                page: 1
             }).trigger("reloadGrid");
 		},
 
@@ -435,7 +442,7 @@ var vm = new Vue({
                 // console.log("加载node====="+JSON.stringify(node))
                 if(node!=null){
                     retialztree.selectNode(node);
-                    vm.smallSpu.smallRetail.supplierName = node.name;
+                    vm.smallSpu.shop.shopName = node.name;
                 }
             })
         },
@@ -460,7 +467,7 @@ var vm = new Vue({
                             return;
                         }
                         vm.smallSpu.supplierId = node[0].id;
-                        vm.smallSpu.smallRetail.supplierName = node[0].name;
+                        vm.smallSpu.shop.shopName = node[0].name;
                         //加载店铺对应的个性化商品分类
                         vm.getSellCategory(node[0].id);
                     }
@@ -525,7 +532,7 @@ var vm = new Vue({
                 maxmin: true,
                 move:true,
                 shadeClose: true,
-                area: ['60%', '60%'],
+                area: ['85%', '85%'],
                 btn: ['<i class="fa fa-check"></i> 确定', '<i class="fa fa-close"></i> 关闭'],
                 content: baseURL + "modules/small/smallskuWin.html?spuId="+vm.smallSpu.id+"&id="+id,
                 yes: function (index, layero) {

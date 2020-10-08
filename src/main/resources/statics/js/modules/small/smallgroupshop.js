@@ -4,9 +4,8 @@ $(function () {
         datatype: "json",
         colModel: [			
 			{ label: 'id', name: 'id', index: 'id', width: 50, key: true },
-			{ label: 'spuId', name: 'spuId', index: 'spu_id', width: 80 },
-            { label: 'skuId', name: 'skuId', index: 'spu_id', width: 80 },
-            { label: 'img', name: 'img', index: 'img', width: 80 },
+			/*{ label: 'spuId', name: 'spuId', index: 'spu_id', width: 80 },
+            { label: 'skuId', name: 'skuId', index: 'spu_id', width: 80 },*/
             { label: '商品图片', name: 'img', width: 60, formatter: function(value, options, row){
                     return '<img style="height: 3rem;width: 3rem;" src="'+value+'"/>';
                 }},

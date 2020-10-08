@@ -1,6 +1,7 @@
 package com.icloud.modules.small.controller;
 
 import java.util.Arrays;
+import java.util.Date;
 import java.util.Map;
 
 import com.icloud.annotation.DataFilter;
@@ -48,6 +49,19 @@ public class SmallWasteRecordController extends AbstractController{
         return R.ok().put("page", page);
     }
 
+    /**
+     * 列表
+     */
+    @RequestMapping("/shenhelist")
+    @RequiresPermissions("small:smallwasterecord:shenhelist")
+    @DataFilter
+    public R shenhelist(@RequestParam Map<String, Object> params){
+        Query query = new Query(params);
+        query.put("wasteFlag","2");//提现类型
+        PageUtils page = smallWasteRecordService.findByPage(query.getPageNum(),query.getPageSize(), query);
+
+        return R.ok().put("page", page);
+    }
 
     /**
      * 信息
@@ -58,6 +72,32 @@ public class SmallWasteRecordController extends AbstractController{
         SmallWasteRecord smallWasteRecord = (SmallWasteRecord)smallWasteRecordService.getById(id);
 
         return R.ok().put("smallWasteRecord", smallWasteRecord);
+    }
+    /**
+     * 用于提现审核信息
+     */
+    @RequestMapping("/shenheinfo/{id}")
+    @RequiresPermissions("small:smallwasterecord:shenheinfo")
+    public R shenheinfo(@PathVariable("id") Long id){
+        SmallWasteRecord smallWasteRecord = (SmallWasteRecord)smallWasteRecordService.getById(id);
+
+        return R.ok().put("smallWasteRecord", smallWasteRecord);
+    }
+
+    /**
+     * 审核通过 或者不通过
+     */
+    @RequestMapping("/shenhe")
+    @RequiresPermissions("small:smallwasterecord:shenhe")
+    public R shenhe(@RequestBody SmallWasteRecord smallWasteRecord){
+        ValidatorUtils.validateEntity(smallWasteRecord);
+        smallWasteRecord.setModifyTime(new Date());
+        smallWasteRecord.setApproveBy(getUser().getUsername());
+        smallWasteRecord.setApproveTime(new Date());
+        //判断是否审核通过，通过发起企业付款
+        smallWasteRecordService.updateById(smallWasteRecord);
+
+        return R.ok();
     }
 
     /**

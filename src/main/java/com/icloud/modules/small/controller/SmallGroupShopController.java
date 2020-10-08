@@ -140,6 +140,7 @@ public class SmallGroupShopController extends AbstractController {
         if(list!=null && list.size()>0 && list.get(0).getId().longValue()!=smallGroupShop.getId().longValue()){
             return R.error("该商品已加入团购列表");
         }
+        smallGroupShop.setModifyTime(new Date());
         smallGroupShopService.updateById(smallGroupShop);
         
         return R.ok();
