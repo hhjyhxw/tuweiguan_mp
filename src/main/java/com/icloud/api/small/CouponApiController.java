@@ -266,23 +266,28 @@ public class CouponApiController {
     @ResponseBody
     public R queryMycouponList(@RequestBody QueryMycouponVo queryMycouponVo,@LoginUser WxUser user){
         ValidatorUtils.validateEntityForFront(queryMycouponVo);
-        List<SmallGroupShop> grouplist = smallGroupShopService.list(new QueryWrapper<SmallGroupShop>().in("id",queryMycouponVo.getGroupId()));
-        for (SmallGroupShop goods:grouplist){
-            if("1".equals(goods.getCommonFlag())){
-                log.info("团购商品是公共商品:id="+ goods.getId()+",不能使用优惠券");
-                return R.ok().put("list",null);
+        try {
+            List<SmallGroupShop> grouplist = smallGroupShopService.list(new QueryWrapper<SmallGroupShop>().in("id",queryMycouponVo.getGroupId()));
+            for (SmallGroupShop goods:grouplist){
+                if("1".equals(goods.getCommonFlag())){
+                    log.info("团购商品是公共商品:id="+ goods.getId()+",不能使用优惠券");
+                    return R.ok().put("list",null);
+                }
             }
-        }
 
-        queryMycouponVo.setUserId(user.getId());
-        List<MycouponVo> list = smallUserCouponService.getCategoryidList(queryMycouponVo);
-        if(list!=null && list.size()>0) {
-            list.forEach(p -> {
-                p.setStartTimeStr(DateUtil.commonFormatDateDo(p.getStartTime()));
-                p.setEndTimeStr(DateUtil.commonFormatDateDo(p.getEndTime()));
-            });
+            queryMycouponVo.setUserId(user.getId());
+            List<MycouponVo> list = smallUserCouponService.getCategoryidList(queryMycouponVo);
+            if(list!=null && list.size()>0) {
+                list.forEach(p -> {
+                    p.setStartTimeStr(DateUtil.commonFormatDateDo(p.getStartTime()));
+                    p.setEndTimeStr(DateUtil.commonFormatDateDo(p.getEndTime()));
+                });
+            }
+            return R.ok().put("list",list);
+        }catch (Exception e){
+            e.printStackTrace();
         }
-        return R.ok().put("list",list);
+        return R.ok().put("list",null);
     }
 
 }
