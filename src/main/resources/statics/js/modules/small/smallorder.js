@@ -78,7 +78,9 @@ var vm = new Vue({
             nickname:'',
             shopName:'',
             startTime:null,
-            endTime:null
+            endTime:null,
+            payStatus:null,
+            shipStatus:null,
         }
      },
 	methods: {

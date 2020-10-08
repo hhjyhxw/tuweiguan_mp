@@ -866,6 +866,17 @@ public class DateUtil {
 		return cDay.getTime();
 	}
 
+	/*****************************************
+	 * @throws ParseException
+	 * @功能 获取前N年  zdh
+	 ****************************************/
+	public static Integer getBeforeNYear(int n){
+		Calendar calendar = Calendar.getInstance();
+		calendar.add(Calendar.YEAR, n);
+		return calendar.get(Calendar.YEAR);
+	}
+
+
 	/**
 	 * 得到指定日期的最近6个月日期
 	 */

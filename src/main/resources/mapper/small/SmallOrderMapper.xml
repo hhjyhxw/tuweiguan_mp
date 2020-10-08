@@ -166,4 +166,54 @@ t.supplier_id = s.id and t.user_id = u.id
 </where>
     order by t.create_time desc
 </select>
+
+    <!--订单日报-->
+    <select id="queryReportList" resultType="com.icloud.modules.small.vo.OrderReportVo">
+        select DATE_FORMAT(t.create_time, '%Y-%m-%d') AS createTime,count(*) orderCount,sum(t.actual_price) orderAmout,s.shop_name shopName  from t_small_order t,shop s
+        <where>
+            t.supplier_id = s.id and t.pay_status=2
+            <if test="supplierId != null">
+                and t.supplier_id = #{supplierId}
+            </if>
+            <if test="shopName != null and shopName!=''">
+                and s.shop_name like CONCAT('%', '${shopName}', '%')
+            </if>
+            <if test="start != null" >
+                <![CDATA[ and t.create_time  >=  #{start}  ]]>
+            </if>
+            <if test="end != null" >
+                <![CDATA[ and t.create_time  <=  #{end}  ]]>
+            </if>
+            <if test="sql_filter != null and sql_filter!=''">
+                and ${sql_filter}
+            </if>
+        </where>
+        group by createTime,t.supplier_id,s.shop_name
+        order by orderCount desc,orderAmout desc
+    </select>
+
+    <!--订单月报-->
+    <select id="queryReportMonthList" resultType="com.icloud.modules.small.vo.OrderReportVo">
+        select DATE_FORMAT(t.create_time, '%Y-%m') AS createTime,count(*) orderCount,sum(t.actual_price) orderAmout,s.shop_name shopName  from t_small_order t,shop s
+        <where>
+            t.supplier_id = s.id and t.pay_status=2
+            <if test="supplierId != null">
+                and t.supplier_id = #{supplierId}
+            </if>
+            <if test="shopName != null and shopName!=''">
+                and s.shop_name like CONCAT('%', '${shopName}', '%')
+            </if>
+            <if test="yearonly != null and yearonly !=''" >
+                and DATE_FORMAT(t.create_time, '%Y') = #{yearonly}
+            </if>
+            <if test="yearAndMoth != null and yearAndMoth !=''" >
+                and DATE_FORMAT(t.create_time,'%Y-%m') = #{yearAndMoth}
+            </if>
+            <if test="sql_filter != null and sql_filter!=''">
+                and ${sql_filter}
+            </if>
+        </where>
+        group by createTime,t.supplier_id,s.shop_name
+        order by orderCount desc,orderAmout desc
+    </select>
 </mapper>

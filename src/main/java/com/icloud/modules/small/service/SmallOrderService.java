@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.icloud.api.vo.ShopAndOrderDetailVo;
+import com.icloud.basecommon.model.Query;
 import com.icloud.basecommon.service.BaseServiceImpl;
 import com.icloud.basecommon.service.LockComponent;
 import com.icloud.basecommon.service.redislock.DistributedLock;
@@ -19,6 +20,7 @@ import com.icloud.modules.shop.service.ShopService;
 import com.icloud.modules.small.dao.SmallOrderMapper;
 import com.icloud.modules.small.entity.*;
 import com.icloud.modules.small.vo.CreateOrder;
+import com.icloud.modules.small.vo.OrderReportVo;
 import com.icloud.modules.wx.entity.WxUser;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
@@ -475,5 +477,36 @@ public class SmallOrderService extends BaseServiceImpl<SmallOrderMapper,SmallOrd
             lockComponent.release(ORDER_STATUS_LOCK + orderNo);
         }
     }
+
+    /**
+     * 订单日报、订单月报
+     * @param pageNo
+     * @param pageSize
+     * @param query
+     * @return
+     */
+    public PageUtils findByPageReport(int pageNo, int pageSize, Query query) {
+        PageHelper.startPage(pageNo, pageSize);
+        List<OrderReportVo> list = smallOrderMapper.queryReportList(query);
+        PageInfo<OrderReportVo> pageInfo = new PageInfo<OrderReportVo>(list);
+        PageUtils<OrderReportVo> page = new PageUtils<OrderReportVo>(list,(int)pageInfo.getTotal(),pageSize,pageNo);
+        return page;
+    }
+
+    /**
+     * 订单日报、订单月报
+     * @param pageNo
+     * @param pageSize
+     * @param query
+     * @return
+     */
+    public PageUtils findByPageMonthReport(int pageNo, int pageSize, Query query) {
+        PageHelper.startPage(pageNo, pageSize);
+        List<OrderReportVo> list = smallOrderMapper.queryReportMonthList(query);
+        PageInfo<OrderReportVo> pageInfo = new PageInfo<OrderReportVo>(list);
+        PageUtils<OrderReportVo> page = new PageUtils<OrderReportVo>(list,(int)pageInfo.getTotal(),pageSize,pageNo);
+        return page;
+    }
+
 }
 
