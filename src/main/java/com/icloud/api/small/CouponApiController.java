@@ -172,13 +172,7 @@ public class CouponApiController {
         if(list!=null && list.size()>0){
             list.forEach(p->{
 
-                if(p.getOrderId()==null && p.getEndTime().after(new Date())){
-                    p.setStatus(0);//未领取
-                }
-                if(p.getOrderId()!=null){
-                    p.setStatus(1);//已领取
-                }
-                if(p.getOrderId()==null && p.getEndTime().before(new Date())){
+                if(p.getStatus()==0 && p.getEndTime().before(new Date())){
                     p.setStatus(2);//已过期
                 }
                 p.setStartTimeStr(DateUtil.commonFormatDateDo(p.getStartTime()));
