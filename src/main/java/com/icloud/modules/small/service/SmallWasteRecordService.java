@@ -87,12 +87,12 @@ public class SmallWasteRecordService extends BaseServiceImpl<SmallWasteRecordMap
             shopBank = shopBanklist.get(0);
             //本地账户余额
             BigDecimal shopbanlance = shop.getBalance()!=null?shop.getBalance():new BigDecimal(0);
-            if(smallWasteRecord.getAmount().compareTo(shopbanlance)>0){
+            if(smallWasteRecordold.getAmount().compareTo(shopbanlance)>0){
                 throw new BaseException("账号余额不足,提现失败");
             }
 
             CreateTradeDetailsVo tradeDetailsVo = new CreateTradeDetailsVo();
-            tradeDetailsVo.setAmount(smallWasteRecord.getAmount());
+            tradeDetailsVo.setAmount(smallWasteRecordold.getAmount());
             tradeDetailsVo.setShopId(shop.getId());
             tradeDetailsVo.setBizType(20);
             tradeDetailsVo.setInOrOut(2);
