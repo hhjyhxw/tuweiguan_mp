@@ -125,7 +125,7 @@ public class SmallWasteRecordController extends AbstractController{
         if(shop.getBalance().compareTo(smallWasteRecord.getAmount())<0){
             throw new BaseException("提现金额不能大于店铺余额，不能提现");
         }
-        smallWasteRecordService.createWaste(smallWasteRecord);
+//        smallWasteRecordService.createWaste(smallWasteRecord);
 
         return R.ok();
     }
