@@ -68,6 +68,12 @@ public class ShopBank implements Serializable {
         /* 企业id*/
         @TableField("dept_id")
         private Long deptId;
+
+        /* 银行卡所在开户行编号,详见银行编号列表 */
+        @NotBlank(message = "银行卡开户行编号不能为空")
+        @TableField("bank_code")
+        private String bankCode;
+
         /* 店铺 */
         @TableField(exist = false)
         private Shop shop;

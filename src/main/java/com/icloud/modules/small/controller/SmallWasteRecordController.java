@@ -1,11 +1,16 @@
 package com.icloud.modules.small.controller;
 
+import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.Map;
 
 import com.icloud.annotation.DataFilter;
 import com.icloud.basecommon.model.Query;
+import com.icloud.exceptions.ApiException;
+import com.icloud.exceptions.BaseException;
+import com.icloud.modules.shop.entity.Shop;
+import com.icloud.modules.shop.service.ShopService;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -35,7 +40,8 @@ import com.icloud.modules.sys.controller.AbstractController;
 public class SmallWasteRecordController extends AbstractController{
     @Autowired
     private SmallWasteRecordService smallWasteRecordService;
-
+    @Autowired
+    private ShopService shopService;
     /**
      * 列表
      */
@@ -90,12 +96,14 @@ public class SmallWasteRecordController extends AbstractController{
     @RequestMapping("/shenhe")
     @RequiresPermissions("small:smallwasterecord:shenhe")
     public R shenhe(@RequestBody SmallWasteRecord smallWasteRecord){
-        ValidatorUtils.validateEntity(smallWasteRecord);
+
         smallWasteRecord.setModifyTime(new Date());
         smallWasteRecord.setApproveBy(getUser().getUsername());
         smallWasteRecord.setApproveTime(new Date());
+
         //判断是否审核通过，通过发起企业付款
-        smallWasteRecordService.updateById(smallWasteRecord);
+        smallWasteRecordService.payWasteRecord(smallWasteRecord);
+//        smallWasteRecordService.updateById(smallWasteRecord);
 
         return R.ok();
     }
@@ -106,7 +114,18 @@ public class SmallWasteRecordController extends AbstractController{
     @RequestMapping("/save")
     @RequiresPermissions("small:smallwasterecord:save")
     public R save(@RequestBody SmallWasteRecord smallWasteRecord){
-        smallWasteRecordService.save(smallWasteRecord);
+        ValidatorUtils.validateEntity(smallWasteRecord);
+        if(smallWasteRecord.getAmount().compareTo(new BigDecimal(0))<=0){
+            throw new BaseException("提现金额不能小于0");
+        }
+        Shop shop = (Shop) shopService.getById(smallWasteRecord.getShopId());
+        if(shop.getBalance()==null){
+            throw new BaseException("账户余额为空，不能提现");
+        }
+        if(shop.getBalance().compareTo(smallWasteRecord.getAmount())<0){
+            throw new BaseException("提现金额不能大于店铺余额，不能提现");
+        }
+        smallWasteRecordService.createWaste(smallWasteRecord);
 
         return R.ok();
     }

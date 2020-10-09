@@ -7,8 +7,11 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.icloud.annotation.DataFilter;
 import com.icloud.basecommon.model.Query;
 import com.icloud.common.Constant;
+import com.icloud.common.SnowflakeUtils;
 import com.icloud.common.util.StringUtil;
 import com.icloud.config.DeptUtils;
+import com.icloud.config.ServerConfig;
+import com.icloud.exceptions.BaseException;
 import com.icloud.modules.small.entity.SmallCategory;
 import com.icloud.modules.small.entity.SmallWasteRecord;
 import com.icloud.modules.small.service.SmallWasteRecordService;
@@ -45,6 +48,8 @@ public class ShopController extends AbstractController {
     private SmallWasteRecordService smallWasteRecordService;
     @Autowired
     private DeptUtils deptUtils;
+    @Autowired
+    private ServerConfig serverConfig;
     /**
      * 列表
      */
@@ -104,6 +109,17 @@ public class ShopController extends AbstractController {
         smallWasteRecord.setDeptId(shop.getDeptId());
         smallWasteRecord.setCreateBy(getUser().getUsername());
         smallWasteRecord.setCreateTime(new Date());
+        if(smallWasteRecord.getAmount().compareTo(new BigDecimal(0))<=0){
+            throw new BaseException("提现金额不能小于0");
+        }
+        if(shop.getBalance()==null){
+            throw new BaseException("账户余额为空，不能提现");
+        }
+        if(shop.getBalance().compareTo(smallWasteRecord.getAmount())<0){
+            throw new BaseException("提现金额不能大于店铺余额，不能提现");
+        }
+        smallWasteRecord.setOrderNo("T" + SnowflakeUtils.getOrderNoByWordId(serverConfig.getServerPort() % 31L));
+//        smallWasteRecordService.createWaste(smallWasteRecord);
         smallWasteRecordService.save(smallWasteRecord);
         return R.ok();
     }

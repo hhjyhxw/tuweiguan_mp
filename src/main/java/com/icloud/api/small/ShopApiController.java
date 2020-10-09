@@ -34,7 +34,7 @@ import java.util.*;
 @RestController
 @RequestMapping("/api/shop")
 public class ShopApiController {
-
+    
     @Autowired
     private BsactivityAdService bsactivityAdService;
     @Autowired
