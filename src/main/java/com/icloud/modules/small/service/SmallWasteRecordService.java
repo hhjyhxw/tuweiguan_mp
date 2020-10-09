@@ -77,7 +77,7 @@ public class SmallWasteRecordService extends BaseServiceImpl<SmallWasteRecordMap
     public void payWasteRecord(SmallWasteRecord smallWasteRecord) {
         try {
             SmallWasteRecord smallWasteRecordold = smallWasteRecordMapper.selectById(smallWasteRecord.getId());
-            Shop shop = (Shop) shopService.getById(smallWasteRecord.getShopId());
+            Shop shop = (Shop) shopService.getById(smallWasteRecordold.getShopId());
             //提现收款账户
             ShopBank shopBank = null;
             List<ShopBank> shopBanklist = shopBankService.list(new QueryWrapper<ShopBank>().eq("shop_id",shop.getId()).eq("status","1"));
